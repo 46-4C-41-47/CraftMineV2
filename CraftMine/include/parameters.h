@@ -1,0 +1,6 @@
+namespace params
+{
+	namespace graphical
+	{
+	}
+}
