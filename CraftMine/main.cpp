@@ -13,7 +13,7 @@ int main()
 	
 	try
 	{
-		window = new CMWindow("CraftMine", 1000, 700);
+		window = new CMWindow("CraftMine", false);
 	}
 	catch (const std::runtime_error& e)
 	{

@@ -2,9 +2,21 @@
 
 
 CMWindow::CMWindow(std::string title, int width, int height) : 
-    width{ width }, height{height}, title{ title }
+    width{ width }, height{ height }, title{ title }, fullscreen{ false }
 {
 	std::string* returnMesssage = initWindow();
+
+    if (returnMesssage != nullptr)
+    {
+        throw std::runtime_error(*returnMesssage);
+    }
+}
+
+
+CMWindow::CMWindow(std::string title, bool isFullscreen) :
+    width{ DEFAULT_WIDTH }, height{ DEFAULT_HEIGHT }, title{ title }, fullscreen{ isFullscreen }
+{
+    std::string* returnMesssage = initWindow();
 
     if (returnMesssage != nullptr)
     {
@@ -26,11 +38,22 @@ std::string* CMWindow::initWindow()
         return new std::string("Initialization of GLFW failed\n");
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    if (fullscreen)
+    {
+        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+        width = mode->width;
+        height = mode->height;
+        window = glfwCreateWindow(width, height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
+    }
+    else
+    {
+        //glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+    }
     //glfwSetWindowPos(window, 2625, 200);
 
     if (window == NULL)
@@ -87,9 +110,18 @@ void CMWindow::start(int frameRate)
 
 void CMWindow::run()
 {
+    processInput();
+
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
+}
+
+
+void CMWindow::processInput()
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 }

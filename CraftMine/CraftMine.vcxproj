@@ -136,12 +136,18 @@
     <ClCompile Include="..\..\..\..\Documents\cpp libs\glad\src\glad.c" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="src\CMWindow.cpp" />
+    <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\CMWindow.h" />
     <ClInclude Include="include\parameters.h" />
+    <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="res\shaders\fragment_test.glsl" />
+    <None Include="res\shaders\vertex_test.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
