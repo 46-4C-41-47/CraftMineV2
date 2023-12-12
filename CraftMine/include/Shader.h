@@ -1,15 +1,16 @@
 #pragma once
 
-#include <glad/glad.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include <string>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <stdexcept>
 #include <filesystem>
 #include <system_error>
+
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 
 class Shader
@@ -27,13 +28,11 @@ public:
 
     Shader(const std::string& vertexPath, const std::string& fragmentPath);
     Shader(const std::string& vertexPath, const std::string& geometryPath, const std::string& fragmentPath);
-    
     Shader(const Shader&) = delete;
 
     Shader& operator = (const Shader&) = delete;
 
     inline unsigned int getId() { return finalShader; }
-
 
     void use();
     void sendVec2(const std::string& name, const glm::vec2& value);

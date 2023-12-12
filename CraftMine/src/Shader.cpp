@@ -5,15 +5,22 @@ Shader::Shader(const std::string& vertexPath, const std::string& fragmentPath)
 {
     finalShader = glCreateProgram();
 
-    unsigned int vertexShader = initShaderStep(vertexPath, GL_VERTEX_SHADER);
-    unsigned int fragmentShader = initShaderStep(fragmentPath, GL_FRAGMENT_SHADER);
+    try
+    {
+        unsigned int   vertexShader = initShaderStep(vertexPath  , GL_VERTEX_SHADER  );
+        unsigned int fragmentShader = initShaderStep(fragmentPath, GL_FRAGMENT_SHADER);
 
-    glLinkProgram(finalShader);
+        glLinkProgram(finalShader);
 
-    assertLinking();
+        assertLinking();
 
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
+        glDeleteShader(vertexShader);
+        glDeleteShader(fragmentShader);
+    }
+    catch (const std::runtime_error&)
+    {
+        throw new std::runtime_error("Unable to create and compile the shader");
+    }
 }
 
 
@@ -21,17 +28,24 @@ Shader::Shader(const std::string& vertexPath, const std::string& geometryPath, c
 {
     finalShader = glCreateProgram();
 
-    unsigned int vertexShader = initShaderStep(vertexPath, GL_VERTEX_SHADER);
-    unsigned int geometryShader = initShaderStep(geometryPath, GL_GEOMETRY_SHADER);
-    unsigned int fragmentShader = initShaderStep(fragmentPath, GL_FRAGMENT_SHADER);
+    try
+    {
+        unsigned int   vertexShader = initShaderStep(vertexPath  , GL_VERTEX_SHADER  );
+        unsigned int geometryShader = initShaderStep(geometryPath, GL_GEOMETRY_SHADER);
+        unsigned int fragmentShader = initShaderStep(fragmentPath, GL_FRAGMENT_SHADER);
+        
+        glLinkProgram(finalShader);
 
-    glLinkProgram(finalShader);
+        assertLinking();
 
-    assertLinking();
-
-    glDeleteShader(vertexShader);
-    glDeleteShader(geometryShader);
-    glDeleteShader(fragmentShader);
+        glDeleteShader(vertexShader);
+        glDeleteShader(geometryShader);
+        glDeleteShader(fragmentShader);
+    }
+    catch (const std::runtime_error&)
+    {
+        throw new std::runtime_error("Unable to create and compile the shader");
+    }
 }
 
 
@@ -43,9 +57,9 @@ unsigned int Shader::initShaderStep(const std::string& codePath, GLenum shaderTy
     {
         code = getShaderCode(codePath);
     }
-    catch (std::exception)
+    catch (const std::exception&)
     {
-        throw std::exception("unable to create the shader object");
+        throw std::runtime_error("Unable to create the shader object");
     }
 
     unsigned int id = compileShaderStep(code, shaderType);
@@ -71,7 +85,7 @@ unsigned int Shader::compileShaderStep(const std::string& shaderCode, GLenum sha
     {
         glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
-        exit(1);
+        throw new std::runtime_error("Shader compilation failed");
     }
 
     return shaderId;
@@ -87,7 +101,7 @@ void Shader::assertLinking()
     if (!success) {
         glGetProgramInfoLog(finalShader, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::LINKING_FAILED\n" << infoLog << "\n";
-        exit(1);
+        throw new std::runtime_error("Shader linking failed");
     }
 }
 
@@ -113,7 +127,7 @@ std::string Shader::getShaderCode(const std::string& shaderPath)
     catch (std::ifstream::failure e)
     {
         std::cerr << "ERROR::SHADER::FAIL_TO_READ_FILE\n";
-        exit(1);
+        throw new std::runtime_error("Unable to read shader file");
     }
 
     return shaderCode;

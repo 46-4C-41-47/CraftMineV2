@@ -10,14 +10,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Shader.h"
 #include "parameters.h"
 
 
 class CMWindow
 {
 private:
-	static const int DEFAULT_WIDTH = 1000, DEFAULT_HEIGHT = 700;
-	int width, height;
+	static const int DEFAULT_WIDTH = 1000, DEFAULT_HEIGHT = 562;
 	GLFWwindow* window;
 
 	std::string* initWindow();
@@ -31,10 +31,13 @@ public:
 	CMWindow(std::string title, int width, int height);
 	CMWindow(std::string title, bool isFullscreen);
 	CMWindow(const CMWindow&) = delete;
+	
 	~CMWindow();
+	
+	CMWindow& operator = (const CMWindow&) = delete;
 
 	void start(int frameRate = -1);
 
-	int getWidth() { return width; }
-	int getHeight() { return height; }
+	int getWidth();
+	int getHeight();
 };

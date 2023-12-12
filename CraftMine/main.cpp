@@ -9,11 +9,11 @@
 
 int main()
 {
-	CMWindow* window;
+	std::unique_ptr<CMWindow> window;
 	
 	try
 	{
-		window = new CMWindow("CraftMine", false);
+		window = std::make_unique<CMWindow>("CraftMine", false);
 	}
 	catch (const std::runtime_error& e)
 	{
@@ -23,6 +23,5 @@ int main()
 
 	window->start();
 
-	delete window;
 	return 0;
 }
