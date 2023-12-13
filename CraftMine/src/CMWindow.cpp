@@ -1,10 +1,42 @@
 #include "../include/CMWindow.h"
 
 
-glm::mat4 projection;
+int CMWindow::instanceCount = 0;
+
+bool CMWindow::fullscreen = false;
+
+glm::mat4 CMWindow::projection = glm::mat4(1.0f);
+
+GLFWwindow* CMWindow::window = nullptr;
+
+GLFWvidmode CMWindow::monitor = {};
+
+Camera* CMWindow::cam = new Camera();
 
 
-void rebuildProjectionMatrix(int width, int height)
+CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
+{
+    fullscreen = false;
+    init(width, height);
+}
+
+
+CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
+{
+    fullscreen = isFullscreen;
+    init(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+}
+
+
+CMWindow::~CMWindow()
+{
+    delete objectShader, obj;
+    glfwTerminate();
+    instanceCount -= 1;
+}
+
+
+void CMWindow::rebuildProjectionMatrix(int width, int height)
 {
     projection = glm::perspective(
         glm::radians(params::graphical::VIEW_ANGLE),
@@ -15,7 +47,7 @@ void rebuildProjectionMatrix(int width, int height)
 }
 
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height)
+void CMWindow::resizeCallback(GLFWwindow* window, int width, int height)
 {
     glViewport(0, 0, width, height);
 
@@ -23,76 +55,71 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void CMWindow::mouseCallback(GLFWwindow* window, double xpos, double ypos)
+{
+    cam->proccessMouse(xpos, ypos);
+}
+
+
+void CMWindow::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
     if (key == GLFW_KEY_F12 && action == GLFW_RELEASE)
+        toggleFullscreenMode();
+}
+
+
+void CMWindow::toggleFullscreenMode()
+{
+    if (fullscreen)
     {
-        std::cout << "Key held down\n";
+        glfwSetWindowMonitor(window, NULL, 100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT, monitor.refreshRate);
     }
-}
+    else
+    {
+        glfwSetWindowMonitor(
+            window, 
+            glfwGetPrimaryMonitor(), 
+            0, 0, 
+            monitor.width, monitor.height, 
+            monitor.refreshRate
+        );
+    }
 
-
-
-CMWindow::CMWindow(std::string title, int width, int height) : title{ title }, fullscreen{ false }
-{
-    init(width, height);
-}
-
-
-CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }, fullscreen{ isFullscreen }
-{
-    init(DEFAULT_WIDTH, DEFAULT_HEIGHT);
-}
-
-
-CMWindow::~CMWindow()
-{
-    delete objectShader, obj;
-    glfwTerminate();
+    fullscreen = !fullscreen;
 }
 
 
 void CMWindow::init(int width, int height)
 {
-    std::string* returnMesssage = initWindow(width, height);
+    if (0 < instanceCount)
+        throw std::runtime_error("CMWindow class can have only one instance at a time");
 
-    if (returnMesssage != nullptr)
-    {
-        throw std::runtime_error(*returnMesssage);
-    }
+    instanceCount += 1;
+
+    initWindow(width, height);
+
+    rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/vertex_test.glsl", "./res/shaders/fragment_test.glsl");
     
-    std::vector<glm::vec2> translations(100);
-    int index = 0;
-    float offset = 0.1f;
-    for (int y = -10; y < 10; y += 2)
-    {
-        for (int x = -10; x < 10; x += 2)
-        {
-            glm::vec2 translation;
-            translation.x = (float)x / 10.0f + offset;
-            translation.y = (float)y / 10.0f + offset;
-            translations[index++] = translation;
-        }
-    }
+    std::vector<glm::vec3> translations = { glm::vec3(-0.5f, -0.5f, 0.0f) };
 
     obj = new InstancedMesh(translations);
 }
 
 
-std::string* CMWindow::initWindow(int width, int height)
+void CMWindow::initWindow(int width, int height)
 {
     if (!glfwInit())
     {
-        return new std::string("Initialization of GLFW failed\n");
+        throw std::runtime_error("Initialization of GLFW failed\n");
     }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    updateMonitorInfo();
+    monitor = *glfwGetVideoMode(glfwGetPrimaryMonitor());
 
     if (fullscreen)
         window = glfwCreateWindow(monitor.width, monitor.height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
@@ -103,36 +130,24 @@ std::string* CMWindow::initWindow(int width, int height)
 
     if (window == NULL)
     {
-        return new std::string("GLFW window creation failed\n");
+        throw std::runtime_error("GLFW window creation failed\n");
     }
 
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
-        return new std::string("Failed to initialize GLAD\n");
+        throw std::runtime_error("Failed to initialize GLAD\n");
     }
 
     glViewport(0, 0, getWidth(), getHeight());
 
-    glfwSetKeyCallback(window, key_callback);
-    //glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, keyCallback);
+    glfwSetCursorPosCallback(window, mouseCallback);
+    glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     glEnable(GL_DEPTH_TEST);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-}
-
-
-void CMWindow::updateMonitorInfo()
-{
-    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-    monitor.width = mode->width;
-    monitor.height = mode->height;
-    monitor.redBits = mode->redBits;
-    monitor.greenBits = mode->greenBits;
-    monitor.blueBits = mode->blueBits;
-    monitor.refreshRate = mode->refreshRate;
 }
 
 
@@ -173,7 +188,8 @@ void CMWindow::run()
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    obj->draw(*objectShader);
+    glm::mat4 view = cam->getViewMatrix();
+    obj->draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
@@ -185,35 +201,31 @@ void CMWindow::processInput()
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
-        params::graphical::VIEW_ANGLE += 0.01f;
-    
-    if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
-        params::graphical::VIEW_ANGLE -= 0.01f;
+    double camSpeed;
 
-    if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS)
-        toggleFullscreenMode();
-}
-
-
-void CMWindow::toggleFullscreenMode()
-{
-    if (fullscreen)
-    {
-        glfwSetWindowMonitor(window, NULL, 100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT, monitor.refreshRate);
-    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+        camSpeed = params::controls::CAM_SPEED * 2.0 * 0.00005;
     else
-    {
-        glfwSetWindowMonitor(
-            window, 
-            glfwGetPrimaryMonitor(), 
-            0, 0, 
-            monitor.width, monitor.height, 
-            monitor.refreshRate
-        );
-    }
+        camSpeed = params::controls::CAM_SPEED * 0.00005;
 
-    fullscreen = !fullscreen;
+
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        cam->moveForward(camSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        cam->moveSideWays(-camSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        cam->moveForward(-camSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        cam->moveSideWays(camSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        cam->moveUpward(camSpeed);
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        cam->moveUpward(-camSpeed);
 }
 
 

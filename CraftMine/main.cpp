@@ -13,7 +13,7 @@ int main()
 	
 	try
 	{
-		window = std::make_unique<CMWindow>("CraftMine", false);
+		window = std::make_unique<CMWindow>("CraftMine", true);
 	}
 	catch (const std::runtime_error& e)
 	{

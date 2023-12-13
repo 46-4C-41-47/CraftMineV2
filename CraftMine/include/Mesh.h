@@ -9,5 +9,5 @@
 class Mesh
 {
 public:
-	virtual void draw(Shader& shader) = 0;
+	virtual void draw(Shader& shader, glm::mat4& projection, glm::mat4& view) = 0;
 };

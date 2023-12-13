@@ -1,61 +1,49 @@
 #include "../include/InstancedMesh.h"
 
 
-/*const std::vector<float> InstancedMesh::cube_vertices = {
-//  vertex coordinates  normal vector         texture coordinates
-	0.0f, 0.0f, 0.0f,   0.0f,  0.0f, -1.0f,   0.0f, 0.0f, // front
-	1.0f, 0.0f, 0.0f,   0.0f,  0.0f, -1.0f,   1.0f, 0.0f,
-	1.0f, 1.0f, 0.0f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f,
-	1.0f, 1.0f, 0.0f,   0.0f,  0.0f, -1.0f,   1.0f, 1.0f,
-	0.0f, 1.0f, 0.0f,   0.0f,  0.0f, -1.0f,   0.0f, 1.0f,
-	0.0f, 0.0f, 0.0f,   0.0f,  0.0f, -1.0f,   0.0f, 0.0f,
-
-	0.0f, 0.0f, 1.0f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f, // back
-	1.0f, 0.0f, 1.0f,   0.0f,  0.0f,  1.0f,   1.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f,
-	1.0f, 1.0f, 1.0f,   0.0f,  0.0f,  1.0f,   1.0f, 1.0f,
-	0.0f, 1.0f, 1.0f,   0.0f,  0.0f,  1.0f,   0.0f, 1.0f,
-	0.0f, 0.0f, 1.0f,   0.0f,  0.0f,  1.0f,   0.0f, 0.0f,
-
-	0.0f, 1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // left
-	0.0f, 1.0f, 0.0f,  -1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
-	0.0f, 0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-	0.0f, 0.0f, 0.0f,  -1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-	0.0f, 0.0f, 1.0f,  -1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
-	0.0f, 1.0f, 1.0f,  -1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
-
-	1.0f, 1.0f, 1.0f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f, // right
-	1.0f, 1.0f, 0.0f,   1.0f,  0.0f,  0.0f,   1.0f, 1.0f,
-	1.0f, 0.0f, 0.0f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-	1.0f, 0.0f, 0.0f,   1.0f,  0.0f,  0.0f,   0.0f, 1.0f,
-	1.0f, 0.0f, 1.0f,   1.0f,  0.0f,  0.0f,   0.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,   1.0f,  0.0f,  0.0f,   1.0f, 0.0f,
-
-	0.0f, 0.0f, 0.0f,   0.0f, -1.0f,  0.0f,   0.0f, 1.0f, // bottom
-	1.0f, 0.0f, 0.0f,   0.0f, -1.0f,  0.0f,   1.0f, 1.0f,
-	1.0f, 0.0f, 1.0f,   0.0f, -1.0f,  0.0f,   1.0f, 0.0f,
-	1.0f, 0.0f, 1.0f,   0.0f, -1.0f,  0.0f,   1.0f, 0.0f,
-	0.0f, 0.0f, 1.0f,   0.0f, -1.0f,  0.0f,   0.0f, 0.0f,
-	0.0f, 0.0f, 0.0f,   0.0f, -1.0f,  0.0f,   0.0f, 1.0f,
-
-	0.0f, 1.0f, 0.0f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f, // top
-	1.0f, 1.0f, 0.0f,   0.0f,  1.0f,  0.0f,   1.0f, 1.0f,
-	1.0f, 1.0f, 1.0f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f,
-	1.0f, 1.0f, 1.0f,   0.0f,  1.0f,  0.0f,   1.0f, 0.0f,
-	0.0f, 1.0f, 1.0f,   0.0f,  1.0f,  0.0f,   0.0f, 0.0f,
-	0.0f, 1.0f, 0.0f,   0.0f,  1.0f,  0.0f,   0.0f, 1.0f
-};*/
-
-
 const std::vector<float> InstancedMesh::cube_vertices = {
-	// positions      // colors
-	-0.05f,  0.05f,   1.0f, 0.0f, 0.0f,
-	 0.05f, -0.05f,   0.0f, 1.0f, 0.0f,
-	-0.05f, -0.05f,   0.0f, 0.0f, 1.0f,
-				    
-	-0.05f,  0.05f,   1.0f, 0.0f, 0.0f,
-	 0.05f, -0.05f,   0.0f, 1.0f, 0.0f,
-	 0.05f,  0.05f,   0.0f, 1.0f, 1.0f
+//  vertex coordinates     normal vector          texture coordinates
+	0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f, // front
+	1.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 0.0f,
+	1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
+	1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
+	0.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
+	0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
+		  			    					   
+	0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f, // back
+	1.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 0.0f,
+	1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
+	1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
+	0.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 1.0f,
+	0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f,
+		  			    					   
+	0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // left
+	0.0f,  1.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+	0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+	0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+	0.0f,  0.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
+	0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+		  			    					   
+	1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // right
+	1.0f,  1.0f,  0.0f,    1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
+	1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+	1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
+	1.0f,  0.0f,  1.0f,    1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
+	1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
+		  			    					   
+	0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f, // bottom
+	1.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    1.0f, 1.0f,
+	1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
+	1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
+	0.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    0.0f, 0.0f,
+	0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f,
+		  			    					   
+	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f, // top
+	1.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    1.0f, 1.0f,
+	1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
+	1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
+	0.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    0.0f, 0.0f,
+	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f
 };
 
 
@@ -67,7 +55,7 @@ InstancedMesh::~InstancedMesh()
 }
 
 
-void InstancedMesh::initMesh(const std::vector<glm::vec2>& positions)
+void InstancedMesh::initMesh(const std::vector<glm::vec3>& positions)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &positionsVBO);
@@ -75,32 +63,38 @@ void InstancedMesh::initMesh(const std::vector<glm::vec2>& positions)
 	
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * positions.size(), positions.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), positions.data(), GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cube_vertices.size(), cube_vertices.data(), GL_STATIC_DRAW);
 	
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(2 * sizeof(float)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 	
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
-	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	
-	glVertexAttribDivisor(2, 1); // tell OpenGL this is an instanced vertex attribute.
+	glVertexAttribDivisor(3, 1);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
 }
 
 
-void InstancedMesh::draw(Shader& shader)
+void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 {
 	shader.use();
 
+	shader.sendMat4("projection", projection);
+	shader.sendMat4("view", view);
+
 	glBindVertexArray(VAO);
-	glDrawArraysInstanced(GL_TRIANGLES, 0, 6, instanceCount);
+	glDrawArraysInstanced(GL_TRIANGLES, 0, cube_vertices.size() / 8.0f, instanceCount);
 
 	glBindVertexArray(0);
 }
