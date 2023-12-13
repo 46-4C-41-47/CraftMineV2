@@ -12,20 +12,29 @@
 
 #include "Shader.h"
 #include "parameters.h"
+#include "InstancedMesh.h"
 
 
 class CMWindow
 {
 private:
 	static const int DEFAULT_WIDTH = 1000, DEFAULT_HEIGHT = 562;
+	static int instanceCount;
+	bool fullscreen;
+	GLFWvidmode monitor;
+	Shader* objectShader;
 	GLFWwindow* window;
+	InstancedMesh* obj;
 
-	std::string* initWindow();
+	std::string* initWindow(int width, int height);
 	void run();
 	void processInput();
+	void init(int width, int height);
+	void toggleFullscreenMode();
+	void updateMonitorInfo();
+	static void test(GLFWwindow* window, int width, int height) { std::cout << "resize\n"; }
 
 public:
-	const bool fullscreen;
 	const std::string title;
 
 	CMWindow(std::string title, int width, int height);
@@ -38,6 +47,8 @@ public:
 
 	void start(int frameRate = -1);
 
-	int getWidth();
-	int getHeight();
+	virtual int getWidth() final;
+	virtual int getHeight() final;
+
+	bool isFullscreen() { return fullscreen; }
 };

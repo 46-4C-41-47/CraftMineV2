@@ -1,68 +1,87 @@
 #include "../include/CMWindow.h"
 
 
-int windowWidth, windowHeight;
 glm::mat4 projection;
 
 
-void rebuildProjectionMatrix()
+void rebuildProjectionMatrix(int width, int height)
 {
     projection = glm::perspective(
         glm::radians(params::graphical::VIEW_ANGLE),
-        (float)windowWidth / (float)windowHeight,
+        (float)width / (float)height,
         params::graphical::NEAR_PLANE,
         params::graphical::FAR_PLANE
     );
 }
 
 
-void windowResizeCallback(GLFWwindow* window, int width, int height)
+void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {
-    windowWidth = width;
-    windowHeight = height;
+    glViewport(0, 0, width, height);
 
-    glViewport(0, 0, windowWidth, windowHeight);
+    rebuildProjectionMatrix(width, height);
+}
 
-    rebuildProjectionMatrix();
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_F12 && action == GLFW_RELEASE)
+    {
+        std::cout << "Key held down\n";
+    }
 }
 
 
 
 CMWindow::CMWindow(std::string title, int width, int height) : title{ title }, fullscreen{ false }
 {
-    windowWidth = width;
-    windowHeight = height;
-
-	std::string* returnMesssage = initWindow();
-
-    if (returnMesssage != nullptr)
-    {
-        throw std::runtime_error(*returnMesssage);
-    }
+    init(width, height);
 }
 
 
 CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }, fullscreen{ isFullscreen }
 {
-    windowWidth = DEFAULT_WIDTH;
-    windowHeight = DEFAULT_HEIGHT;
-
-    std::string* returnMesssage = initWindow();
-
-    if (returnMesssage != nullptr)
-    {
-        throw std::runtime_error(*returnMesssage);
-    }
+    init(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 }
 
 
 CMWindow::~CMWindow()
 {
+    delete objectShader, obj;
     glfwTerminate();
 }
 
 
-std::string* CMWindow::initWindow()
+void CMWindow::init(int width, int height)
+{
+    std::string* returnMesssage = initWindow(width, height);
+
+    if (returnMesssage != nullptr)
+    {
+        throw std::runtime_error(*returnMesssage);
+    }
+
+    objectShader = new Shader("./res/shaders/vertex_test.glsl", "./res/shaders/fragment_test.glsl");
+    
+    std::vector<glm::vec2> translations(100);
+    int index = 0;
+    float offset = 0.1f;
+    for (int y = -10; y < 10; y += 2)
+    {
+        for (int x = -10; x < 10; x += 2)
+        {
+            glm::vec2 translation;
+            translation.x = (float)x / 10.0f + offset;
+            translation.y = (float)y / 10.0f + offset;
+            translations[index++] = translation;
+        }
+    }
+
+    obj = new InstancedMesh(translations);
+}
+
+
+std::string* CMWindow::initWindow(int width, int height)
 {
     if (!glfwInit())
     {
@@ -73,17 +92,13 @@ std::string* CMWindow::initWindow()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+    updateMonitorInfo();
+
     if (fullscreen)
-    {
-        const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-        windowWidth = mode->width;
-        windowHeight = mode->height;
-        window = glfwCreateWindow(windowWidth, windowHeight, title.c_str(), glfwGetPrimaryMonitor(), NULL);
-    }
+        window = glfwCreateWindow(monitor.width, monitor.height, title.c_str(), glfwGetPrimaryMonitor(), NULL);
     else
-    {
-        window = glfwCreateWindow(windowWidth, windowHeight, title.c_str(), NULL, NULL);
-    }
+        window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
+
     //glfwSetWindowPos(window, 2625, 200);
 
     if (window == NULL)
@@ -98,13 +113,26 @@ std::string* CMWindow::initWindow()
         return new std::string("Failed to initialize GLAD\n");
     }
 
-    glViewport(0, 0, windowWidth, windowHeight);
+    glViewport(0, 0, getWidth(), getHeight());
 
-    glfwSetFramebufferSizeCallback(window, windowResizeCallback);
+    glfwSetKeyCallback(window, key_callback);
     //glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
     glEnable(GL_DEPTH_TEST);
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+}
+
+
+void CMWindow::updateMonitorInfo()
+{
+    const GLFWvidmode* mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+    monitor.width = mode->width;
+    monitor.height = mode->height;
+    monitor.redBits = mode->redBits;
+    monitor.greenBits = mode->greenBits;
+    monitor.blueBits = mode->blueBits;
+    monitor.refreshRate = mode->refreshRate;
 }
 
 
@@ -145,6 +173,8 @@ void CMWindow::run()
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    obj->draw(*objectShader);
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
@@ -160,10 +190,44 @@ void CMWindow::processInput()
     
     if (glfwGetKey(window, GLFW_KEY_M) == GLFW_PRESS)
         params::graphical::VIEW_ANGLE -= 0.01f;
+
+    if (glfwGetKey(window, GLFW_KEY_F12) == GLFW_PRESS)
+        toggleFullscreenMode();
 }
 
 
-int CMWindow::getWidth() { return windowWidth; }
+void CMWindow::toggleFullscreenMode()
+{
+    if (fullscreen)
+    {
+        glfwSetWindowMonitor(window, NULL, 100, 100, DEFAULT_WIDTH, DEFAULT_HEIGHT, monitor.refreshRate);
+    }
+    else
+    {
+        glfwSetWindowMonitor(
+            window, 
+            glfwGetPrimaryMonitor(), 
+            0, 0, 
+            monitor.width, monitor.height, 
+            monitor.refreshRate
+        );
+    }
+
+    fullscreen = !fullscreen;
+}
 
 
-int CMWindow::getHeight() { return windowHeight; }
+int CMWindow::getWidth()
+{
+    int width, height;
+    glfwGetWindowSize(window, &width, &height); 
+    return width;
+}
+
+
+int CMWindow::getHeight() 
+{
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
+    return height;
+}
