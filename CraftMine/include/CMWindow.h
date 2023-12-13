@@ -52,8 +52,8 @@ public:
 
 	void start(int frameRate = -1);
 
-	virtual int getWidth() final;
-	virtual int getHeight() final;
+	static int getWidth();
+	static int getHeight();
 
 	bool isFullscreen() { return fullscreen; }
 };

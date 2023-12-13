@@ -84,7 +84,7 @@ void CMWindow::toggleFullscreenMode()
             monitor.refreshRate
         );
     }
-
+    rebuildProjectionMatrix(getWidth(), getHeight());
     fullscreen = !fullscreen;
 }
 
@@ -102,7 +102,11 @@ void CMWindow::init(int width, int height)
 
     objectShader = new Shader("./res/shaders/vertex_test.glsl", "./res/shaders/fragment_test.glsl");
     
-    std::vector<glm::vec3> translations = { glm::vec3(-0.5f, -0.5f, 0.0f) };
+    std::vector<glm::vec3> translations = { 
+        glm::vec3(0.0f, 0.0f, 0.0f),
+        glm::vec3(3.0f, 1.0f, 0.7f),
+        glm::vec3(0.5f, 0.0f, -7.6f)
+    };
 
     obj = new InstancedMesh(translations);
 }
@@ -111,9 +115,7 @@ void CMWindow::init(int width, int height)
 void CMWindow::initWindow(int width, int height)
 {
     if (!glfwInit())
-    {
         throw std::runtime_error("Initialization of GLFW failed\n");
-    }
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
@@ -126,19 +128,16 @@ void CMWindow::initWindow(int width, int height)
     else
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
+    glfwSetWindowPos(window, 100, 100);
     //glfwSetWindowPos(window, 2625, 200);
 
     if (window == NULL)
-    {
         throw std::runtime_error("GLFW window creation failed\n");
-    }
 
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
         throw std::runtime_error("Failed to initialize GLAD\n");
-    }
 
     glViewport(0, 0, getWidth(), getHeight());
 
@@ -147,7 +146,7 @@ void CMWindow::initWindow(int width, int height)
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     glEnable(GL_DEPTH_TEST);
-    //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 

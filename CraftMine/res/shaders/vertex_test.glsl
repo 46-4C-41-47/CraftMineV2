@@ -20,5 +20,5 @@ float getColor(int offset)
 void main()
 {
     fColor = vec3(getColor(0), getColor(7), getColor(3));
-    gl_Position = projection * view * vec4(aPos, 1.0);
+    gl_Position = projection * view * vec4(aPos + aOffset, 1.0);
 }
