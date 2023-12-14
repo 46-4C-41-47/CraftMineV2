@@ -30,7 +30,7 @@ CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
 
 CMWindow::~CMWindow()
 {
-    delete objectShader, obj;
+    delete objectShader, chunk;
     glfwTerminate();
     instanceCount -= 1;
 }
@@ -101,14 +101,8 @@ void CMWindow::init(int width, int height)
     rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/vertex_test.glsl", "./res/shaders/fragment_test.glsl");
-    
-    std::vector<glm::vec3> translations = { 
-        glm::vec3(0.0f, 0.0f, 0.0f),
-        glm::vec3(3.0f, 1.0f, 0.7f),
-        glm::vec3(0.5f, 0.0f, -7.6f)
-    };
 
-    obj = new InstancedMesh(translations);
+    chunk = new Chunk(0, 0);
 }
 
 
@@ -188,7 +182,7 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = cam->getViewMatrix();
-    obj->draw(*objectShader, projection, view);
+    chunk->draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

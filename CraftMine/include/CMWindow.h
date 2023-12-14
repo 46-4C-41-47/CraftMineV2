@@ -13,7 +13,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "parameters.h"
-#include "InstancedMesh.h"
+#include "Chunk.h"
 
 
 class CMWindow
@@ -27,7 +27,7 @@ private:
 	static GLFWvidmode monitor;
 	static Camera* cam;
 	Shader* objectShader;
-	InstancedMesh* obj;
+	Chunk* chunk;
 
 	static void rebuildProjectionMatrix(int width, int height);
 	static void resizeCallback(GLFWwindow* window, int width, int height);

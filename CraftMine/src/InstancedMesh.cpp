@@ -1,6 +1,8 @@
 #include "../include/InstancedMesh.h"
 
 
+TextureAtlas* InstancedMesh::atlas = nullptr;
+
 const std::vector<float> InstancedMesh::cube_vertices = {
 //  vertex coordinates     normal vector          texture coordinates
 	0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f, // front
@@ -45,8 +47,6 @@ const std::vector<float> InstancedMesh::cube_vertices = {
 	0.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    0.0f, 0.0f,
 	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f
 };
-
-TextureAtlas* InstancedMesh::atlas = nullptr;
 
 
 InstancedMesh::InstancedMesh(const std::vector<glm::vec3>& positions) 
