@@ -46,6 +46,18 @@ const std::vector<float> InstancedMesh::cube_vertices = {
 	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f
 };
 
+TextureAtlas* InstancedMesh::atlas = nullptr;
+
+
+InstancedMesh::InstancedMesh(const std::vector<glm::vec3>& positions) 
+	: instanceCount{ (unsigned int)positions.size() }
+{
+	if (atlas == nullptr)
+		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
+
+	initMesh(positions);
+}
+
 
 InstancedMesh::~InstancedMesh()
 {
@@ -93,8 +105,14 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 	shader.sendMat4("projection", projection);
 	shader.sendMat4("view", view);
 
+	shader.sendInt("textureAtlas", 0);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
+
 	glBindVertexArray(VAO);
 	glDrawArraysInstanced(GL_TRIANGLES, 0, cube_vertices.size() / 8.0f, instanceCount);
 
+	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }

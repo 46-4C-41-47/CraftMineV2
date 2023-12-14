@@ -5,7 +5,6 @@
 #include <GLFW/glfw3.h>
 
 #include "include/CMWindow.h"
-#include "include/TextureAtlas.h"
 
 
 int main()
@@ -26,3 +25,13 @@ int main()
 
 	return 0;
 }
+
+/*
+À FAIRE : 
+	Classe Chunk
+	Skybox
+	bloques destructibles
+
+BUG :
+	La limite de framerate dans la fonction run de CMWindow marche pas 
+*/

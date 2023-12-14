@@ -1,9 +1,9 @@
 #include "../include/TextureAtlas.h"
 
 
-TextureAtlas::TextureAtlas(std::string path, int width, int height) : width{ width }, height{ height }
+TextureAtlas::TextureAtlas(TextureAtlasConfig config) : width{ config.width }, height{ config.height }
 {
-    texture = loadTexture(path);
+    texture = loadTexture(config.path);
 }
 
 

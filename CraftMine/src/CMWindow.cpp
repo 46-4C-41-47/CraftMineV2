@@ -150,7 +150,7 @@ void CMWindow::initWindow(int width, int height)
 }
 
 
-void CMWindow::start(int frameRate)
+void CMWindow::start(int frameRate) 
 {
     if (frameRate == -1)
     {

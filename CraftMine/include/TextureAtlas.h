@@ -9,7 +9,16 @@
 #include "stb_image.h"
 
 
-struct Texture {
+struct TextureAtlasConfig
+{
+	std::string path;
+	int width;
+	int height;
+};
+
+
+struct Texture 
+{
 	unsigned int id;
 	int width;
 	int height;
@@ -25,12 +34,14 @@ private:
 	Texture* loadTexture(std::string path);
 
 public:
-	TextureAtlas(std::string path, int width, int height);
+	TextureAtlas(TextureAtlasConfig config);
 	TextureAtlas(const TextureAtlas&) = delete;
 
 	~TextureAtlas();
 
 	TextureAtlas& operator = (const TextureAtlas&) = delete;
+
+	unsigned int getTextureId() { return texture->id; }
 
 	float getU(int index, float offset);
 	float getV(int index, float offset);
