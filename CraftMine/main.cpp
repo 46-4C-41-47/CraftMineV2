@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "include/CMWindow.h"
+#include "include/TextureAtlas.h"
 
 
 int main()
@@ -13,7 +14,7 @@ int main()
 	
 	try
 	{
-		window = std::make_unique<CMWindow>("CraftMine", true);
+		window = std::make_unique<CMWindow>("CraftMine", false);
 	}
 	catch (const std::runtime_error& e)
 	{

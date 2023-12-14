@@ -140,6 +140,7 @@
     <ClCompile Include="src\InstancedMesh.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
+    <ClCompile Include="src\TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Camera.h" />
@@ -149,6 +150,7 @@
     <ClInclude Include="include\parameters.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\stb_image.h" />
+    <ClInclude Include="include\TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\fragment_test.glsl" />
