@@ -49,7 +49,7 @@ void Chunk::genMesh()
 		}
 	}
 
-	blocksMesh = new InstancedMesh(positions);
+	blocksMesh = new InstancedMesh(constants::cube::CUBE, positions);
 }
 
 

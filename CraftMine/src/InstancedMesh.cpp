@@ -3,59 +3,14 @@
 
 TextureAtlas* InstancedMesh::atlas = nullptr;
 
-const std::vector<float> InstancedMesh::cube_vertices = {
-//  vertex coordinates     normal vector          texture coordinates
-	0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f, // front
-	1.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 0.0f,
-	1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-	1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-	0.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
-	0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
-		  			    					   
-	0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f, // back
-	1.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 0.0f,
-	1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-	1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-	0.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 1.0f,
-	0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f,
-		  			    					   
-	0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // left
-	0.0f,  1.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-	0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-	0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-	0.0f,  0.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-	0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-		  			    					   
-	1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // right
-	1.0f,  1.0f,  0.0f,    1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-	1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-	1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-	1.0f,  0.0f,  1.0f,    1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-	1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-		  			    					   
-	0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f, // bottom
-	1.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    1.0f, 1.0f,
-	1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-	1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-	0.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    0.0f, 0.0f,
-	0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f,
-		  			    					   
-	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f, // top
-	1.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    1.0f, 1.0f,
-	1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-	1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-	0.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    0.0f, 0.0f,
-	0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f
-};
 
-
-InstancedMesh::InstancedMesh(const std::vector<glm::vec3>& positions) 
-	: instanceCount{ (unsigned int)positions.size() }
+InstancedMesh::InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions)
+	: instanceCount{ (unsigned int)positions.size() }, strideLength{ (int)(mesh.size() / 8.0f) }
 {
 	if (atlas == nullptr)
 		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
 
-	initMesh(positions);
+	initMesh(mesh, positions);
 }
 
 
@@ -67,19 +22,19 @@ InstancedMesh::~InstancedMesh()
 }
 
 
-void InstancedMesh::initMesh(const std::vector<glm::vec3>& positions)
+void InstancedMesh::initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions)
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &positionsVBO);
 	glGenBuffers(1, &constDataVBO);
 	
-	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), positions.data(), GL_STATIC_DRAW);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * cube_vertices.size(), cube_vertices.data(), GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
 	
+	glBindVertexArray(VAO);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
@@ -111,7 +66,7 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
 
 	glBindVertexArray(VAO);
-	glDrawArraysInstanced(GL_TRIANGLES, 0, cube_vertices.size() / 8.0f, instanceCount);
+	glDrawArraysInstanced(GL_TRIANGLES, 0, strideLength, instanceCount);
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);

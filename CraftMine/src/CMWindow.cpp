@@ -57,13 +57,13 @@ void CMWindow::resizeCallback(GLFWwindow* window, int width, int height)
 
 void CMWindow::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    cam->proccessMouse(xpos, ypos);
+    cam->proccessMouse((int)xpos, (int)ypos);
 }
 
 
 void CMWindow::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_F12 && action == GLFW_RELEASE)
+    if (key == GLFW_KEY_F1 && action == GLFW_RELEASE)
         toggleFullscreenMode();
 }
 
@@ -194,12 +194,12 @@ void CMWindow::processInput()
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    double camSpeed;
+    float camSpeed;
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        camSpeed = params::controls::CAM_SPEED * 2.0 * 0.00005;
+        camSpeed = params::controls::CAM_SPEED * 2.0f * 0.0005f;
     else
-        camSpeed = params::controls::CAM_SPEED * 0.00005;
+        camSpeed = params::controls::CAM_SPEED * 0.0005f;
 
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

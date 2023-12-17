@@ -5,6 +5,7 @@
 #include <GLFW/glfw3.h>
 
 #include "include/CMWindow.h"
+#include "include/GLBufferConfig.h"
 
 
 int main()
@@ -29,8 +30,9 @@ int main()
 /*
 À FAIRE : 
 	Classe Chunk
+	Finir la classe GLBufferConfig
 	Skybox
-	bloques destructibles
+	Bloques destructibles
 
 BUG :
 	La limite de framerate dans la fonction run de CMWindow marche pas 
