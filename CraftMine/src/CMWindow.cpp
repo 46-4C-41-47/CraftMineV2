@@ -11,7 +11,7 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-Camera* CMWindow::cam = new Camera();
+Camera* CMWindow::cam = new Camera(glm::vec3(0.0f, 260.0f, 0.0f), glm::vec3(0.0f));
 
 
 CMWindow::CMWindow(std::string title, int width, int height) : title{ title }

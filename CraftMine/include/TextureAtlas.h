@@ -28,12 +28,13 @@ struct Texture
 class TextureAtlas
 {
 private:
-	const int width, height;
 	Texture* texture;
 
 	Texture* loadTexture(std::string path);
 
 public:
+	const int width, height;
+
 	TextureAtlas(TextureAtlasConfig config);
 	TextureAtlas(const TextureAtlas&) = delete;
 

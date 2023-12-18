@@ -4,13 +4,16 @@
 TextureAtlas* InstancedMesh::atlas = nullptr;
 
 
-InstancedMesh::InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions)
-	: instanceCount{ (unsigned int)positions.size() }, strideLength{ (int)(mesh.size() / 8.0f) }
+InstancedMesh::InstancedMesh(
+	const std::vector<float>& mesh, 
+	const std::vector<glm::vec3>& positions, 
+	const std::vector<int>& textures
+) : instanceCount{ (unsigned int)positions.size() }, strideLength{ (int)(mesh.size() / 8.0f) }
 {
 	if (atlas == nullptr)
 		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
 
-	initMesh(mesh, positions);
+	initMesh(mesh, positions, textures);
 }
 
 
@@ -22,19 +25,27 @@ InstancedMesh::~InstancedMesh()
 }
 
 
-void InstancedMesh::initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions)
-{
+void InstancedMesh::initMesh(
+	const std::vector<float>& mesh, 
+	const std::vector<glm::vec3>& positions, 
+	const std::vector<int>& textures
+) {
 	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &positionsVBO);
 	glGenBuffers(1, &constDataVBO);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), positions.data(), GL_STATIC_DRAW);
+	glGenBuffers(1, &positionsVBO);
+	glGenBuffers(1, &texturesVBO);
 	
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
 	
+	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * positions.size(), positions.data(), GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ARRAY_BUFFER, texturesVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(int) * textures.size(), textures.data(), GL_STATIC_DRAW);
+	
 	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(1);
@@ -45,10 +56,16 @@ void InstancedMesh::initMesh(const std::vector<float>& mesh, const std::vector<g
 	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
 	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	
-	glVertexAttribDivisor(3, 1);
-	
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glBindBuffer(GL_ARRAY_BUFFER, texturesVBO);
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 1, GL_INT, GL_FALSE, sizeof(int), (void*)0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+	glVertexAttribDivisor(3, 1);
+	glVertexAttribDivisor(4, 1);
+	
 	glBindVertexArray(0);
 }
 
@@ -61,6 +78,8 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 	shader.sendMat4("view", view);
 
 	shader.sendInt("textureAtlas", 0);
+	shader.sendInt("atlasWidth", atlas->width);
+	shader.sendInt("atlasHeight", atlas->height);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());

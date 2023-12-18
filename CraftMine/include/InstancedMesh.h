@@ -14,12 +14,12 @@ class InstancedMesh : public Mesh
 private:
 	static TextureAtlas* atlas;
 	const int strideLength;
-	unsigned int VAO, constDataVBO, positionsVBO, instanceCount;
+	unsigned int VAO, constDataVBO, positionsVBO, texturesVBO, instanceCount;
 
-	void initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions);
+	void initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<int>& textures);
 
 public:
-	InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions);
+	InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<int>& textures);
 	InstancedMesh(const InstancedMesh&) = delete;
 	
 	~InstancedMesh();

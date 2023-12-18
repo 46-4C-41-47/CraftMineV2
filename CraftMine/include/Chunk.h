@@ -11,11 +11,13 @@
 class Chunk : public Mesh
 {
 private:
-	int* blocks;
-	InstancedMesh* blocksMesh;
-	std::vector<glm::vec3> positions;
+	static std::vector<std::vector<glm::vec3>*> facesPositions;
+	static std::vector<std::vector<int>*> facesTextures;
+	constants::block* blocks;
+	std::vector <InstancedMesh*> facesMesh;
 
 	static int getBlockIndex(int x, int y, int z);
+	constants::block getBlock(int x, int y, int z);
 	void initBlocks();
 	void genMesh();
 

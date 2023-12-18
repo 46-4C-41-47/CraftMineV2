@@ -45,14 +45,14 @@ Texture* TextureAtlas::loadTexture(std::string path)
 }
 
 
-float TextureAtlas::getU(int position, float offset)
+inline float TextureAtlas::getU(int position, float offset)
 {
     float texWidth = 1 / (float)width;
     return texWidth * ((position % width) + offset);
 }
 
 
-float TextureAtlas::getV(int position, float offset)
+inline float TextureAtlas::getV(int position, float offset)
 {
     float texHeight = 1 / (float)height;
     return texHeight * ((int)(position / (float)height) + offset);

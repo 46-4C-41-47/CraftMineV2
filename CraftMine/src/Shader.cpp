@@ -77,7 +77,7 @@ unsigned int Shader::compileShaderStep(const std::string& shaderCode, GLenum sha
     {
         glGetShaderInfoLog(shaderId, 512, NULL, infoLog);
         std::cerr << "ERROR::SHADER::COMPILATION_FAILED\n" << infoLog << "\n";
-        throw new std::runtime_error("Shader compilation failed");
+        throw std::runtime_error("Shader compilation failed");
     }
 
     return shaderId;
