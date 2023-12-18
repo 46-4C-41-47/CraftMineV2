@@ -85,10 +85,12 @@ void Camera::moveSideWays(float offset)
 
 void Camera::moveForward(float offset) 
 {
+	vec3 normalizedDirection = normalize(vec3(direction.x, 0, direction.z));
+
 	position = position - vec3(
-		direction.x * offset, 
+		normalizedDirection.x * offset,
 		0, 
-		direction.z * offset
+		normalizedDirection.z * offset
 	);
 	rebuildViewMatrix();
 }

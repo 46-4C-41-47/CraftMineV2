@@ -4,7 +4,7 @@ layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 layout (location = 2) in vec2 aUV;
 layout (location = 3) in vec3 aOffset;
-layout (location = 4) in int aTexture;
+layout (location = 4) in float aTexture;
 
 out vec2 fUV;
 
@@ -14,14 +14,14 @@ uniform int atlasWidth;
 uniform int atlasHeight;
 
 
-float getU(int position, float offset)
+float getU(float position, float offset)
 {
     float texWidth = 1 / float(atlasWidth);
-    return texWidth * ((position % atlasWidth) + offset);
+    return texWidth * ((int(position) % atlasWidth) + offset);
 }
 
 
-float getV(int position, float offset)
+float getV(float position, float offset)
 {
     float texHeight = 1 / float(atlasHeight);
     return texHeight * (int(position / float(atlasHeight) + offset));

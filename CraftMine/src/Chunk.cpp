@@ -10,13 +10,13 @@ std::vector<std::vector<glm::vec3>*> Chunk::facesPositions = {
 	new std::vector<glm::vec3>(),
 };
 
-std::vector<std::vector<int>*> Chunk::facesTextures = {
-	new std::vector<int>(),
-	new std::vector<int>(),
-	new std::vector<int>(),
-	new std::vector<int>(),
-	new std::vector<int>(),
-	new std::vector<int>(),
+std::vector<std::vector<float>*> Chunk::facesTextures = {
+	new std::vector<float>(),
+	new std::vector<float>(),
+	new std::vector<float>(),
+	new std::vector<float>(),
+	new std::vector<float>(),
+	new std::vector<float>(),
 };
 
 
@@ -59,9 +59,9 @@ void Chunk::initBlocks()
 
 inline constants::block Chunk::getBlock(int x, int y, int z)
 {
-	if ((0 <= x && x < params::world::CHUNK_WIDTH) 
-		&& (0 <= y && y < params::world::CHUNK_HEIGHT) 
-		&& (0 <= z && z < params::world::CHUNK_WIDTH))
+	if ((0 <= x && x < params::world::CHUNK_WIDTH ) && 
+		(0 <= y && y < params::world::CHUNK_HEIGHT) && 
+		(0 <= z && z < params::world::CHUNK_WIDTH ))
 		return blocks[getBlockIndex(x, y, z)];
 	return constants::block::EMPTY;
 }
@@ -91,7 +91,9 @@ void Chunk::genMesh()
 						if ((nearCube[i] == constants::block::EMPTY))
 						{
 							facesPositions[i]->push_back(glm::vec3((float)x, (float)y, (float)z));
-							facesTextures[i]->push_back(nearCube[i]);
+							int textureIndex = std::max(i - 3, 0);
+							int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
+							facesTextures[i]->push_back(textureOffset);
 						}
 					}
 				}

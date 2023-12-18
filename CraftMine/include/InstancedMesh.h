@@ -16,10 +16,10 @@ private:
 	const int strideLength;
 	unsigned int VAO, constDataVBO, positionsVBO, texturesVBO, instanceCount;
 
-	void initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<int>& textures);
+	void initMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<float>& textures);
 
 public:
-	InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<int>& textures);
+	InstancedMesh(const std::vector<float>& mesh, const std::vector<glm::vec3>& positions, const std::vector<float>& textures);
 	InstancedMesh(const InstancedMesh&) = delete;
 	
 	~InstancedMesh();

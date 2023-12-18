@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <algorithm>
 
 #include <glm/glm.hpp>
 
@@ -12,7 +13,7 @@ class Chunk : public Mesh
 {
 private:
 	static std::vector<std::vector<glm::vec3>*> facesPositions;
-	static std::vector<std::vector<int>*> facesTextures;
+	static std::vector<std::vector<float>*> facesTextures;
 	constants::block* blocks;
 	std::vector <InstancedMesh*> facesMesh;
 
