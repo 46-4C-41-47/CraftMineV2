@@ -10,21 +10,22 @@ out vec2 fUV;
 
 uniform mat4 projection;
 uniform mat4 view;
-uniform int atlasWidth;
-uniform int atlasHeight;
+uniform vec2 atlasSize;
+uniform float atlasWidth;
+uniform float atlasHeight;
 
 
 float getU(float position, float offset)
 {
-    float texWidth = 1 / float(atlasWidth);
-    return texWidth * ((int(position) % atlasWidth) + offset);
+    float texWidth = 1 / atlasWidth;
+    return texWidth * ((int(position) % int(atlasWidth)) + offset);
 }
 
 
 float getV(float position, float offset)
 {
-    float texHeight = 1 / float(atlasHeight);
-    return texHeight * (int(position / float(atlasHeight) + offset));
+    float texHeight = 1 / atlasHeight;
+    return texHeight * (int((position / atlasHeight) + offset));
 }
 
 void main()

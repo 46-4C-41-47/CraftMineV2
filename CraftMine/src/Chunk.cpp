@@ -22,7 +22,11 @@ std::vector<std::vector<float>*> Chunk::facesTextures = {
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 {
-	blocks = new constants::block[params::world::CHUNK_HEIGHT * params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH];
+	blocks = new constants::block[
+		params::world::CHUNK_WIDTH *
+		params::world::CHUNK_WIDTH * 
+		params::world::CHUNK_HEIGHT 
+	];
 
 	for (int i = 0; i < 6; i++)
 		facesMesh.push_back(nullptr);

@@ -29,7 +29,8 @@ int main()
 
 /*
 À FAIRE : 
-	Classe Chunk
+	afficher le framerate
+	Classe Chunk (en cours)
 	Finir la classe GLBufferConfig
 	Skybox
 	Bloques destructibles

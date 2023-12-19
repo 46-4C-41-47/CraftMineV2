@@ -9,11 +9,11 @@ namespace constants
 {
 	enum block
 	{
-		// (top << 16) | (bottom << 8) | side;
-		EMPTY = -1,
-		GRASS = (0 << 16) | (2 << 8) | 3,
-		COBBLESTONE = (16 << 16) | (16 << 8) | 16,
-		LIBRARY = (4 << 16) | (4 << 8) | 35,
+		          // (top << 16) | (bottom << 8) | side;
+		      EMPTY = -1,
+		      GRASS = (  0 << 16) | (  2 << 8) |   3,
+		COBBLESTONE = ( 16 << 16) | ( 16 << 8) |  16,
+		    LIBRARY = (  4 << 16) | (  4 << 8) |  35,
 	};
 
 	namespace cube

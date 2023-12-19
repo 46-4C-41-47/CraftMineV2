@@ -155,8 +155,8 @@
     <ClInclude Include="include\TextureAtlas.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\fragment_test.glsl" />
-    <None Include="res\shaders\vertex_test.glsl" />
+    <None Include="res\shaders\block_fragment.glsl" />
+    <None Include="res\shaders\block_vertex.glsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

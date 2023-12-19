@@ -100,7 +100,7 @@ void CMWindow::init(int width, int height)
 
     rebuildProjectionMatrix(getWidth(), getHeight());
 
-    objectShader = new Shader("./res/shaders/vertex_test.glsl", "./res/shaders/fragment_test.glsl");
+    objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 
     chunk = new Chunk(0, 0);
 }

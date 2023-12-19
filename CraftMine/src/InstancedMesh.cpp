@@ -77,8 +77,9 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 	shader.sendMat4("view", view);
 
 	shader.sendInt("textureAtlas", 0);
-	shader.sendInt("atlasWidth", atlas->width);
-	shader.sendInt("atlasHeight", atlas->height);
+
+	shader.sendFloat("atlasWidth", (float)atlas->width);
+	shader.sendFloat("atlasHeight", (float)atlas->height);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
