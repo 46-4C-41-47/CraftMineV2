@@ -126,7 +126,7 @@ namespace params
 	{
 		static const float VIEW_ANGLE = 90.0f;
 		static const float NEAR_PLANE = 0.1f;
-		static const float FAR_PLANE  = 100.0f;
+		static const float FAR_PLANE  = 250.0f;
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 	}
@@ -139,6 +139,6 @@ namespace params
 
 	namespace world
 	{
-		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16;
+		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16, NOISE_SEED = 0;
 	}
 }

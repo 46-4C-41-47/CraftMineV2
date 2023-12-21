@@ -1,23 +1,7 @@
 #include "../include/Chunk.h"
 
 
-std::vector<std::vector<glm::vec3>*> Chunk::facesPositions = {
-	new std::vector<glm::vec3>(),
-	new std::vector<glm::vec3>(),
-	new std::vector<glm::vec3>(),
-	new std::vector<glm::vec3>(),
-	new std::vector<glm::vec3>(),
-	new std::vector<glm::vec3>(),
-};
-
-std::vector<std::vector<float>*> Chunk::facesTextures = {
-	new std::vector<float>(),
-	new std::vector<float>(),
-	new std::vector<float>(),
-	new std::vector<float>(),
-	new std::vector<float>(),
-	new std::vector<float>(),
-};
+std::vector<InstancedMesh*> Chunk::facesMesh = {  };
 
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y }
@@ -31,7 +15,18 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 	for (int i = 0; i < 6; i++)
 		facesMesh.push_back(nullptr);
 
+	if (facesMesh[0] == nullptr)
+	{
+		facesMesh[0] = new InstancedMesh(constants::cube::FRONT , *facesPositions[0], *facesTextures[0]);
+		facesMesh[1] = new InstancedMesh(constants::cube::BACK  , *facesPositions[1], *facesTextures[1]);
+		facesMesh[2] = new InstancedMesh(constants::cube::LEFT  , *facesPositions[2], *facesTextures[2]);
+		facesMesh[3] = new InstancedMesh(constants::cube::RIGHT , *facesPositions[3], *facesTextures[3]);
+		facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM, *facesPositions[4], *facesTextures[4]);
+		facesMesh[5] = new InstancedMesh(constants::cube::TOP   , *facesPositions[5], *facesTextures[5]);
+	}
+
 	initBlocks();
+	genMesh();
 }
 
 
@@ -48,15 +43,39 @@ inline int Chunk::getBlockIndex(int x, int y, int z)
 
 void Chunk::initBlocks()
 {
-	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
+	int startX = x * params::world::CHUNK_WIDTH, startY = y * params::world::CHUNK_WIDTH;
+	std::vector<float> noiseOutput(params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH);
+	FastNoise::SmartNode<FastNoise::Simplex> noise = FastNoise::New<FastNoise::Simplex>();
+	
+	noise->GenUniformGrid2D(
+		noiseOutput.data(), 
+		startX, startY, 
+		startX + params::world::CHUNK_WIDTH, startY + params::world::CHUNK_WIDTH, 
+		0.0002f, params::world::NOISE_SEED
+	);
+	
+	int index = 0;
+
+	for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
 	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
+		for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 		{
 			for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 			{
-				blocks[getBlockIndex(x, y, z)] = constants::block::COBBLESTONE;
+				if (y < 
+					(noiseOutput[index++] * params::world::CHUNK_HEIGHT * 0.25f) + 
+					params::world::CHUNK_HEIGHT * 0.5f
+				) {
+					blocks[getBlockIndex(x, y, z)] = constants::block::COBBLESTONE;
+				}
+				else
+				{
+					blocks[getBlockIndex(x, y, z)] = constants::block::EMPTY;
+				}
 			}
 		}
+
+		index = 0;
 	}
 }
 
@@ -74,7 +93,7 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 void Chunk::genMesh()
 {
 	constants::block nearCube[6];
-
+	
 	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 	{
 		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
@@ -103,22 +122,15 @@ void Chunk::genMesh()
 				}
 			}
 		}
-	}
 
-	facesMesh[0] = new InstancedMesh(constants::cube::FRONT , *facesPositions[0], *facesTextures[0]);
-	facesMesh[1] = new InstancedMesh(constants::cube::BACK  , *facesPositions[1], *facesTextures[1]);
-	facesMesh[2] = new InstancedMesh(constants::cube::LEFT  , *facesPositions[2], *facesTextures[2]);
-	facesMesh[3] = new InstancedMesh(constants::cube::RIGHT , *facesPositions[3], *facesTextures[3]);
-	facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM, *facesPositions[4], *facesTextures[4]);
-	facesMesh[5] = new InstancedMesh(constants::cube::TOP   , *facesPositions[5], *facesTextures[5]);
+		for (int i = 0; i < facesMesh.size(); i++)
+			facesMesh[i]->addRange(*facesPositions[i], *facesTextures[i]);
+	}
 }
 
 
 void Chunk::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 {
-	if (facesMesh[0] == nullptr)
-		genMesh();
-
 	for (InstancedMesh* mesh : facesMesh)
 		mesh->draw(shader, projection, view);
 }

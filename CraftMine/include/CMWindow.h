@@ -10,10 +10,10 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Chunk.h"
 #include "Shader.h"
 #include "Camera.h"
 #include "parameters.h"
-#include "Chunk.h"
 
 
 class CMWindow

@@ -41,6 +41,7 @@ Texture* TextureAtlas::loadTexture(std::string path)
     }
     stbi_image_free(data);
 
+    glBindTexture(GL_TEXTURE_2D, 0);
     return new Texture{ address, width, height };
 }
 

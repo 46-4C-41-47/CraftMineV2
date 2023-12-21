@@ -183,7 +183,7 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = cam->getViewMatrix();
-    chunk->draw(*objectShader, projection, view);
+    Chunk::draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
