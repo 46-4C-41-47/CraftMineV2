@@ -1,99 +1,92 @@
+#pragma once
+
 #include "../include/GLDynamicBuffer.h"
 
 
-GLDynamicBuffer::GLDynamicBuffer()
+template<class T>
+GLDynamicBuffer<T>::GLDynamicBuffer()
 {
-	allocate(&positionsVBO, &texturesVBO, EXTRA_SPACE);
+	allocate(&VBO, EXTRA_SPACE);
 	allocatedSize = EXTRA_SPACE;
 	usedSize = 0;
 }
 
 
-GLDynamicBuffer::GLDynamicBuffer(const std::vector<glm::vec3>& positions, const std::vector<float> textures)
+template<class T>
+GLDynamicBuffer<T>::GLDynamicBuffer(const std::vector<T>& elements)
 {
-	if (positions.size() != textures.size())
-		throw std::runtime_error("GLDynamicBuffer : positions size and textures size doesnt match");
+	allocate(&VBO, EXTRA_SPACE);
+	addRange(elements);
 
-	allocate(&positionsVBO, &texturesVBO, EXTRA_SPACE);
-	addRange(positions, textures);
-
-	allocatedSize = positions.size() + EXTRA_SPACE;
-	usedSize = positions.size();
+	allocatedSize = elements.size() + EXTRA_SPACE;
+	usedSize = elements.size();
 }
 
 
-GLDynamicBuffer::~GLDynamicBuffer() { deleteBuffers(); }
+template<class T>
+GLDynamicBuffer<T>::~GLDynamicBuffer() { glDeleteBuffers(1, &VBO); }
 
 
-void GLDynamicBuffer::deleteBuffers()
+template<class T>
+void GLDynamicBuffer<T>::allocate(unsigned int* vbo, unsigned int size)
 {
-	glDeleteBuffers(1, &positionsVBO);
-	glDeleteBuffers(1, &texturesVBO);
-}
+	glGenBuffers(1, vbo);
 
-
-void GLDynamicBuffer::allocate(unsigned int* positions, unsigned int* textures, unsigned int size)
-{
-	glGenBuffers(1, positions);
-	glGenBuffers(1, textures);
-
-	glBindBuffer(GL_ARRAY_BUFFER, *positions);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * size, nullptr, GL_DYNAMIC_DRAW);
-
-	glBindBuffer(GL_ARRAY_BUFFER, *textures);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size, nullptr, GL_DYNAMIC_DRAW);
+	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(T) * size, nullptr, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
-void GLDynamicBuffer::enlarge(unsigned int spaceToAdd)
+template<class T>
+void GLDynamicBuffer<T>::enlarge(unsigned int spaceToAdd)
 {
-	unsigned int tempPositionsVBO, tempTexturesVBO;
+	std::cout << "enlarging\n";
+	unsigned int tempVBO;
 	allocatedSize += spaceToAdd;
 
-	allocate(&tempPositionsVBO, &tempTexturesVBO, allocatedSize);
+	allocate(&tempVBO, allocatedSize);
 
-	glBindBuffer(GL_COPY_READ_BUFFER, positionsVBO);
-	glBindBuffer(GL_COPY_WRITE_BUFFER, tempPositionsVBO);
-	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(glm::vec3) * usedSize);
-
-	glBindBuffer(GL_COPY_READ_BUFFER, texturesVBO);
-	glBindBuffer(GL_COPY_WRITE_BUFFER, tempTexturesVBO);
-	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(float) * usedSize);
+	glBindBuffer(GL_COPY_READ_BUFFER, VBO);
+	glBindBuffer(GL_COPY_WRITE_BUFFER, tempVBO);
+	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(T) * usedSize);
 
 	glBindBuffer(GL_COPY_READ_BUFFER, 0);
 	glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
 
-	deleteBuffers();
-	positionsVBO = tempPositionsVBO;
-	texturesVBO = tempTexturesVBO;
+	glDeleteBuffers(1, &VBO);
+	VBO = tempVBO;
 }
 
 
-void GLDynamicBuffer::addRange(const std::vector<glm::vec3>& positions, const std::vector<float> textures)
+template<class T>
+void GLDynamicBuffer<T>::addRange(const std::vector<T>& elements)
 {
-	if (positions.size() != textures.size())
-		throw std::runtime_error("GLDynamicBuffer : positions size and textures size doesnt match");
+	if (allocatedSize - usedSize < elements.size())
+		enlarge((usedSize + elements.size()) - allocatedSize + EXTRA_SPACE);
 
-	if (allocatedSize - usedSize < positions.size())
-		enlarge((usedSize + positions.size()) - allocatedSize + EXTRA_SPACE);
-
-	glBindBuffer(GL_ARRAY_BUFFER, positionsVBO);
-	glBufferSubData(
-		GL_ARRAY_BUFFER,
-		sizeof(glm::vec3) * usedSize,
-		sizeof(glm::vec3) * positions.size(),
-		positions.data()
+	glNamedBufferSubData(
+		VBO,
+		sizeof(T) * usedSize,
+		sizeof(T) * elements.size(),
+		elements.data()
 	);
 
-	glBindBuffer(GL_ARRAY_BUFFER, texturesVBO);
-	glBufferSubData(
-		GL_ARRAY_BUFFER,
-		sizeof(float) * usedSize,
-		textures.size() * textures.size(),
-		textures.data()
-	);
+	usedSize += elements.size();
+}
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+template<class T>
+void GLDynamicBuffer<T>::print()
+{
+	T* start = (T*)glMapNamedBuffer(VBO, GL_READ_ONLY);
+
+	for (T* p = start; p < start + usedSize; p++)
+	{
+		std::cout << *p << ", ";
+	}
+	std::cout << "\n";
+
+	glUnmapBuffer(VBO);
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <iostream>
 #include <stdexcept>
 
 #include <glm/glm.hpp>
@@ -8,29 +9,32 @@
 #include <GLFW/glfw3.h>
 
 
+template<class T>
 class GLDynamicBuffer
 {
 private:
-	static const int EXTRA_SPACE = 500;
-	unsigned int positionsVBO, texturesVBO, usedSize, allocatedSize;
+	static const int EXTRA_SPACE = 35000;
+	unsigned int VBO, usedSize, allocatedSize;
 
-	void deleteBuffers();
-	void allocate(unsigned int* positions, unsigned int* textures, unsigned int size);
+	void allocate(unsigned int* vbo, unsigned int size);
 	void enlarge(unsigned int spaceToAdd);
 
 public:
 	GLDynamicBuffer();
-	GLDynamicBuffer(const std::vector<glm::vec3>& positions, const std::vector<float> textures);
+	GLDynamicBuffer(const std::vector<T>& elements);
 	GLDynamicBuffer(const GLDynamicBuffer&) = delete;
 	
 	~GLDynamicBuffer();
 
 	GLDynamicBuffer& operator = (const GLDynamicBuffer&) = delete;
 
-	void addRange(const std::vector<glm::vec3>& positions, const std::vector<float> textures);
+	void addRange(const std::vector<T>& elements);
 	void shrinkToFit();
+	void print();
 
-	unsigned int getPositionsId() { return positionsVBO; }
-	unsigned int getTexturesId() { return texturesVBO; }
+	unsigned int getId() { return VBO; }
 	unsigned int size() { return usedSize; }
 };
+
+
+#include "../src/GLDynamicBuffer.cpp"
