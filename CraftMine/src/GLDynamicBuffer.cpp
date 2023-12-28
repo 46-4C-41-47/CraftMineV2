@@ -6,20 +6,18 @@
 template<class T>
 GLDynamicBuffer<T>::GLDynamicBuffer()
 {
-	allocate(&VBO, EXTRA_SPACE);
+	allocate(EXTRA_SPACE);
 	allocatedSize = EXTRA_SPACE;
-	usedSize = 0;
 }
 
 
 template<class T>
-GLDynamicBuffer<T>::GLDynamicBuffer(const std::vector<T>& elements)
+GLDynamicBuffer<T>::GLDynamicBuffer(const std::vector<T>& newElements)
 {
-	allocate(&VBO, EXTRA_SPACE);
-	addRange(elements);
-
-	allocatedSize = elements.size() + EXTRA_SPACE;
-	usedSize = elements.size();
+	std::cout << "constructor\n";
+	allocate(newElements.size() + EXTRA_SPACE);
+	allocatedSize = newElements.size() + EXTRA_SPACE;
+	addRange(newElements);
 }
 
 
@@ -28,11 +26,11 @@ GLDynamicBuffer<T>::~GLDynamicBuffer() { glDeleteBuffers(1, &VBO); }
 
 
 template<class T>
-void GLDynamicBuffer<T>::allocate(unsigned int* vbo, unsigned int size)
+void GLDynamicBuffer<T>::allocate(unsigned int size)
 {
-	glGenBuffers(1, vbo);
+	glGenBuffers(1, &VBO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, *vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(T) * size, nullptr, GL_DYNAMIC_DRAW);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -43,37 +41,26 @@ template<class T>
 void GLDynamicBuffer<T>::enlarge(unsigned int spaceToAdd)
 {
 	std::cout << "enlarging\n";
-	unsigned int tempVBO;
-	allocatedSize += spaceToAdd;
-
-	allocate(&tempVBO, allocatedSize);
-
-	glBindBuffer(GL_COPY_READ_BUFFER, VBO);
-	glBindBuffer(GL_COPY_WRITE_BUFFER, tempVBO);
-	glCopyBufferSubData(GL_COPY_READ_BUFFER, GL_COPY_WRITE_BUFFER, 0, 0, sizeof(T) * usedSize);
-
-	glBindBuffer(GL_COPY_READ_BUFFER, 0);
-	glBindBuffer(GL_COPY_WRITE_BUFFER, 0);
-
-	glDeleteBuffers(1, &VBO);
-	VBO = tempVBO;
+	glNamedBufferData(VBO, sizeof(T) * spaceToAdd, elements.data(), GL_DYNAMIC_DRAW);
 }
 
 
 template<class T>
-void GLDynamicBuffer<T>::addRange(const std::vector<T>& elements)
+void GLDynamicBuffer<T>::addRange(const std::vector<T>& newElements)
 {
-	if (allocatedSize - usedSize < elements.size())
-		enlarge((usedSize + elements.size()) - allocatedSize + EXTRA_SPACE);
+	int availableSpace = allocatedSize - elements.size();
+
+	if (availableSpace < newElements.size())
+		enlarge((elements.size() + newElements.size()) - allocatedSize + EXTRA_SPACE);
 
 	glNamedBufferSubData(
 		VBO,
-		sizeof(T) * usedSize,
 		sizeof(T) * elements.size(),
-		elements.data()
+		sizeof(T) * newElements.size(),
+		newElements.data()
 	);
 
-	usedSize += elements.size();
+	elements.append_range(newElements);
 }
 
 
@@ -82,7 +69,7 @@ void GLDynamicBuffer<T>::print()
 {
 	T* start = (T*)glMapNamedBuffer(VBO, GL_READ_ONLY);
 
-	for (T* p = start; p < start + usedSize; p++)
+	for (T* p = start; p < start + elements.size(); p++)
 	{
 		std::cout << *p << ", ";
 	}

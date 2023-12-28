@@ -13,27 +13,28 @@ template<class T>
 class GLDynamicBuffer
 {
 private:
-	static const int EXTRA_SPACE = 35000;
-	unsigned int VBO, usedSize, allocatedSize;
+	static const int EXTRA_SPACE = 0;
+	unsigned int VBO, allocatedSize;
+	std::vector<T> elements = {};
 
-	void allocate(unsigned int* vbo, unsigned int size);
+	void allocate(unsigned int size);
 	void enlarge(unsigned int spaceToAdd);
 
 public:
 	GLDynamicBuffer();
-	GLDynamicBuffer(const std::vector<T>& elements);
+	GLDynamicBuffer(const std::vector<T>& newElements);
 	GLDynamicBuffer(const GLDynamicBuffer&) = delete;
 	
 	~GLDynamicBuffer();
 
 	GLDynamicBuffer& operator = (const GLDynamicBuffer&) = delete;
 
-	void addRange(const std::vector<T>& elements);
+	void addRange(const std::vector<T>& newElements);
 	void shrinkToFit();
 	void print();
 
 	unsigned int getId() { return VBO; }
-	unsigned int size() { return usedSize; }
+	unsigned int size() { return elements.size(); }
 };
 
 

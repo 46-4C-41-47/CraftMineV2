@@ -112,7 +112,7 @@ void CMWindow::initWindow(int width, int height)
         throw std::runtime_error("Initialization of GLFW failed\n");
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     monitor = *glfwGetVideoMode(glfwGetPrimaryMonitor());

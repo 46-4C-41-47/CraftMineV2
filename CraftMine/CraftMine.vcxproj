@@ -105,6 +105,7 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\..\Documents\cpp libs\glfw-3.3.8.bin.WIN64\include;..\..\..\..\Documents\cpp libs\glad\include;..\..\..\..\Documents\cpp libs\glm;./FastNoise2/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,6 +123,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>..\..\..\..\Documents\cpp libs\glfw-3.3.8.bin.WIN64\include;..\..\..\..\Documents\cpp libs\glad\include;..\..\..\..\Documents\cpp libs\glm;./FastNoise2/include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -138,6 +140,7 @@
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\CMWindow.cpp" />
+    <ClCompile Include="src\GLDynamicBuffer.cpp" />
     <ClCompile Include="src\InstancedMesh.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -147,6 +150,7 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Chunk.h" />
     <ClInclude Include="include\CMWindow.h" />
+    <ClInclude Include="include\GLDynamicBuffer.h" />
     <ClInclude Include="include\InstancedMesh.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\parameters.h" />
