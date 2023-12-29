@@ -1,7 +1,7 @@
 #include "../include/Chunk.h"
 
 
-std::vector<InstancedMesh*> Chunk::facesMesh = {  };
+std::vector<InstancedMesh*> Chunk::facesMesh = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y }
@@ -11,9 +11,6 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 		params::world::CHUNK_WIDTH * 
 		params::world::CHUNK_HEIGHT 
 	];
-
-	for (int i = 0; i < 6; i++)
-		facesMesh.push_back(nullptr);
 
 	if (facesMesh[0] == nullptr)
 	{
@@ -35,6 +32,7 @@ Chunk::~Chunk()
 	delete[] blocks;
 }
 
+
 inline int Chunk::getBlockIndex(int x, int y, int z)
 {
 	return x + (y * params::world::CHUNK_WIDTH) + (z * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT);
@@ -49,9 +47,9 @@ void Chunk::initBlocks()
 	
 	noise->GenUniformGrid2D(
 		noiseOutput.data(), 
-		startX, startY, 
+		startX                             , startY, 
 		startX + params::world::CHUNK_WIDTH, startY + params::world::CHUNK_WIDTH, 
-		0.0002f, params::world::NOISE_SEED
+		0.0002f                            , params::world::NOISE_SEED
 	);
 	
 	int index = 0;
@@ -122,10 +120,10 @@ void Chunk::genMesh()
 				}
 			}
 		}
-
-		for (int i = 0; i < facesMesh.size(); i++)
-			facesMesh[i]->addRange(*facesPositions[i], *facesTextures[i]);
 	}
+
+	for (int i = 0; i < facesMesh.size(); i++)
+		facesMesh[i]->addRange(*facesPositions[i], *facesTextures[i]);
 }
 
 

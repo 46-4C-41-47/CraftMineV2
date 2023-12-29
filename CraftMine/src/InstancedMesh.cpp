@@ -8,7 +8,7 @@ InstancedMesh::InstancedMesh(
 	const std::vector<float>& mesh, 
 	const std::vector<glm::vec3>& positions, 
 	const std::vector<float>& textures
-) : strideLength{ (int)(mesh.size() / 8.0f) }
+) : strideLength{ (int)((float)mesh.size() / 8.0f) }
 {
 	if (positions.size() != textures.size())
 		throw std::runtime_error("constructor : positions doesnt match with textures");
@@ -23,53 +23,47 @@ InstancedMesh::InstancedMesh(
 InstancedMesh::~InstancedMesh()
 {
 	glDeleteVertexArrays(1, &VAO);
-	delete positionsBuffer, texturesBuffer;
+	delete positions, textures;
 }
 
 
 void InstancedMesh::initMesh(
 	const std::vector<float>& mesh, 
-	const std::vector<glm::vec3>& positions, 
-	const std::vector<float>& textures
+	const std::vector<glm::vec3>& newPositions, 
+	const std::vector<float>& newTextures
 ) {
-	glCreateBuffers(1, &constDataVBO);
-	
-	glNamedBufferData(constDataVBO, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
-
-	positionsBuffer->addRange(positions);
-	texturesBuffer->addRange(textures);
-	
-	buildVAO();
-}
-
-
-void InstancedMesh::buildVAO()
-{
 	glGenVertexArrays(1, &VAO);
-
-	glBindVertexArray(VAO);
+	glGenBuffers(1, &constDataVBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
-	glEnableVertexArrayAttrib(VAO, 0);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
+
+	positions->addRange(newPositions);
+	textures->addRange(newTextures);
+
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
+	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
-	glEnableVertexArrayAttrib(VAO, 1);
+	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexArrayAttrib(VAO, 2);
+	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
-	glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer->id());
-	glEnableVertexArrayAttrib(VAO, 3);
+	glBindBuffer(GL_ARRAY_BUFFER, positions->id());
+	glEnableVertexAttribArray(3);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, texturesBuffer->id());
-	glEnableVertexArrayAttrib(VAO, 4);
+	glBindBuffer(GL_ARRAY_BUFFER, textures->id());
+	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 	glVertexAttribDivisor(3, 1);
 	glVertexAttribDivisor(4, 1);
+
+	glBindVertexArray(0);
 }
 
 
@@ -89,18 +83,20 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
 
 	glBindVertexArray(VAO);
-	glDrawArraysInstanced(GL_TRIANGLES, 0, strideLength, positionsBuffer->size());
+	glDrawArraysInstanced(GL_TRIANGLES, 0, strideLength, positions->size());
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
 }
 
 
-void InstancedMesh::addRange(const std::vector<glm::vec3>& positions, const std::vector<float>& textures)
-{
-	if (positions.size() != textures.size())
+void InstancedMesh::addRange(
+	const std::vector<glm::vec3>& newPositions, 
+	const std::vector<float>& newTextures
+) {
+	if (newPositions.size() != newTextures.size())
 		throw std::runtime_error("addRange : positions doesnt match with textures");
 
-	positionsBuffer->addRange(positions);
-	texturesBuffer->addRange(textures);
+	positions->addRange(newPositions);
+	textures->addRange(newTextures);
 }
