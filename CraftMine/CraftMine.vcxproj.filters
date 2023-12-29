@@ -45,9 +45,6 @@
     <ClCompile Include="src\Chunk.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\GLDynamicBuffer.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\stb_image.h">

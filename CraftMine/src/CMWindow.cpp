@@ -11,7 +11,7 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-Camera* CMWindow::cam = new Camera(glm::vec3(0.0f, 260.0f, 0.0f), glm::vec3(0.0f));
+Camera* CMWindow::cam = new Camera(glm::vec3(-1.0f, 0.0f, -1.0f), glm::vec3(0.0f));
 
 
 CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
@@ -102,7 +102,8 @@ void CMWindow::init(int width, int height)
 
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 
-    chunk = new Chunk(0, 0);
+    //chunk = new Chunk(0, 0);
+    obj = new InstancedMesh(constants::cube::FRONT, { glm::vec3(0.0f) }, { 0.0f });
 }
 
 
@@ -140,12 +141,12 @@ void CMWindow::initWindow(int width, int height)
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
 
-void CMWindow::start(int frameRate) 
+void CMWindow::start(int frameRate)
 {
     if (frameRate == -1)
     {
@@ -183,7 +184,8 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = cam->getViewMatrix();
-    Chunk::draw(*objectShader, projection, view);
+    //Chunk::draw(*objectShader, projection, view);
+    obj->draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

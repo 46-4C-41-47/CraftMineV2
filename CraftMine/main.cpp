@@ -8,7 +8,7 @@
 #include "include/GLDynamicBuffer.h"
 
 
-/*int main()
+int main()
 {
 	std::unique_ptr<CMWindow> window;
 	
@@ -25,10 +25,13 @@
 	window->start();
 
 	return 0;
-}*/
+}
 
+
+/*
 bool bufferUpdated = false;
 bool bufferResized = false;
+int instanceCount = 2;
 
 float data[] = {
 	0.0f,  0.0f, 0.0f, // left  
@@ -77,7 +80,8 @@ void processInput(GLFWwindow* window, GLDynamicBuffer<glm::vec3>& buffer)
 	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS and !bufferResized)
 	{
 		buffer.addRange({ glm::vec3(0.2f) });
-		std::cout << "buffer resized\n";
+		
+		std::cout << "\nbuffer resized\n";
 		bufferResized = true;
 	}
 }
@@ -88,21 +92,28 @@ int main()
 	GLFWwindow* window = createWindow();
 	Shader* shader = new Shader("./res/shaders/test_vertex.glsl", "./res/shaders/test_fragment.glsl");
 
-	GLDynamicBuffer<glm::vec3> dynamicBuffer(positions);
-	//dynamicBuffer.addRange(positions);
+	GLDynamicBuffer<glm::vec3> dynamicBuffer;//(positions);
+	dynamicBuffer.addRange(positions);
 
-	unsigned int VAO, VBO;
+	unsigned int VAO, VBO;// , instancedVBO;
 	glGenBuffers(1, &VBO);
+	//glGenBuffers(1, &instancedVBO);
 	glGenVertexArrays(1, &VAO);
 
+	//glBindBuffer(GL_ARRAY_BUFFER, instancedVBO);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, nullptr, GL_DYNAMIC_DRAW);
+	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * positions.size(), positions.data());
+	//glNamedBufferData(instancedVBO, sizeof(glm::vec3) * positions.size(), positions.data(), GL_DYNAMIC_DRAW);
+	//glNamedBufferSubData(instancedVBO, 0, sizeof(glm::vec3) * 2, positions.data());
+
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
 
 	glBindVertexArray(VAO);
 	glEnableVertexArrayAttrib(VAO, 0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, dynamicBuffer.getId());
+	glBindBuffer(GL_ARRAY_BUFFER, dynamicBuffer.id());
 	glEnableVertexArrayAttrib(VAO, 1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
 
@@ -110,7 +121,6 @@ int main()
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -129,7 +139,7 @@ int main()
 	}
 
 	glfwTerminate();
-}
+}*/
 
 
 /*

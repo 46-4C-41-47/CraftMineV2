@@ -24,8 +24,6 @@ InstancedMesh::~InstancedMesh()
 {
 	glDeleteVertexArrays(1, &VAO);
 	delete positionsBuffer, texturesBuffer;
-	//glDeleteBuffers(1, &constDataVBO);
-	//glDeleteBuffers(1, &positionsVBO);
 }
 
 
@@ -34,10 +32,9 @@ void InstancedMesh::initMesh(
 	const std::vector<glm::vec3>& positions, 
 	const std::vector<float>& textures
 ) {
-	glGenBuffers(1, &constDataVBO);
+	glCreateBuffers(1, &constDataVBO);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
+	glNamedBufferData(constDataVBO, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
 
 	positionsBuffer->addRange(positions);
 	texturesBuffer->addRange(textures);
@@ -60,11 +57,11 @@ void InstancedMesh::buildVAO()
 	glEnableVertexArrayAttrib(VAO, 2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
 
-	glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer->getId());
+	glBindBuffer(GL_ARRAY_BUFFER, positionsBuffer->id());
 	glEnableVertexArrayAttrib(VAO, 3);
 	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-	glBindBuffer(GL_ARRAY_BUFFER, texturesBuffer->getId());
+	glBindBuffer(GL_ARRAY_BUFFER, texturesBuffer->id());
 	glEnableVertexArrayAttrib(VAO, 4);
 	glVertexAttribPointer(4, 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*)0);
 	
