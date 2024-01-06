@@ -4,6 +4,8 @@
 std::vector<InstancedMesh*> Chunk::facesMesh = { 
 	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr 
 };
+std::vector<Chunk*>* Chunk::chunkCluster = nullptr;
+//FastNoise::SmartNode<FastNoise::Simplex> Chunk::noise = FastNoise::New<FastNoise::Simplex>();
 
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y }
@@ -44,15 +46,14 @@ inline int Chunk::getBlockIndex(int x, int y, int z)
 void Chunk::initBlocks()
 {
 	int startX = x * params::world::CHUNK_WIDTH, startY = y * params::world::CHUNK_WIDTH;
-	std::vector<float> noiseOutput(params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH);
-	FastNoise::SmartNode<FastNoise::Simplex> noise = FastNoise::New<FastNoise::Simplex>();
+	/*std::vector<float> noiseOutput(params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH);
 	
 	noise->GenUniformGrid2D(
 		noiseOutput.data(), 
 		startX                             , startY, 
 		startX + params::world::CHUNK_WIDTH, startY + params::world::CHUNK_WIDTH, 
 		0.0002f                            , params::world::NOISE_SEED
-	);
+	);*/
 	
 	int index = 0;
 
@@ -62,10 +63,12 @@ void Chunk::initBlocks()
 		{
 			for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 			{
-				if (y < 
+				/*y < 
 					(noiseOutput[index++] * params::world::CHUNK_HEIGHT * 0.25f) + 
 					params::world::CHUNK_HEIGHT * 0.5f
-				) {
+				*/
+				if (true) 
+				{
 					blocks[getBlockIndex(x, y, z)] = constants::block::GRASS;
 				}
 				else
@@ -133,4 +136,28 @@ void Chunk::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 {
 	for (InstancedMesh* mesh : facesMesh)
 		mesh->draw(shader, projection, view);
+}
+
+
+void Chunk::initCluster(unsigned int width)
+{
+	if (chunkCluster != nullptr)
+		return;
+
+	chunkCluster = new std::vector<Chunk*>(width * width);
+
+	for (int x = 0; x < width; x++)
+	{
+		for (int y = 0; y < width; y++)
+		{
+			(*chunkCluster)[x + y * width] = new Chunk(x, y);
+		}
+	}
+}
+
+
+void Chunk::destroyCluster()
+{
+	for (Chunk* chunkptr : *chunkCluster)
+		delete chunkptr;
 }

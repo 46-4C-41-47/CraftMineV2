@@ -31,6 +31,7 @@ CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
 CMWindow::~CMWindow()
 {
     delete objectShader;
+    Chunk::destroyCluster();
     glfwTerminate();
     instanceCount -= 1;
 }
@@ -92,17 +93,16 @@ void CMWindow::toggleFullscreenMode()
 void CMWindow::init(int width, int height)
 {
     if (0 < instanceCount)
-        throw std::runtime_error("CMWindow class can have only one instance at a time");
+        throw std::runtime_error("CMWindow class can only have one instance at a time");
 
     instanceCount += 1;
 
     initWindow(width, height);
-
     rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 
-    chunk = new Chunk(0, 0);
+    Chunk::initCluster(5);
 }
 
 

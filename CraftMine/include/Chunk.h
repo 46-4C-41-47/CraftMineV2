@@ -13,6 +13,8 @@
 class Chunk
 {
 private:
+	static std::vector<InstancedMesh*> facesMesh;
+	static FastNoise::SmartNode<FastNoise::Simplex> noise;
 	std::vector<std::vector<glm::vec3>*> facesPositions = {
 		new std::vector<glm::vec3>(),
 		new std::vector<glm::vec3>(),
@@ -29,7 +31,6 @@ private:
 		new std::vector<float>(),
 		new std::vector<float>(),
 	};
-	static std::vector <InstancedMesh*> facesMesh;
 	constants::block* blocks;
 
 	static int getBlockIndex(int x, int y, int z);
@@ -38,6 +39,7 @@ private:
 	void genMesh();
 
 public:
+	static std::vector<Chunk*>* chunkCluster;
 	const int x, y;
 
 	Chunk(int x, int y);
@@ -48,4 +50,6 @@ public:
 	Chunk& operator = (const Chunk&) = delete;
 
 	static void draw(Shader& shader, glm::mat4& projection, glm::mat4& view);
+	static void initCluster(unsigned int width);
+	static void destroyCluster();
 };

@@ -139,6 +139,7 @@ namespace params
 
 	namespace world
 	{
-		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16, NOISE_SEED = 10;
+		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16;
+		static const float NOISE_SEED = 0.0f, NOISE_FREQUENCY = 0.002f;
 	}
 }

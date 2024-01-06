@@ -152,4 +152,5 @@ int main()
 
 BUG :
 	La limite de framerate dans la fonction run de CMWindow marche pas 
+	Impossible d'utiliser la bibliothèque FastNoise avec plusieurs instances de Chunk
 */
