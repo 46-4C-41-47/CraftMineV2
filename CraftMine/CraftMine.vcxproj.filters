@@ -79,19 +79,19 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="FastNoise2\bin\FastNoise.dll">
-      <Filter>Fichiers de ressources</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="FastNoise2\bin\FastNoiseD.dll">
-      <Filter>Fichiers de ressources</Filter>
-    </CopyFileToFolders>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="res\shaders\block_fragment.glsl">
       <Filter>Fichiers de ressources\shaders</Filter>
     </None>
     <None Include="res\shaders\block_vertex.glsl">
       <Filter>Fichiers de ressources\shaders</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="libs\FastNoise2\bin\FastNoise.dll">
+      <Filter>Fichiers de ressources</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="libs\FastNoise2\bin\FastNoiseD.dll">
+      <Filter>Fichiers de ressources</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

@@ -1,7 +1,9 @@
 #include "../include/Chunk.h"
 
 
-std::vector<InstancedMesh*> Chunk::facesMesh = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
+std::vector<InstancedMesh*> Chunk::facesMesh = { 
+	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr 
+};
 
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y }
@@ -64,7 +66,7 @@ void Chunk::initBlocks()
 					(noiseOutput[index++] * params::world::CHUNK_HEIGHT * 0.25f) + 
 					params::world::CHUNK_HEIGHT * 0.5f
 				) {
-					blocks[getBlockIndex(x, y, z)] = constants::block::COBBLESTONE;
+					blocks[getBlockIndex(x, y, z)] = constants::block::GRASS;
 				}
 				else
 				{

@@ -139,6 +139,6 @@ namespace params
 
 	namespace world
 	{
-		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16, NOISE_SEED = 0;
+		static const int CHUNK_HEIGHT = 256, CHUNK_WIDTH = 16, NOISE_SEED = 10;
 	}
 }

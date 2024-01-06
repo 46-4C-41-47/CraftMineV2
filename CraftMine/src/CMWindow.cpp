@@ -30,7 +30,7 @@ CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
 
 CMWindow::~CMWindow()
 {
-    delete objectShader, chunk;
+    delete objectShader;
     glfwTerminate();
     instanceCount -= 1;
 }
