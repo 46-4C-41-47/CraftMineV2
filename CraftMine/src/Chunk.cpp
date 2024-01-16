@@ -67,7 +67,7 @@ void Chunk::initBlocks()
 					(noiseOutput[index++] * params::world::CHUNK_HEIGHT * 0.25f) + 
 					params::world::CHUNK_HEIGHT * 0.5f
 				*/
-				if (true) 
+				if (y < 64) 
 				{
 					blocks[getBlockIndex(x, y, z)] = constants::block::GRASS;
 				}
@@ -89,6 +89,38 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 		(0 <= y && y < params::world::CHUNK_HEIGHT) && 
 		(0 <= z && z < params::world::CHUNK_WIDTH ))
 		return blocks[getBlockIndex(x, y, z)];
+	
+	if (x < 0)
+	{
+		if (neighbors[constants::WEST] == nullptr)
+			return constants::block::COBBLESTONE;
+		return neighbors[constants::WEST]->getBlock(params::world::CHUNK_WIDTH - 1, y, z);
+	}
+
+	if (params::world::CHUNK_WIDTH <= x)
+	{
+		if (neighbors[constants::EAST] == nullptr)
+			return constants::block::COBBLESTONE;
+		return neighbors[constants::EAST]->getBlock(0, y, z);
+	}
+
+	if (z < 0)
+	{
+		if (neighbors[constants::SOUTH] == nullptr)
+			return constants::block::COBBLESTONE;
+		return neighbors[constants::SOUTH]->getBlock(x, y, params::world::CHUNK_WIDTH - 1);
+	}
+
+	if (params::world::CHUNK_WIDTH <= z)
+	{
+		if (neighbors[constants::NORTH] == nullptr)
+			return constants::block::COBBLESTONE;
+		return neighbors[constants::NORTH]->getBlock(x, y, 0);
+	}
+
+	if (y < 0)
+		return constants::block::COBBLESTONE;
+
 	return constants::block::EMPTY;
 }
 
@@ -114,9 +146,15 @@ void Chunk::genMesh()
 
 					for (int i = 0; i < 6; i++)
 					{
-						if ((nearCube[i] == constants::block::EMPTY))
+						if (nearCube[i] == constants::block::EMPTY)
 						{
-							facesPositions[i]->push_back(glm::vec3((float)x, (float)y, (float)z));
+							facesPositions[i]->push_back(
+								glm::vec3(
+									(float)x + (this->x * params::world::CHUNK_WIDTH),
+									(float)y, 
+									(float)z + (this->y * params::world::CHUNK_WIDTH)
+								)
+							);
 							int textureIndex = std::max(i - 3, 0);
 							int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
 							facesTextures[i]->push_back(textureOffset);

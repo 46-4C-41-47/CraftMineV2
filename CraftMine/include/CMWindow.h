@@ -30,8 +30,6 @@ private:
 	static GLFWvidmode monitor;
 	static Camera* cam;
 	Shader* objectShader;
-	Chunk* chunk;
-	Chunk* chunk1;
 
 	static void rebuildProjectionMatrix(int width, int height);
 	static void resizeCallback(GLFWwindow* window, int width, int height);

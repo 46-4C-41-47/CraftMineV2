@@ -32,9 +32,9 @@ private:
 		new std::vector<float>(),
 	};
 	constants::block* blocks;
+	Chunk* neighbors[4]; // NORD SUD EST OUEST
 
 	static int getBlockIndex(int x, int y, int z);
-	constants::block getBlock(int x, int y, int z);
 	void initBlocks();
 	void genMesh();
 
@@ -52,4 +52,6 @@ public:
 	static void draw(Shader& shader, glm::mat4& projection, glm::mat4& view);
 	static void initCluster(unsigned int width);
 	static void destroyCluster();
+
+	constants::block getBlock(int x, int y, int z);
 };

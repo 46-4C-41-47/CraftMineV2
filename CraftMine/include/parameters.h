@@ -7,6 +7,13 @@
 
 namespace constants
 {
+	enum cardinal {
+		NORTH = 0,
+		SOUTH = 1,
+		EAST = 2,
+		WEST = 3
+	};
+
 	enum block
 	{
 		          // (top << 16) | (bottom << 8) | side;
