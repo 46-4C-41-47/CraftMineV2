@@ -1,5 +1,6 @@
 #include <iostream>
 #include <stdexcept>
+#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -28,117 +29,23 @@ int main()
 }
 
 
-/*
-bool bufferUpdated = false;
-bool bufferResized = false;
-int instanceCount = 2;
-
-float data[] = {
-	0.0f,  0.0f, 0.0f, // left  
-	0.1f,  0.0f, 0.0f, // right 
-	0.0f,  0.1f, 0.0f  // top   
-};
-
-std::vector<glm::vec3> positions = {
-	glm::vec3(0.0f),
-	glm::vec3(0.1f),
-};
-
-
-GLFWwindow* createWindow()
+/*int main()
 {
-	if (!glfwInit())
-		throw std::runtime_error("Initialization of GLFW failed\n");
-
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	GLFWwindow* window = glfwCreateWindow(600, 400, "Test", NULL, NULL);
-
-	glfwSetWindowPos(window, 100, 100);
-
-	if (window == NULL)
-		throw std::runtime_error("GLFW window creation failed\n");
-
-	glfwMakeContextCurrent(window);
-
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-		throw std::runtime_error("Failed to initialize GLAD\n");
-
-	glViewport(0, 0, 600, 400);
-
-	glEnable(GL_DEPTH_TEST);
-	//glEnable(GL_CULL_FACE);
-
-	return window;
-}
-
-
-void processInput(GLFWwindow* window, GLDynamicBuffer<glm::vec3>& buffer)
-{
-	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS and !bufferResized)
+	std::map<int, int> m;
+	std::pair<std::map<int, int>::iterator, bool> pos;
+	
+	for (int i = 0; i < 5; i++)
 	{
-		buffer.addRange({ glm::vec3(0.2f) });
-		
-		std::cout << "\nbuffer resized\n";
-		bufferResized = true;
-	}
-}
+		if (pos.first < m.emplace(0, 0).first)
+		{
 
-
-int main()
-{
-	GLFWwindow* window = createWindow();
-	Shader* shader = new Shader("./res/shaders/test_vertex.glsl", "./res/shaders/test_fragment.glsl");
-
-	GLDynamicBuffer<glm::vec3> dynamicBuffer;//(positions);
-	dynamicBuffer.addRange(positions);
-
-	unsigned int VAO, VBO;// , instancedVBO;
-	glGenBuffers(1, &VBO);
-	//glGenBuffers(1, &instancedVBO);
-	glGenVertexArrays(1, &VAO);
-
-	//glBindBuffer(GL_ARRAY_BUFFER, instancedVBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec3) * 3, nullptr, GL_DYNAMIC_DRAW);
-	//glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(glm::vec3) * positions.size(), positions.data());
-	//glNamedBufferData(instancedVBO, sizeof(glm::vec3) * positions.size(), positions.data(), GL_DYNAMIC_DRAW);
-	//glNamedBufferSubData(instancedVBO, 0, sizeof(glm::vec3) * 2, positions.data());
-
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(data), data, GL_STATIC_DRAW);
-
-	glBindVertexArray(VAO);
-	glEnableVertexArrayAttrib(VAO, 0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-
-	glBindBuffer(GL_ARRAY_BUFFER, dynamicBuffer.id());
-	glEnableVertexArrayAttrib(VAO, 1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(3 * sizeof(float)));
-
-	glVertexAttribDivisor(1, 1);
-
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-
-	while (!glfwWindowShouldClose(window))
-	{
-		processInput(window, dynamicBuffer);
-
-		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		shader->use();
-		glBindVertexArray(VAO);
-		glDrawArraysInstanced(GL_TRIANGLES, 0, 3, dynamicBuffer.size());
-		glBindVertexArray(0);
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
+		}
 	}
 
-	glfwTerminate();
+	std::cout << pos.first->second << "\n";
+	
+	for (std::map<int, int>::iterator it = m.begin(); it != m.end(); it++)
+		std::cout << "key : " << it->first << ", value : " << it->second << "\n";
 }*/
 
 
@@ -149,6 +56,12 @@ int main()
 	Finir la classe GLBufferConfig
 	Skybox
 	Bloques destructibles
+
+À TESTER :
+	GLVector::remove
+	GLMap::GLMap
+	GLMap::add
+	GLMap::remove
 
 BUG :
 	La limite de framerate dans la fonction run de CMWindow marche pas 

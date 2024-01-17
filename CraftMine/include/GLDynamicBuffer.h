@@ -20,7 +20,6 @@ private:
 
 	void resize(unsigned int newSize)
 	{
-		//std::cout << "resizing, size : " << newSize << "\n";
 		glNamedBufferData(VBO, sizeof(T) * newSize, nullptr, GL_DYNAMIC_DRAW);
 		glNamedBufferSubData(VBO, 0, elements.size() * sizeof(T), elements.data());
 
@@ -52,7 +51,6 @@ public:
 
 	void addRange(const std::vector<T>& newElements)
 	{
-		//std::cout << "adding " << newElements.size() << " new elements\n";
 		int availableSpace = allocatedSize - elements.size();
 
 		if (availableSpace < newElements.size())
@@ -64,6 +62,12 @@ public:
 
 		elements.append_range(newElements);
 	}
+
+
+	void remove(int index);
+
+
+	void removeRange(int startIndex, int range);
 	
 	
 	void shrinkToFit() { resize(elements.size()); }

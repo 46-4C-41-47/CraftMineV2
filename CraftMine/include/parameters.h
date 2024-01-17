@@ -136,6 +136,8 @@ namespace params
 		static const float FAR_PLANE  = 250.0f;
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
+
+		static const int CHUNK_RADIUS = 10;
 	}
 
 	namespace controls

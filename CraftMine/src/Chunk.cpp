@@ -93,33 +93,36 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 	if (x < 0)
 	{
 		if (neighbors[constants::WEST] == nullptr)
-			return constants::block::COBBLESTONE;
+			goto nullblock;
 		return neighbors[constants::WEST]->getBlock(params::world::CHUNK_WIDTH - 1, y, z);
 	}
 
 	if (params::world::CHUNK_WIDTH <= x)
 	{
 		if (neighbors[constants::EAST] == nullptr)
-			return constants::block::COBBLESTONE;
+			goto nullblock;
 		return neighbors[constants::EAST]->getBlock(0, y, z);
 	}
 
 	if (z < 0)
 	{
 		if (neighbors[constants::SOUTH] == nullptr)
-			return constants::block::COBBLESTONE;
+			goto nullblock;
 		return neighbors[constants::SOUTH]->getBlock(x, y, params::world::CHUNK_WIDTH - 1);
 	}
 
 	if (params::world::CHUNK_WIDTH <= z)
 	{
 		if (neighbors[constants::NORTH] == nullptr)
-			return constants::block::COBBLESTONE;
+			goto nullblock;
 		return neighbors[constants::NORTH]->getBlock(x, y, 0);
 	}
 
 	if (y < 0)
-		return constants::block::COBBLESTONE;
+		goto nullblock;
+
+	nullblock:
+		return constants::block::EMPTY;
 
 	return constants::block::EMPTY;
 }
