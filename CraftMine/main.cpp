@@ -1,12 +1,11 @@
 #include <iostream>
 #include <stdexcept>
-#include <map>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "include/GLMap.h"
 #include "include/CMWindow.h"
-#include "include/GLDynamicBuffer.h"
 
 
 int main()
@@ -29,26 +28,6 @@ int main()
 }
 
 
-/*int main()
-{
-	std::map<int, int> m;
-	std::pair<std::map<int, int>::iterator, bool> pos;
-	
-	for (int i = 0; i < 5; i++)
-	{
-		if (pos.first < m.emplace(0, 0).first)
-		{
-
-		}
-	}
-
-	std::cout << pos.first->second << "\n";
-	
-	for (std::map<int, int>::iterator it = m.begin(); it != m.end(); it++)
-		std::cout << "key : " << it->first << ", value : " << it->second << "\n";
-}*/
-
-
 /*
 À FAIRE : 
 	afficher le framerate
@@ -59,9 +38,6 @@ int main()
 
 À TESTER :
 	GLVector::remove
-	GLMap::GLMap
-	GLMap::add
-	GLMap::remove
 
 BUG :
 	La limite de framerate dans la fonction run de CMWindow marche pas 
