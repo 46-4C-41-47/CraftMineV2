@@ -18,12 +18,12 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 
 	if (facesMesh[0] == nullptr)
 	{
-		facesMesh[0] = new InstancedMesh(constants::cube::FRONT , *facesPositions[0], *facesTextures[0]);
-		facesMesh[1] = new InstancedMesh(constants::cube::BACK  , *facesPositions[1], *facesTextures[1]);
-		facesMesh[2] = new InstancedMesh(constants::cube::LEFT  , *facesPositions[2], *facesTextures[2]);
-		facesMesh[3] = new InstancedMesh(constants::cube::RIGHT , *facesPositions[3], *facesTextures[3]);
-		facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM, *facesPositions[4], *facesTextures[4]);
-		facesMesh[5] = new InstancedMesh(constants::cube::TOP   , *facesPositions[5], *facesTextures[5]);
+		facesMesh[0] = new InstancedMesh(constants::cube::FRONT , {}, {});
+		facesMesh[1] = new InstancedMesh(constants::cube::BACK  , {}, {});
+		facesMesh[2] = new InstancedMesh(constants::cube::LEFT  , {}, {});
+		facesMesh[3] = new InstancedMesh(constants::cube::RIGHT , {}, {});
+		facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM, {}, {});
+		facesMesh[5] = new InstancedMesh(constants::cube::TOP   , {}, {});
 	}
 
 	initBlocks();
@@ -122,7 +122,7 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 		goto nullblock;
 
 	nullblock:
-		return constants::block::EMPTY;
+		return constants::block::COBBLESTONE;
 
 	return constants::block::EMPTY;
 }
@@ -131,6 +131,16 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 void Chunk::genMesh()
 {
 	constants::block nearCube[6];
+	std::vector<std::vector<glm::vec3>*> facesPositions = {
+		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
+		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
+		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
+	};
+	std::vector<std::vector<float>*> facesTextures = {
+		new std::vector<float>(), new std::vector<float>(),
+		new std::vector<float>(), new std::vector<float>(),
+		new std::vector<float>(), new std::vector<float>(),
+	};
 	
 	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 	{

@@ -149,7 +149,6 @@
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Chunk.h" />
     <ClInclude Include="include\CMWindow.h" />
-    <ClInclude Include="include\GLDynamicBuffer.h" />
     <ClInclude Include="include\GLMap.h" />
     <ClInclude Include="include\GLVector.h" />
     <ClInclude Include="include\InstancedMesh.h" />

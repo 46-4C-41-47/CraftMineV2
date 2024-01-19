@@ -74,9 +74,6 @@
     <ClInclude Include="include\Chunk.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\GLDynamicBuffer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="include\GLMap.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>

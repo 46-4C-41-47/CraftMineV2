@@ -8,7 +8,7 @@
 #include "Mesh.h"
 #include "parameters.h"
 #include "TextureAtlas.h"
-#include "GLDynamicBuffer.h"
+#include "GLVector.h"
 
 
 class InstancedMesh : public Mesh
@@ -17,8 +17,8 @@ private:
 	static TextureAtlas* atlas;
 	const int strideLength;
 	unsigned int VAO, constDataVBO;
-	GLDynamicBuffer<glm::vec3>* positions = new GLDynamicBuffer<glm::vec3>();
-	GLDynamicBuffer<float>* textures = new GLDynamicBuffer<float>();
+	GLVector<glm::vec3>* positions = new GLVector<glm::vec3>();
+	GLVector<float>* textures = new GLVector<float>();
 
 	void initMesh(
 		const std::vector<float>& mesh, 

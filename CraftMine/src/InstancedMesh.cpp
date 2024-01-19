@@ -38,8 +38,8 @@ void InstancedMesh::initMesh(
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(float) * mesh.size(), mesh.data(), GL_STATIC_DRAW);
 
-	positions->addRange(newPositions);
-	textures->addRange(newTextures);
+	positions->add(newPositions);
+	textures->add(newTextures);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, constDataVBO);
@@ -97,6 +97,6 @@ void InstancedMesh::addRange(
 	if (newPositions.size() != newTextures.size())
 		throw std::runtime_error("addRange : positions doesnt match with textures");
 
-	positions->addRange(newPositions);
-	textures->addRange(newTextures);
+	positions->add(newPositions);
+	textures->add(newTextures);
 }

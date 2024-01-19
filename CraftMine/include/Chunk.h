@@ -15,22 +15,6 @@ class Chunk
 private:
 	static std::vector<InstancedMesh*> facesMesh;
 	static FastNoise::SmartNode<FastNoise::Simplex> noise;
-	std::vector<std::vector<glm::vec3>*> facesPositions = {
-		new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(),
-	};
-	std::vector<std::vector<float>*> facesTextures = {
-		new std::vector<float>(),
-		new std::vector<float>(),
-		new std::vector<float>(),
-		new std::vector<float>(),
-		new std::vector<float>(),
-		new std::vector<float>(),
-	};
 	constants::block* blocks;
 	Chunk* neighbors[4]; // NORD SUD EST OUEST
 
