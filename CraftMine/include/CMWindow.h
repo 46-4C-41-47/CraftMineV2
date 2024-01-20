@@ -16,7 +16,6 @@
 #include "Camera.h"
 #include "parameters.h"
 #include "TextureAtlas.h"
-#include "GLDynamicBuffer.h"
 
 
 class CMWindow
