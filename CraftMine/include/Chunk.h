@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <algorithm>
 
@@ -15,15 +16,18 @@ class Chunk
 private:
 	static std::vector<InstancedMesh*> facesMesh;
 	static FastNoise::SmartNode<FastNoise::Simplex> noise;
+	static std::map<long long int, Chunk*>* chunkCluster;
+
 	constants::block* blocks;
 	Chunk* neighbors[4]; // NORD SUD EST OUEST
 
 	static int getBlockIndex(int x, int y, int z);
+	
 	void initBlocks();
 	void genMesh();
+	void updateNeighbors();
 
 public:
-	static std::vector<Chunk*>* chunkCluster;
 	const int x, y;
 
 	Chunk(int x, int y);

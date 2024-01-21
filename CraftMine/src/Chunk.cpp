@@ -4,7 +4,7 @@
 std::vector<InstancedMesh*> Chunk::facesMesh = { 
 	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr 
 };
-std::vector<Chunk*>* Chunk::chunkCluster = nullptr;
+std::map<long long int, Chunk*>* Chunk::chunkCluster = new std::map<long long int, Chunk*>();
 //FastNoise::SmartNode<FastNoise::Simplex> Chunk::noise = FastNoise::New<FastNoise::Simplex>();
 
 
@@ -192,16 +192,15 @@ void Chunk::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 
 void Chunk::initCluster(unsigned int width)
 {
-	if (chunkCluster != nullptr)
+	if (chunkCluster->size() != 0);
 		return;
-
-	chunkCluster = new std::vector<Chunk*>(width * width);
 
 	for (int x = 0; x < width; x++)
 	{
 		for (int y = 0; y < width; y++)
 		{
-			(*chunkCluster)[x + y * width] = new Chunk(x, y);
+			long long int index = ((long long int)x) << 32 | y;
+			(*chunkCluster)[index] = new Chunk(x, y);
 		}
 	}
 }
@@ -209,6 +208,28 @@ void Chunk::initCluster(unsigned int width)
 
 void Chunk::destroyCluster()
 {
-	for (Chunk* chunkptr : *chunkCluster)
-		delete chunkptr;
+	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
+		delete it->second;
+}
+
+
+void Chunk::updateNeighbors()
+{
+	int positions[4][2] = {
+		{x + 1, y    },
+		{x - 1, y    },
+		{x    , y + 1},
+		{x    , y - 1}
+	};
+
+	for (int i = 0; i < 4; i++)
+	{
+		long long int index = (long long int)(positions[i][0]) << 32 | positions[i][1];
+		auto it = chunkCluster->find(index);
+
+		if (it != chunkCluster->end())
+			neighbors[i] = it->second;
+		else
+			neighbors[i] = nullptr;
+	}
 }
