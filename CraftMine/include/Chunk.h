@@ -7,6 +7,7 @@
 #include <glm/glm.hpp>
 #include <FastNoise/FastNoise.h>
 
+#include "FaceData.h"
 #include "parameters.h"
 #include "InstancedMesh.h"
 
@@ -14,6 +15,7 @@
 class Chunk
 {
 private:
+	static bool clusterInitialized;
 	static std::vector<InstancedMesh*> facesMesh;
 	static FastNoise::SmartNode<FastNoise::Simplex> noise;
 	static std::map<long long int, Chunk*>* chunkCluster;
@@ -40,6 +42,7 @@ public:
 	static void draw(Shader& shader, glm::mat4& projection, glm::mat4& view);
 	static void initCluster(unsigned int width);
 	static void destroyCluster();
+	static void updateCluster();
 
 	constants::block getBlock(int x, int y, int z);
 };

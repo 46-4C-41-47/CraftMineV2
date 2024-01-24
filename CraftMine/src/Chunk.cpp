@@ -1,9 +1,7 @@
 #include "../include/Chunk.h"
 
-
-std::vector<InstancedMesh*> Chunk::facesMesh = { 
-	nullptr, nullptr, nullptr, nullptr, nullptr, nullptr 
-};
+bool Chunk::clusterInitialized = false;
+std::vector<InstancedMesh*> Chunk::facesMesh = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
 std::map<long long int, Chunk*>* Chunk::chunkCluster = new std::map<long long int, Chunk*>();
 //FastNoise::SmartNode<FastNoise::Simplex> Chunk::noise = FastNoise::New<FastNoise::Simplex>();
 
@@ -18,12 +16,12 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 
 	if (facesMesh[0] == nullptr)
 	{
-		facesMesh[0] = new InstancedMesh(constants::cube::FRONT , {}, {});
-		facesMesh[1] = new InstancedMesh(constants::cube::BACK  , {}, {});
-		facesMesh[2] = new InstancedMesh(constants::cube::LEFT  , {}, {});
-		facesMesh[3] = new InstancedMesh(constants::cube::RIGHT , {}, {});
-		facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM, {}, {});
-		facesMesh[5] = new InstancedMesh(constants::cube::TOP   , {}, {});
+		facesMesh[0] = new InstancedMesh(constants::cube::FRONT);
+		facesMesh[1] = new InstancedMesh(constants::cube::BACK);
+		facesMesh[2] = new InstancedMesh(constants::cube::LEFT);
+		facesMesh[3] = new InstancedMesh(constants::cube::RIGHT);
+		facesMesh[4] = new InstancedMesh(constants::cube::BOTTOM);
+		facesMesh[5] = new InstancedMesh(constants::cube::TOP);
 	}
 
 	initBlocks();
@@ -131,15 +129,15 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 void Chunk::genMesh()
 {
 	constants::block nearCube[6];
-	std::vector<std::vector<glm::vec3>*> facesPositions = {
-		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
-		new std::vector<glm::vec3>(), new std::vector<glm::vec3>(),
+	std::vector<std::vector<long long int>*> keys = {
+		new std::vector<long long int>(), new std::vector<long long int>(),
+		new std::vector<long long int>(), new std::vector<long long int>(),
+		new std::vector<long long int>(), new std::vector<long long int>(),
 	};
-	std::vector<std::vector<float>*> facesTextures = {
-		new std::vector<float>(), new std::vector<float>(),
-		new std::vector<float>(), new std::vector<float>(),
-		new std::vector<float>(), new std::vector<float>(),
+	std::vector<std::vector<FaceData>*> faces = {
+		new std::vector<FaceData>(), new std::vector<FaceData>(),
+		new std::vector<FaceData>(), new std::vector<FaceData>(),
+		new std::vector<FaceData>(), new std::vector<FaceData>(),
 	};
 	
 	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
@@ -161,16 +159,25 @@ void Chunk::genMesh()
 					{
 						if (nearCube[i] == constants::block::EMPTY)
 						{
-							facesPositions[i]->push_back(
-								glm::vec3(
-									(float)x + (this->x * params::world::CHUNK_WIDTH),
-									(float)y, 
-									(float)z + (this->y * params::world::CHUNK_WIDTH)
-								)
-							);
 							int textureIndex = std::max(i - 3, 0);
 							int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
-							facesTextures[i]->push_back(textureOffset);
+
+							int worldX = x + (this->x * params::world::CHUNK_WIDTH);
+							int worldZ = z + (this->y * params::world::CHUNK_WIDTH);
+
+							long long int key = (long long int)(worldX) << 42 | (long long int)(y) << 21 | worldZ;
+
+							FaceData face = {
+								glm::vec3(
+									(float)worldX,
+									(float)y,
+									(float)worldZ
+								),
+								textureOffset
+							};
+
+							keys[i]->push_back(key);
+							faces[i]->push_back(face);
 						}
 					}
 				}
@@ -179,7 +186,7 @@ void Chunk::genMesh()
 	}
 
 	for (int i = 0; i < facesMesh.size(); i++)
-		facesMesh[i]->addRange(*facesPositions[i], *facesTextures[i]);
+		facesMesh[i]->add(*(keys[i]), *(faces[i]));
 }
 
 
@@ -192,8 +199,10 @@ void Chunk::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 
 void Chunk::initCluster(unsigned int width)
 {
-	if (chunkCluster->size() != 0);
+	if (clusterInitialized)
 		return;
+
+	clusterInitialized = true;
 
 	for (int x = 0; x < width; x++)
 	{
@@ -225,11 +234,21 @@ void Chunk::updateNeighbors()
 	for (int i = 0; i < 4; i++)
 	{
 		long long int index = (long long int)(positions[i][0]) << 32 | positions[i][1];
-		auto it = chunkCluster->find(index);
+		std::map<long long int, Chunk*>::iterator it = chunkCluster->find(index);
 
 		if (it != chunkCluster->end())
 			neighbors[i] = it->second;
 		else
 			neighbors[i] = nullptr;
+	}
+}
+
+
+void Chunk::updateCluster()
+{
+	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
+	{
+		Chunk* chunk = it->second;
+		chunk->updateNeighbors();
 	}
 }
