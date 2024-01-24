@@ -103,7 +103,7 @@ void CMWindow::init(int width, int height)
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 
     Chunk::initCluster(params::graphical::CHUNK_RADIUS);
-    //Chunk::updateCluster();
+    Chunk::updateCluster();
 }
 
 

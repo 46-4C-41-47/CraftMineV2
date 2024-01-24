@@ -74,27 +74,27 @@ void InstancedMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 }
 
 
-void InstancedMesh::add(long long int key, const FaceData& newFace)
+void InstancedMesh::add(long long key, const FaceData& newFace)
 {
 	faces->add(key, newFace);
 }
 
 
 void InstancedMesh::add(
-	const std::vector<long long int>& keys, 
+	const std::vector<long long>& keys, 
 	const std::vector<FaceData>& newFaces
 ) {
 	faces->add(keys, newFaces);
 }
 
 
-void InstancedMesh::remove(const std::vector<long long int>& keys)
+void InstancedMesh::remove(const std::vector<long long>& keys)
 {
 	faces->remove(keys);
 }
 
 
-void InstancedMesh::remove(long long int key)
+void InstancedMesh::remove(long long key)
 {
 	faces->remove(key);
 }

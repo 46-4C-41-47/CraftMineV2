@@ -19,24 +19,26 @@ private:
 	static bool clusterInitialized;
 	static std::vector<InstancedMesh*> facesMesh;
 	static FastNoise::SmartNode<FastNoise::Simplex> noise;
-	static std::map<long long int, Chunk*>* chunkCluster;
+	static std::map<long long, Chunk*>* chunkCluster;
 
 	constants::block* blocks;
 	Chunk* neighbors[4]; // NORD SUD EST OUEST
 
 	static int getBlockIndex(int x, int y, int z);
 	
+	void init();
 	void genMesh();
 	void initBlocks();
 	void updateSides();
 	void updateNeighbors();
-	std::pair<long long int, FaceData> createFace(int x, int y, int z, int faceIndex);
-	inline long long int getFaceKey(int x, int y, int z);
+	std::pair<long long, FaceData> createFace(int x, int y, int z, int faceIndex);
+	inline long long getFaceKey(int x, int y, int z);
 
 public:
 	const int x, y;
 
 	Chunk(int x, int y);
+	Chunk(int x, int y, Chunk* n[4]);
 	Chunk(const Chunk&) = delete;
 
 	~Chunk();

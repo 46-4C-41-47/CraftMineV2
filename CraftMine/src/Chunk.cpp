@@ -2,16 +2,28 @@
 
 bool Chunk::clusterInitialized = false;
 std::vector<InstancedMesh*> Chunk::facesMesh = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-std::map<long long int, Chunk*>* Chunk::chunkCluster = new std::map<long long int, Chunk*>();
+std::map<long long, Chunk*>* Chunk::chunkCluster = new std::map<long long int, Chunk*>();
 //FastNoise::SmartNode<FastNoise::Simplex> Chunk::noise = FastNoise::New<FastNoise::Simplex>();
 
 
-Chunk::Chunk(int x, int y) : x{ x }, y{ y }
+Chunk::Chunk(int x, int y) : x{ x }, y{ y } { init(); }
+
+
+Chunk::Chunk(int x, int y, Chunk* n[4]) : x{ x }, y{ y }, neighbors{ *n } { init(); }
+
+
+Chunk::~Chunk()
+{
+	delete[] blocks;
+}
+
+
+void Chunk::init()
 {
 	blocks = new constants::block[
 		params::world::CHUNK_WIDTH *
-		params::world::CHUNK_WIDTH * 
-		params::world::CHUNK_HEIGHT 
+			params::world::CHUNK_WIDTH *
+			params::world::CHUNK_HEIGHT
 	];
 
 	if (facesMesh[0] == nullptr)
@@ -26,12 +38,6 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 
 	initBlocks();
 	genMesh();
-}
-
-
-Chunk::~Chunk()
-{
-	delete[] blocks;
 }
 
 
@@ -129,10 +135,10 @@ inline constants::block Chunk::getBlock(int x, int y, int z)
 void Chunk::genMesh()
 {
 	constants::block nearCube[6];
-	std::vector<std::vector<long long int>*> keys = {
-		new std::vector<long long int>(), new std::vector<long long int>(),
-		new std::vector<long long int>(), new std::vector<long long int>(),
-		new std::vector<long long int>(), new std::vector<long long int>(),
+	std::vector<std::vector<long long>*> keys = {
+		new std::vector<long long>(), new std::vector<long long>(),
+		new std::vector<long long>(), new std::vector<long long>(),
+		new std::vector<long long>(), new std::vector<long long>(),
 	};
 	std::vector<std::vector<FaceData>*> faces = {
 		new std::vector<FaceData>(), new std::vector<FaceData>(),
@@ -159,7 +165,7 @@ void Chunk::genMesh()
 					{
 						if (nearCube[i] == constants::block::EMPTY)
 						{
-							std::pair<long long int, FaceData> face = createFace(x, y, z, i);
+							std::pair<long long, FaceData> face = createFace(x, y, z, i);
 
 							keys[i]->push_back(face.first);
 							faces[i]->push_back(face.second);
@@ -175,7 +181,7 @@ void Chunk::genMesh()
 }
 
 
-std::pair<long long int, FaceData> Chunk::createFace(int x, int y, int z, int faceIndex)
+std::pair<long long, FaceData> Chunk::createFace(int x, int y, int z, int faceIndex)
 {
 	int textureIndex = std::max(faceIndex - 3, 0);
 	int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
@@ -196,11 +202,11 @@ std::pair<long long int, FaceData> Chunk::createFace(int x, int y, int z, int fa
 }
 
 
-long long int Chunk::getFaceKey(int x, int y, int z)
+long long Chunk::getFaceKey(int x, int y, int z)
 {
-	return (long long int)(x + (this->x * params::world::CHUNK_WIDTH)) << 42 
-		| (long long int)y << 21 
-		| (long long int)(z + (this->y * params::world::CHUNK_WIDTH));
+	return (long long)(x + (this->x * params::world::CHUNK_WIDTH)) << 42 
+		| (long long)y << 21 
+		| (long long)(z + (this->y * params::world::CHUNK_WIDTH));
 }
 
 
@@ -257,8 +263,8 @@ void Chunk::updateNeighbors()
 
 	for (int i = 0; i < 4; i++)
 	{
-		long long int index = (long long int)(positions[i][0]) << 32 | positions[i][1];
-		std::map<long long int, Chunk*>::iterator it = chunkCluster->find(index);
+		long long index = (long long)(positions[i][0]) << 32 | positions[i][1];
+		std::map<long long, Chunk*>::iterator it = chunkCluster->find(index);
 
 		if (it != chunkCluster->end())
 			neighbors[i] = it->second;
@@ -275,6 +281,9 @@ void Chunk::updateSides()
 	if (neighbors[constants::NORTH] != nullptr)
 	{
 		int z = params::world::CHUNK_WIDTH - 1;
+		std::vector<long long> facesToDelete;
+		std::vector<long long> facesToAddKey;
+		std::vector<FaceData> facesToAddFace;
 
 		for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 		{
@@ -282,15 +291,19 @@ void Chunk::updateSides()
 			{
 				if (neighbors[constants::NORTH]->getBlock(x, y, params::world::CHUNK_WIDTH - 1) == constants::EMPTY)
 				{
-					std::pair<long long int, FaceData> face = createFace(x, y, z, 1);
-					facesMesh[constants::BACK]->add(face.first, face.second);
+					std::pair<long long, FaceData> face = createFace(x, y, z, 1);
+					facesToAddKey.push_back(face.first);
+					facesToAddFace.push_back(face.second);
 				}
 				else
 				{
-					facesMesh[constants::BACK]->remove(getFaceKey(x, y, z));
+					facesToDelete.push_back(getFaceKey(x, y, z));
 				}
 			}
 		}
+
+		facesMesh[constants::BACK]->add(facesToAddKey, facesToAddFace);
+		facesMesh[constants::BACK]->remove(facesToDelete);
 	}
 	
 	return;
