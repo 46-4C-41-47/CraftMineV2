@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <utility>
 #include <algorithm>
 
 #include <glm/glm.hpp>
@@ -25,9 +26,12 @@ private:
 
 	static int getBlockIndex(int x, int y, int z);
 	
-	void initBlocks();
 	void genMesh();
+	void initBlocks();
+	void updateSides();
 	void updateNeighbors();
+	std::pair<long long int, FaceData> createFace(int x, int y, int z, int faceIndex);
+	inline long long int getFaceKey(int x, int y, int z);
 
 public:
 	const int x, y;

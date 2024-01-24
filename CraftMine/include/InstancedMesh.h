@@ -31,8 +31,11 @@ public:
 	InstancedMesh& operator = (const InstancedMesh&) = delete;
 
 	void draw(Shader& shader, glm::mat4& projection, glm::mat4& view) override;
+	void add(long long int key, const FaceData& newFace);
 	void add(
 		const std::vector<long long int>& keys, 
 		const std::vector<FaceData>& newFaces
 	);
+	void remove(long long int key);
+	void remove(const std::vector<long long int>& keys);
 };

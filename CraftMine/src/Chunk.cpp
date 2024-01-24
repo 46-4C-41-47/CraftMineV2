@@ -159,25 +159,10 @@ void Chunk::genMesh()
 					{
 						if (nearCube[i] == constants::block::EMPTY)
 						{
-							int textureIndex = std::max(i - 3, 0);
-							int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
+							std::pair<long long int, FaceData> face = createFace(x, y, z, i);
 
-							int worldX = x + (this->x * params::world::CHUNK_WIDTH);
-							int worldZ = z + (this->y * params::world::CHUNK_WIDTH);
-
-							long long int key = (long long int)(worldX) << 42 | (long long int)(y) << 21 | worldZ;
-
-							FaceData face = {
-								glm::vec3(
-									(float)worldX,
-									(float)y,
-									(float)worldZ
-								),
-								textureOffset
-							};
-
-							keys[i]->push_back(key);
-							faces[i]->push_back(face);
+							keys[i]->push_back(face.first);
+							faces[i]->push_back(face.second);
 						}
 					}
 				}
@@ -187,6 +172,35 @@ void Chunk::genMesh()
 
 	for (int i = 0; i < facesMesh.size(); i++)
 		facesMesh[i]->add(*(keys[i]), *(faces[i]));
+}
+
+
+std::pair<long long int, FaceData> Chunk::createFace(int x, int y, int z, int faceIndex)
+{
+	int textureIndex = std::max(faceIndex - 3, 0);
+	int textureOffset = 0xFF & (blocks[getBlockIndex(x, y, z)] >> (textureIndex * 8));
+
+	int worldX = x + (this->x * params::world::CHUNK_WIDTH);
+	int worldZ = z + (this->y * params::world::CHUNK_WIDTH);
+
+	FaceData face = {
+		glm::vec3(
+			(float)worldX,
+			(float)y,
+			(float)worldZ
+		),
+		textureOffset
+	};
+
+	return { getFaceKey(x, y, z), face};
+}
+
+
+long long int Chunk::getFaceKey(int x, int y, int z)
+{
+	return (long long int)(x + (this->x * params::world::CHUNK_WIDTH)) << 42 
+		| (long long int)y << 21 
+		| (long long int)(z + (this->y * params::world::CHUNK_WIDTH));
 }
 
 
@@ -222,6 +236,16 @@ void Chunk::destroyCluster()
 }
 
 
+void Chunk::updateCluster()
+{
+	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
+	{
+		Chunk* chunk = it->second;
+		chunk->updateNeighbors();
+	}
+}
+
+
 void Chunk::updateNeighbors()
 {
 	int positions[4][2] = {
@@ -241,14 +265,33 @@ void Chunk::updateNeighbors()
 		else
 			neighbors[i] = nullptr;
 	}
+
+	updateSides();
 }
 
 
-void Chunk::updateCluster()
+void Chunk::updateSides()
 {
-	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
+	if (neighbors[constants::NORTH] != nullptr)
 	{
-		Chunk* chunk = it->second;
-		chunk->updateNeighbors();
+		int z = params::world::CHUNK_WIDTH - 1;
+
+		for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
+		{
+			for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
+			{
+				if (neighbors[constants::NORTH]->getBlock(x, y, params::world::CHUNK_WIDTH - 1) == constants::EMPTY)
+				{
+					std::pair<long long int, FaceData> face = createFace(x, y, z, 1);
+					facesMesh[constants::BACK]->add(face.first, face.second);
+				}
+				else
+				{
+					facesMesh[constants::BACK]->remove(getFaceKey(x, y, z));
+				}
+			}
+		}
 	}
+	
+	return;
 }

@@ -10,8 +10,8 @@ namespace constants
 	enum cardinal {
 		NORTH = 0,
 		SOUTH = 1,
-		EAST = 2,
-		WEST = 3
+		 EAST = 2,
+		 WEST = 3
 	};
 
 	enum block
@@ -21,6 +21,16 @@ namespace constants
 		      GRASS = (  0 << 16) | (  2 << 8) |   3,
 		COBBLESTONE = ( 16 << 16) | ( 16 << 8) |  16,
 		    LIBRARY = (  4 << 16) | (  4 << 8) |  35,
+	};
+
+	enum blockFace
+	{
+		 FRONT = 0,
+		  BACK = 1,
+		  LEFT = 2,
+		 RIGHT = 3,
+		BOTTOM = 4,
+		   TOP = 5,
 	};
 
 	namespace cube
