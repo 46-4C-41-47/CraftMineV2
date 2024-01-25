@@ -30,10 +30,11 @@ int main()
 /*
 À FAIRE : 
 	afficher le framerate
-	Classe Chunk (en cours)
-	Finir la classe GLBufferConfig
+	Classe Chunk -> multithreading
+	Classe Player
 	Skybox
 	Bloques destructibles
+	Rendre la classe InstancedMesh plus générique
 
 À TESTER :
 	GLVector::remove

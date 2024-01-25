@@ -141,7 +141,7 @@ namespace params
 {
 	namespace graphical
 	{
-		static const float VIEW_ANGLE = 90.0f;
+		static const float VIEW_ANGLE = 110.0f;
 		static const float NEAR_PLANE = 0.1f;
 		static const float FAR_PLANE  = 250.0f;
 
