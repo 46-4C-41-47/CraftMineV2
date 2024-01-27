@@ -277,6 +277,37 @@ void Chunk::updateNeighbors()
 }
 
 
+/*void Chunk::updateSide(constants::cardinal side)
+{
+	if (neighbors[side] == nullptr)
+		return;
+
+	int z = currentChunkDepth;
+	std::vector<long long> facesToDelete;
+	std::vector<long long> facesToAddKey;
+	std::vector<FaceData> facesToAddFace;
+
+	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
+	{
+		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
+		{
+			if (getBlock(x, y, z) != constants::EMPTY
+				&& neighbors[side]->getBlock(x, y, 0) == constants::EMPTY)
+			{
+				std::pair<long long, FaceData> newFace = createFace(x, y, z, face);
+				facesToAddKey.push_back(newFace.first);
+				facesToAddFace.push_back(newFace.second);
+			}
+			else
+				facesToDelete.push_back(getFaceKey(x, y, z));
+		}
+	}
+
+	facesMesh[face]->remove(facesToDelete);
+	facesMesh[face]->add(facesToAddKey, facesToAddFace);
+}*/
+
+
 void Chunk::updateNorth()
 {
 	if (neighbors[constants::NORTH] == nullptr)

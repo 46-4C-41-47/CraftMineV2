@@ -141,6 +141,7 @@
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\CMWindow.cpp" />
     <ClCompile Include="src\InstancedMesh.cpp" />
+    <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
     <ClCompile Include="src\TextureAtlas.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="include\InstancedMesh.h" />
     <ClInclude Include="include\Mesh.h" />
     <ClInclude Include="include\parameters.h" />
+    <ClInclude Include="include\Player.h" />
     <ClInclude Include="include\Shader.h" />
     <ClInclude Include="include\stb_image.h" />
     <ClInclude Include="include\TextureAtlas.h" />

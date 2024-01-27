@@ -29,6 +29,7 @@ private:
 	void init();
 	void genMesh();
 	void initBlocks();
+	void updateSide();
 	void updateNorth();
 	void updateSouth();
 	void updateEast();
