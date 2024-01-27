@@ -153,7 +153,7 @@ namespace params
 	namespace controls
 	{
 		static const float HORIZONTAL_SENSITIVITY = 0.002f, VERTICAL_SENSITIVITY = 0.0016f;
-		static const float CAM_SPEED = 30.0f;
+		static const float CAM_SPEED = 0.00003f;
 	}
 
 	namespace world

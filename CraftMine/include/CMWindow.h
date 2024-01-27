@@ -21,13 +21,15 @@
 class CMWindow
 {
 private:
-	static const int DEFAULT_WIDTH = 1000, DEFAULT_HEIGHT = 562;
+	static const int DEFAULT_WIDTH = 1000, DEFAULT_HEIGHT = 562, SECOND = 1000000;
 	static int instanceCount;
 	static bool fullscreen;
 	static glm::mat4 projection;
 	static GLFWwindow* window;
 	static GLFWvidmode monitor;
 	static Camera* cam;
+	int previousFrameDuration = SECOND; // microseconds
+	int frameRateUpdateLimit = 0;
 	Shader* objectShader;
 
 	static void rebuildProjectionMatrix(int width, int height);
@@ -39,6 +41,7 @@ private:
 	void initWindow(int width, int height);
 	void run();
 	void processInput();
+	void updateFramerate();
 
 public:
 	const std::string title;
@@ -51,7 +54,8 @@ public:
 	
 	CMWindow& operator = (const CMWindow&) = delete;
 
-	void start(int frameRate = -1);
+	void start();
+	void start(int frameRate);
 
 	static int getWidth();
 	static int getHeight();

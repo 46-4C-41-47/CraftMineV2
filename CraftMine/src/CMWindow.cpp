@@ -146,33 +146,34 @@ void CMWindow::initWindow(int width, int height)
 }
 
 
-void CMWindow::start(int frameRate)
+void CMWindow::start()
 {
-    if (frameRate == -1)
-    {
-        std::chrono::high_resolution_clock::time_point start, end;
-        double delta = 0, frameInterval = 1000000.0f / frameRate;
+    std::chrono::steady_clock::time_point begin, end;
 
-        while (!glfwWindowShouldClose(window))
-        {
-            start = std::chrono::high_resolution_clock::now();
-            
-            run();
-
-            end = std::chrono::high_resolution_clock::now();
-            delta = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
-            std::this_thread::sleep_for(
-                std::chrono::microseconds((int)std::max(frameInterval - delta, 0.0))
-            );
-        }
-    }
-    else
+    while (!glfwWindowShouldClose(window))
     {
-        while (!glfwWindowShouldClose(window))
-        {
-            run();
-        }
+        begin = std::chrono::steady_clock::now();
+
+        run();
+
+        end = std::chrono::steady_clock::now();
+        previousFrameDuration = std::chrono::duration_cast<std::chrono::microseconds>(end - begin).count();
+        frameRateUpdateLimit += previousFrameDuration;
+        updateFramerate();
     }
+}
+
+
+void CMWindow::updateFramerate()
+{
+    if (frameRateUpdateLimit < SECOND) 
+        return;
+
+    int frameRate = SECOND / (float)previousFrameDuration;
+    std::string newTitle = title + ", FPS : " + std::to_string(frameRate) + ", " + std::to_string((float)previousFrameDuration / SECOND) + " ms";
+    
+    glfwSetWindowTitle(window, newTitle.c_str());
+    frameRateUpdateLimit = 0;
 }
 
 
@@ -199,9 +200,9 @@ void CMWindow::processInput()
     float camSpeed;
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        camSpeed = params::controls::CAM_SPEED * 2.0f * 0.0005f;
+        camSpeed = params::controls::CAM_SPEED * 2.0f * previousFrameDuration;
     else
-        camSpeed = params::controls::CAM_SPEED * 0.0005f;
+        camSpeed = params::controls::CAM_SPEED * previousFrameDuration;
 
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
