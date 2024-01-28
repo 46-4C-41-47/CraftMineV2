@@ -53,6 +53,7 @@ public:
 	static void draw(Shader& shader, glm::mat4& projection, glm::mat4& view);
 	static void initCluster(unsigned int width);
 	static void destroyCluster();
+	static void updateCluster();
 	static void updateCluster(const Player& p);
 
 	constants::block getBlock(int x, int y, int z);

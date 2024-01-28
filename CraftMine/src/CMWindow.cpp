@@ -170,7 +170,7 @@ void CMWindow::updateFramerate()
         return;
 
     int frameRate = SECOND / (float)previousFrameDuration;
-    std::string newTitle = title + ", FPS : " + std::to_string(frameRate) + ", " + std::to_string((float)previousFrameDuration / SECOND) + " ms";
+    std::string newTitle = title + ", FPS : " + std::to_string(frameRate) + ", " + std::to_string((float)previousFrameDuration / 1000) + " ms";
     
     glfwSetWindowTitle(window, newTitle.c_str());
     frameRateUpdateLimit = 0;

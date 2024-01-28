@@ -240,7 +240,7 @@ void Chunk::destroyCluster()
 }
 
 
-void Chunk::updateCluster(const Player& p)
+void Chunk::updateCluster()
 {
 	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
 	{
