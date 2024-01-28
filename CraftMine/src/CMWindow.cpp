@@ -194,16 +194,13 @@ void CMWindow::run()
 
 void CMWindow::processInput()
 {
-    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-        glfwSetWindowShouldClose(window, true);
-
-    float camSpeed;
+    float camSpeed = params::controls::CAM_SPEED * previousFrameDuration;
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
-        camSpeed = params::controls::CAM_SPEED * 2.0f * previousFrameDuration;
-    else
-        camSpeed = params::controls::CAM_SPEED * previousFrameDuration;
+        camSpeed *= 2;
 
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         cam->moveForward(camSpeed);

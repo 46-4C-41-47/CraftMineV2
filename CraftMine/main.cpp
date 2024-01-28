@@ -30,7 +30,6 @@ int main()
 
 /*
 À FAIRE : 
-	afficher le framerate
 	Classe Chunk -> multithreading
 	Classe Player
 	Skybox
