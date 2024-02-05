@@ -30,11 +30,7 @@ private:
 	void init();
 	void genMesh();
 	void initBlocks();
-	void updateSide();
-	void updateNorth();
-	void updateSouth();
-	void updateEast();
-	void updateWest();
+	void updateSide(constants::cardinal side);
 	void updateNeighbors();
 	std::pair<long long, FaceData> createFace(int x, int y, int z, int faceIndex);
 	inline long long getFaceKey(int x, int y, int z);

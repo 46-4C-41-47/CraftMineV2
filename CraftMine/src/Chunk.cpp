@@ -270,163 +270,62 @@ void Chunk::updateNeighbors()
 			neighbors[i] = nullptr;
 	}
 
-	updateNorth();
-	updateSouth();
-	updateEast();
-	updateWest();
+	updateSide(constants::NORTH);
+	updateSide(constants::SOUTH);
+	updateSide(constants::EAST);
+	updateSide(constants::WEST);
 }
 
 
-/*void Chunk::updateSide(constants::cardinal side)
+void Chunk::updateSide(constants::cardinal side) 
 {
 	if (neighbors[side] == nullptr)
 		return;
 
-	int z = currentChunkDepth;
+	int a = 0, b = 0, c = params::world::CHUNK_WIDTH - 1, d = 0, faceIndex = 0;
+	int* x; int* z; int* w;
 	std::vector<long long> facesToDelete;
 	std::vector<long long> facesToAddKey;
 	std::vector<FaceData> facesToAddFace;
 
-	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
+	switch (side)
 	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
-		{
-			if (getBlock(x, y, z) != constants::EMPTY
-				&& neighbors[side]->getBlock(x, y, 0) == constants::EMPTY)
-			{
-				std::pair<long long, FaceData> newFace = createFace(x, y, z, face);
-				facesToAddKey.push_back(newFace.first);
-				facesToAddFace.push_back(newFace.second);
-			}
-			else
-				facesToDelete.push_back(getFaceKey(x, y, z));
-		}
+	case constants::NORTH:
+		x = &a; z = &c; w = &d; faceIndex = constants::BACK;
+		break;
+
+	case constants::SOUTH:
+		x = &a; z = &d; w = &c; faceIndex = constants::FRONT;
+		break;
+
+	case constants::EAST:
+		x = &d; z = &a; w = &c; faceIndex = constants::LEFT;
+		break;
+
+	case constants::WEST:
+		x = &c; z = &a; w = &d; faceIndex = constants::RIGHT;
+		break;
+
+	default:
+		return;
 	}
 
-	facesMesh[face]->remove(facesToDelete);
-	facesMesh[face]->add(facesToAddKey, facesToAddFace);
-}*/
-
-
-void Chunk::updateNorth()
-{
-	if (neighbors[constants::NORTH] == nullptr)
-		return;
-
-	int z = params::world::CHUNK_WIDTH - 1;
-	std::vector<long long> facesToDelete;
-	std::vector<long long> facesToAddKey;
-	std::vector<FaceData> facesToAddFace;
-
-	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
+	for (; a < params::world::CHUNK_WIDTH; a++)
 	{
 		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
 		{
-			if (getBlock(x, y, z) != constants::EMPTY 
-				&& neighbors[constants::NORTH]->getBlock(x, y, 0) == constants::EMPTY)
+			if (getBlock(*x, y, *z) != constants::EMPTY
+				&& neighbors[side]->getBlock(*x, y, *w) == constants::EMPTY)
 			{
-				std::pair<long long, FaceData> face = createFace(x, y, z, constants::BACK);
+				std::pair<long long, FaceData> face = createFace(*x, y, *z, faceIndex);
 				facesToAddKey.push_back(face.first);
 				facesToAddFace.push_back(face.second);
 			}
 			else
-				facesToDelete.push_back(getFaceKey(x, y, z));
+				facesToDelete.push_back(getFaceKey(*x, y, *z));
 		}
 	}
 
-	facesMesh[constants::BACK]->remove(facesToDelete);
-	facesMesh[constants::BACK]->add(facesToAddKey, facesToAddFace);
-}
-
-
-void Chunk::updateSouth()
-{
-	if (neighbors[constants::SOUTH] == nullptr)
-		return;
-
-	int z = 0;
-	std::vector<long long> facesToDelete;
-	std::vector<long long> facesToAddKey;
-	std::vector<FaceData> facesToAddFace;
-
-	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
-	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
-		{
-			if (getBlock(x, y, z) != constants::EMPTY
-				&& neighbors[constants::SOUTH]->getBlock(x, y, params::world::CHUNK_WIDTH - 1) == constants::EMPTY)
-			{
-				std::pair<long long, FaceData> face = createFace(x, y, z, constants::FRONT);
-				facesToAddKey.push_back(face.first);
-				facesToAddFace.push_back(face.second);
-			}
-			else
-				facesToDelete.push_back(getFaceKey(x, y, z));
-		}
-	}
-
-	facesMesh[constants::FRONT]->remove(facesToDelete);
-	facesMesh[constants::FRONT]->add(facesToAddKey, facesToAddFace);
-}
-
-
-void Chunk::updateEast()
-{
-	if (neighbors[constants::EAST] == nullptr)
-		return;
-
-	int x = 0;
-	std::vector<long long> facesToDelete;
-	std::vector<long long> facesToAddKey;
-	std::vector<FaceData> facesToAddFace;
-
-	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
-	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
-		{
-			if (getBlock(x, y, z) != constants::EMPTY
-				&& neighbors[constants::EAST]->getBlock(x, y, params::world::CHUNK_WIDTH - 1) == constants::EMPTY)
-			{
-				std::pair<long long, FaceData> face = createFace(x, y, z, constants::LEFT);
-				facesToAddKey.push_back(face.first);
-				facesToAddFace.push_back(face.second);
-			}
-			else
-				facesToDelete.push_back(getFaceKey(x, y, z));
-		}
-	}
-
-	facesMesh[constants::LEFT]->remove(facesToDelete);
-	facesMesh[constants::LEFT]->add(facesToAddKey, facesToAddFace);
-}
-
-
-void Chunk::updateWest()
-{
-	if (neighbors[constants::WEST] == nullptr)
-		return;
-
-	int x = params::world::CHUNK_WIDTH - 1;
-	std::vector<long long> facesToDelete;
-	std::vector<long long> facesToAddKey;
-	std::vector<FaceData> facesToAddFace;
-
-	for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
-	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
-		{
-			if (getBlock(x, y, z) != constants::EMPTY
-				&& neighbors[constants::WEST]->getBlock(x, y, 0) == constants::EMPTY)
-			{
-				std::pair<long long, FaceData> face = createFace(x, y, z, constants::RIGHT);
-				facesToAddKey.push_back(face.first);
-				facesToAddFace.push_back(face.second);
-			}
-			else
-				facesToDelete.push_back(getFaceKey(x, y, z));
-		}
-	}
-
-	facesMesh[constants::RIGHT]->remove(facesToDelete);
-	facesMesh[constants::RIGHT]->add(facesToAddKey, facesToAddFace);
+	facesMesh[faceIndex]->remove(facesToDelete);
+	facesMesh[faceIndex]->add(facesToAddKey, facesToAddFace);
 }

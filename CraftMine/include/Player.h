@@ -10,7 +10,6 @@
 class Player
 {
 private:
-	float x, y;
 	glm::vec3 position;
 	glm::vec2 previousChunkPos, chunkPos;
 	Camera camera;
