@@ -34,6 +34,7 @@ private:
 	void initBlocks();
 	void updateSide(constants::cardinal side);
 	void updateNeighbors();
+	void deleteFaces();
 	std::pair<long long, FaceData> createFace(int x, int y, int z, int faceIndex);
 	inline long long getFaceKey(int x, int y, int z);
 

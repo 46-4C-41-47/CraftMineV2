@@ -15,6 +15,7 @@ Chunk::Chunk(int x, int y, Chunk* n[4]) : x{ x }, y{ y }, neighbors{ *n } { init
 Chunk::~Chunk()
 {
 	delete[] blocks;
+	deleteFaces();
 }
 
 
