@@ -2,7 +2,7 @@
 
 bool Chunk::clusterInitialized = false;
 std::vector<InstancedMesh*> Chunk::facesMesh = { nullptr, nullptr, nullptr, nullptr, nullptr, nullptr };
-std::map<long long, Chunk*>* Chunk::chunkCluster = new std::map<long long int, Chunk*>();
+std::map<long long, Chunk*>* Chunk::chunkCluster = new std::map<long long, Chunk*>();
 //FastNoise::SmartNode<FastNoise::Simplex> Chunk::noise = FastNoise::New<FastNoise::Simplex>();
 
 
@@ -213,6 +213,12 @@ void Chunk::draw(Shader& shader, glm::mat4& projection, glm::mat4& view)
 }
 
 
+long long Chunk::getChunkIndex(int x, int y) { return ((long long)x) << 32 | y; }
+
+
+std::pair<int, int> Chunk::getChunkLocation(long long id) { return { id >> 32, id  & 0x00000000FFFFFFFF}; }
+
+
 void Chunk::initCluster(unsigned int width)
 {
 	if (clusterInitialized)
@@ -226,8 +232,7 @@ void Chunk::initCluster(unsigned int width)
 	{
 		for (int y = 0; y < width; y++)
 		{
-			long long int index = ((long long int)x) << 32 | y;
-			(*chunkCluster)[index] = new Chunk(x, y);
+			(*chunkCluster)[getChunkIndex(x, y)] = new Chunk(x, y);
 		}
 	}
 }
@@ -240,13 +245,46 @@ void Chunk::destroyCluster()
 }
 
 
-void Chunk::updateCluster()
+void Chunk::updateCluster(Player& player)
 {
-	for (auto it = chunkCluster->begin(); it != chunkCluster->end(); it++)
+	player.updateChunkPos();
+
+	if (player.getChunkPos() == player.getPreviousChunkPos())
+		return;
+
+	int x, y, area = params::graphical::CHUNK_RADIUS * params::graphical::CHUNK_RADIUS;
+	std::vector<long long> shouldBePresentChunks(area);
+	std::map<long long, Chunk*>* newChunkCluster = new std::map<long long, Chunk*>();
+
+	player.updateChunkPos();
+	glm::vec2 chunkPos = player.getChunkPos();
+
+	for (int i = 0; i < area; i++)
 	{
-		Chunk* chunk = it->second;
-		chunk->updateNeighbors();
+		x = i % params::graphical::CHUNK_RADIUS;
+		y = i / params::graphical::CHUNK_RADIUS;
+
+		shouldBePresentChunks.push_back(getChunkIndex(x + chunkPos.x, y + chunkPos.y));
 	}
+
+	for (long long chunkId : shouldBePresentChunks)
+	{
+		std::map<long long, Chunk*>::iterator chunk = chunkCluster->find(chunkId);
+
+		if (chunk == chunkCluster->end())
+		{
+			std::pair<int, int> location = getChunkLocation(chunkId);
+			newChunkCluster->insert({ chunkId, new Chunk(location.first, location.second) });
+		}
+		else
+		{
+			newChunkCluster->insert({ chunkId, chunk->second });
+			chunkCluster->erase(chunk);
+		}
+	}
+
+	for (const auto& [key, value] : *chunkCluster)
+		delete value;
 }
 
 

@@ -17,9 +17,10 @@ private:
 public:
 	const unsigned int HEIGTH = 2;
 
-	Player(glm::vec3 playerPosition) : position{ glm::vec3(0.0f) }, chunkPos{ glm::vec2(0.0f) }, previousChunkPos{ glm::vec2(0.0f) }
+	Player(glm::vec3 playerPosition) : position{ playerPosition }, previousChunkPos{ glm::vec2(0.0f) }
 	{
 		camera.move(playerPosition);
+		updateChunkPos();
 	}
 	~Player() {}
 

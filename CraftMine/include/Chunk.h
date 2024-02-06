@@ -26,6 +26,8 @@ private:
 	Chunk* neighbors[4]; // NORD SUD EST OUEST
 
 	static int getBlockIndex(int x, int y, int z);
+	inline static long long getChunkIndex(int x, int y);
+	inline static std::pair<int, int> getChunkLocation(long long id);
 	
 	void init();
 	void genMesh();
@@ -50,7 +52,7 @@ public:
 	static void initCluster(unsigned int width);
 	static void destroyCluster();
 	static void updateCluster();
-	static void updateCluster(const Player& p);
+	static void updateCluster(Player& player);
 
 	constants::block getBlock(int x, int y, int z);
 };

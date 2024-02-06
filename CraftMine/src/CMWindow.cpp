@@ -11,7 +11,7 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-Camera* CMWindow::cam = new Camera(glm::vec3(-1.0f, 70.0f, -1.0f), glm::vec3(0.0f));
+Player* CMWindow::player = new Player(glm::vec3(-1.0f, 70.0f, -1.0f));
 
 
 CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
@@ -58,7 +58,7 @@ void CMWindow::resizeCallback(GLFWwindow* window, int width, int height)
 
 void CMWindow::mouseCallback(GLFWwindow* window, double xpos, double ypos)
 {
-    cam->proccessMouse((int)xpos, (int)ypos);
+    player->getCam().proccessMouse((int)xpos, (int)ypos);
 }
 
 
@@ -103,7 +103,7 @@ void CMWindow::init(int width, int height)
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 
     Chunk::initCluster(params::graphical::CHUNK_RADIUS);
-    Chunk::updateCluster();
+    //Chunk::updateCluster();
 }
 
 
@@ -124,7 +124,7 @@ void CMWindow::initWindow(int width, int height)
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
     glfwSetWindowPos(window, 100, 100);
-    //glfwSetWindowPos(window, 2625, 200);
+    glfwSetWindowPos(window, 2625, 200);
 
     if (window == NULL)
         throw std::runtime_error("GLFW window creation failed\n");
@@ -181,10 +181,12 @@ void CMWindow::run()
 {
     processInput();
 
+    Chunk::updateCluster(*player);
+
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 view = cam->getViewMatrix();
+    glm::mat4 view = player->getCam().getViewMatrix();
     Chunk::draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
@@ -203,22 +205,22 @@ void CMWindow::processInput()
         glfwSetWindowShouldClose(window, true);
 
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        cam->moveForward(camSpeed);
+        player->getCam().moveForward(camSpeed);
 
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        cam->moveSideWays(-camSpeed);
+        player->getCam().moveSideWays(-camSpeed);
 
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        cam->moveForward(-camSpeed);
+        player->getCam().moveForward(-camSpeed);
 
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        cam->moveSideWays(camSpeed);
+        player->getCam().moveSideWays(camSpeed);
 
     if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        cam->moveUpward(camSpeed);
+        player->getCam().moveUpward(camSpeed);
 
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        cam->moveUpward(-camSpeed);
+        player->getCam().moveUpward(-camSpeed);
 }
 
 

@@ -14,6 +14,7 @@
 #include "Chunk.h"
 #include "Shader.h"
 #include "Camera.h"
+#include "Player.h"
 #include "parameters.h"
 #include "TextureAtlas.h"
 
@@ -27,7 +28,7 @@ private:
 	static glm::mat4 projection;
 	static GLFWwindow* window;
 	static GLFWvidmode monitor;
-	static Camera* cam;
+	static Player* player;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
 	Shader* objectShader;
