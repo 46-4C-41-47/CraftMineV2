@@ -7,3 +7,6 @@ Si vous voulez juste exécuter cette merveille il y a qu'à télécharger l'arch
 puis l'extraire et cliquer sur l'exécutable
 
 PS Si vous voyez des bugs c'est vous qui voyez mal 
+PS2 Ce chantier est encore en construction 
+
+![Capture d’écran (57)](https://github.com/46-4C-41-47/CraftMineV2/assets/122835124/dd74a7db-efb6-4ea8-a169-505cb7775d0b)
