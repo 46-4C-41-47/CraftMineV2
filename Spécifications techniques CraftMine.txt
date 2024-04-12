@@ -1,3 +1,15 @@
+Moteur du jeu ->
+Pour des raisons de performance et de simplicité le moteur devra utiliser du GPU instancing pour
+rendre les cubes.
+Plusieur possibilités pour la manière de rendre les cubes (il faudra en choisir une) : 
+- Créer 6 buffer, chaque buffer stockera une face
+- Créer un seul buffer qui contiendra des cubes, c'est la solution la plus simple mais la moins 
+  performantes car la carte graphique calculera des faces qui ne sont pas visibles
+- Créer un buffer qui contient toutes les faces séparément, cependant cela empêche (?) de faire du GPU
+  instancing mais règle le problème de face hors champ de vision
+
+------------------------------------------------------------------------------------------------------
+
 Le joueur doit pourvoir se déplacer dans un monde infini généré procéduralement ->
 Le programme adoptera un système de chunk comme minecraft, ils sont générés autour du joueur dans 
 un rayon donné. 
