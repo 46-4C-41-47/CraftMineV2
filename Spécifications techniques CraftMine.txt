@@ -7,6 +7,7 @@ Plusieur possibilités pour la manière de rendre les cubes (il faudra en choisi
   performantes car la carte graphique calculera des faces qui ne sont pas visibles
 - Créer un buffer qui contient toutes les faces séparément, cependant cela empêche (?) de faire du GPU
   instancing mais règle le problème de face hors champ de vision
+- Créer un seul buffer qui contient une seule face et appliquer une matice de rotation à cette face
 
 ------------------------------------------------------------------------------------------------------
 
