@@ -1,0 +1,29 @@
+Le joueur doit pourvoir se déplacer dans un monde infini généré procéduralement ->
+Le programme adoptera un système de chunk comme minecraft, ils sont générés autour du joueur dans 
+un rayon donné. 
+Pour ce faire on utilisera du perlin noise (ou simplex) via une bibliothèque externe.
+Les chunks déjà générés et/ou modifié seront stockés dans un vector au cour de l'execution.
+
+Règles de génération d'un chunk :
+- Le chunk doit faire 16 par 16 blocs de large et 256 blocs de hauteur
+- La surface se trouvera entre la couche 128 et 196 et se composera de terre
+- Une couche de pierre se trouvera entre 0 et 128 blocs de hauteur (2eme image de bruit)
+
+Plusieurs chunk doivent pouvoir être générés en parallèle
+
+------------------------------------------------------------------------------------------------------
+
+Le joueur doit pouvoir casser et placer des blocs -> à spécifier
+
+------------------------------------------------------------------------------------------------------
+
+Le joueur doit subir la gravité et/ou voler -> physique à spécifier
+Le joueur ne doit pas pouvoir traverser les blocs -> physique à spécifier
+
+------------------------------------------------------------------------------------------------------
+
+Le monde doit contenir plusieurs environnements différents -> On utilisera 2 image en 2D de bruit une
+représente l'humidité et l'autre la température les règles sont qui détermine le bloc sont encore a
+déterminer en fonction des résultats (voir https://www.youtube.com/watch?v=ob3VwY4JyzE)
+
+------------------------------------------------------------------------------------------------------

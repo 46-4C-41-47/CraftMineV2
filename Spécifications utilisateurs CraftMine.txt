@@ -1,0 +1,8 @@
+Le joueur doit pourvoir se déplacer dans un monde infini généré procéduralement
+Le joueur doit pouvoir casser et placer des blocs
+Le joueur doit subir la gravité et/ou voler
+Le joueur ne doit pas pouvoir traverser les blocs
+Le monde doit contenir plusieurs environnements différents
+Le monde doit contenir des arbres (villages ?)
+Le monde doit contenir de l'eau, le joueur peut passer au travers avec une physique adaptée à l'eau
+Le monde doit avoir un brouillard
