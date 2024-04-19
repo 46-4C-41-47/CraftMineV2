@@ -9,6 +9,15 @@ Plusieur possibilités pour la manière de rendre les cubes (il faudra en choisi
   instancing mais règle le problème de face hors champ de vision
 - Créer un seul buffer qui contient une seule face et appliquer une matice de rotation à cette face
 
+
+Chunk -> représente un chunk et s'occupe de la génération de celui ci
+ChunkCluster -> représente les chunks chargés autour du joueur (vector<Chunk>)
+ChunkRenderer -> prend un chunkCluster et un joueur et dessine les chunks à l'écran
+		 Cette classe doit determiner dans la liste de cubes des chunks quelles faces de quelles cubes
+		 sont visibles 
+
+VBO -> postion(vec3), normal(vec3), offset(vec3), texture(16 derniers bits) face(16 premiers bits)(int) = 44 octets par face
+
 ------------------------------------------------------------------------------------------------------
 
 Le joueur doit pourvoir se déplacer dans un monde infini généré procéduralement ->
