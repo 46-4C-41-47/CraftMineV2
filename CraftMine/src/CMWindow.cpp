@@ -31,7 +31,6 @@ CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
 CMWindow::~CMWindow()
 {
     delete objectShader;
-    Chunk::destroyCluster();
     glfwTerminate();
     instanceCount -= 1;
 }
@@ -101,8 +100,6 @@ void CMWindow::init(int width, int height)
     rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
-
-    Chunk::initCluster(params::graphical::CHUNK_RADIUS);
 }
 
 
@@ -180,13 +177,10 @@ void CMWindow::run()
 {
     processInput();
 
-    Chunk::updateCluster(*player);
-
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = player->getCam().getViewMatrix();
-    Chunk::draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
