@@ -15,9 +15,7 @@ private:
 	void init();
 
 public:
-	const Player& player;
-
-	ChunkCluster(const Player& player);
+	ChunkCluster() { init(); };
 	ChunkCluster(const ChunkCluster&) = delete;
 
 	~ChunkCluster();

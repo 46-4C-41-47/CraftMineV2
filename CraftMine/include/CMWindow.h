@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "parameters.h"
 #include "TextureAtlas.h"
+#include "ChunkRenderer.h"
 
 
 class CMWindow
@@ -28,6 +29,7 @@ private:
 	static GLFWwindow* window;
 	static GLFWvidmode monitor;
 	static Player* player;
+	static ChunkRenderer* renderer;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
 	Shader* objectShader;

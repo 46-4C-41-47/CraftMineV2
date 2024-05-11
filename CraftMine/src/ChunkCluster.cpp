@@ -1,11 +1,6 @@
 #include "../include/ChunkCluster.h"
 
 
-ChunkCluster::ChunkCluster(const Player& player) : player{ player } {
-	init();
-}
-
-
 ChunkCluster::~ChunkCluster() {
 	for (std::map<long long, Chunk*>::iterator it = chunks.begin(); it != chunks.end(); it++)
 		delete chunks[it->first];

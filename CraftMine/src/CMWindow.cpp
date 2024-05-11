@@ -13,6 +13,8 @@ GLFWvidmode CMWindow::monitor = {};
 
 Player* CMWindow::player = new Player(glm::vec3(-1.0f, 70.0f, -1.0f));
 
+ChunkRenderer* CMWindow::renderer = ChunkRenderer::getInstance();
+
 
 CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
 {
@@ -181,6 +183,7 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = player->getCam().getViewMatrix();
+    renderer->draw(*objectShader, projection, view, nullptr);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
