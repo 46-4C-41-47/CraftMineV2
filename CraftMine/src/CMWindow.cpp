@@ -16,10 +16,10 @@ Player* CMWindow::player = new Player(glm::vec3(-1.0f, 70.0f, -1.0f));
 ChunkRenderer* CMWindow::renderer = ChunkRenderer::getInstance();
 
 
-CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
+CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
 {
     fullscreen = false;
-    init(width, height);
+    init(width, height, x, y);
 }
 
 
@@ -91,21 +91,21 @@ void CMWindow::toggleFullscreenMode()
 }
 
 
-void CMWindow::init(int width, int height)
+void CMWindow::init(int width, int height, int x, int y)
 {
     if (0 < instanceCount)
         throw std::runtime_error("CMWindow class can only have one instance at a time");
 
     instanceCount += 1;
 
-    initWindow(width, height);
+    initWindow(width, height, x, y);
     rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
 }
 
 
-void CMWindow::initWindow(int width, int height)
+void CMWindow::initWindow(int width, int height, int x, int y)
 {
     if (!glfwInit())
         throw std::runtime_error("Initialization of GLFW failed\n");
@@ -121,8 +121,8 @@ void CMWindow::initWindow(int width, int height)
     else
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
-    glfwSetWindowPos(window, 100, 100);
-    glfwSetWindowPos(window, 2625, 200);
+    if (!fullscreen)
+        glfwSetWindowPos(window, x, y);
 
     if (window == NULL)
         throw std::runtime_error("GLFW window creation failed\n");

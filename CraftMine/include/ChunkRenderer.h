@@ -15,6 +15,7 @@ class ChunkRenderer
 {
 private:
 	static ChunkRenderer* instance;
+	std::map<long long, Chunk*>* generatedChunk = new std::map<long long, Chunk*>();
 	
 	ChunkRenderer();
 
@@ -25,12 +26,7 @@ public:
 
 	ChunkRenderer& operator = (const ChunkRenderer&) = delete;
 	
-	static ChunkRenderer* getInstance() {
-		if (instance == nullptr)
-			instance = new ChunkRenderer();
-
-		return instance;
-	}
+	static ChunkRenderer* getInstance();
 
 	void draw(
 		const Shader& shader, 

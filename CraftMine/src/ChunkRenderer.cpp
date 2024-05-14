@@ -10,7 +10,15 @@ ChunkRenderer::ChunkRenderer() {
 
 
 ChunkRenderer::~ChunkRenderer() {
+	delete generatedChunk;
+}
 
+
+ChunkRenderer* ChunkRenderer::getInstance() {
+	if (instance == nullptr)
+		instance = new ChunkRenderer();
+
+	return instance;
 }
 
 

@@ -14,7 +14,7 @@ private:
 	glm::vec3 position;
 	glm::vec2 previousChunkPos, chunkPos;
 	Camera camera;
-	//ChunkCluster* cluster;
+	ChunkCluster* cluster = new ChunkCluster();
 
 public:
 	const unsigned int HEIGTH = 2;
@@ -34,5 +34,5 @@ public:
 
 	Camera& getCam() { return camera; }
 
-	//ChunkCluster* getCluster() { return nullptr; }
+	ChunkCluster* getCluster() { return cluster; }
 };

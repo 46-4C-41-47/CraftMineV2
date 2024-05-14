@@ -3,7 +3,6 @@
 #include <map>
 
 #include "Chunk.h"
-#include "Player.h"
 #include "parameters.h"
 
 
