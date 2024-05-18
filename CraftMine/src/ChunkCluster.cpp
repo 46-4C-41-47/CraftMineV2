@@ -9,12 +9,8 @@ ChunkCluster::~ChunkCluster() {
 
 void ChunkCluster::init() {
 	for (int x = 0; x < params::graphical::CHUNK_RADIUS; x++)
-	{
 		for (int y = 0; y < params::graphical::CHUNK_RADIUS; y++)
-		{
 			chunks.emplace(getKey(x, y), new Chunk(x, y));
-		}
-	}
 }
 
 

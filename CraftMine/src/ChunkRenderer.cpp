@@ -5,7 +5,8 @@ ChunkRenderer* ChunkRenderer::instance = nullptr;
 
 
 ChunkRenderer::ChunkRenderer() {
-
+	std::vector<Face> a = { { glm::ivec3(0), 0 } };
+	generatedChunk->emplace(0, new ChunkMesh(a));
 }
 
 
@@ -23,10 +24,11 @@ ChunkRenderer* ChunkRenderer::getInstance() {
 
 
 void ChunkRenderer::draw(
-	const Shader& shader,
+	Shader& shader,
 	const glm::mat4& projectionMatrix,
 	const glm::mat4& viewMatrix,
 	const ChunkCluster* cluster
 ) {
-	//std::cout << "draw\n";
+	for (std::map<long long, ChunkMesh*>::iterator it = generatedChunk->begin(); it != generatedChunk->end(); it++)
+		it->second->draw(shader, projectionMatrix, viewMatrix);
 }

@@ -11,9 +11,9 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-Player* CMWindow::player = new Player(glm::vec3(-1.0f, 70.0f, -1.0f));
+Player* CMWindow::player = new Player(glm::vec3(0.5f, 0.5f, -1.0f));
 
-ChunkRenderer* CMWindow::renderer = ChunkRenderer::getInstance();
+ChunkRenderer* CMWindow::renderer = nullptr;
 
 
 CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
@@ -102,6 +102,8 @@ void CMWindow::init(int width, int height, int x, int y)
     rebuildProjectionMatrix(getWidth(), getHeight());
 
     objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
+
+    renderer = ChunkRenderer::getInstance();
 }
 
 
@@ -139,7 +141,7 @@ void CMWindow::initWindow(int width, int height, int x, int y)
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     glEnable(GL_DEPTH_TEST);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 

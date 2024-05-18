@@ -6,30 +6,32 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "Face.h"
 #include "GLMap.h"
-
-
-typedef struct {
-	glm::ivec3 position;
-	glm::vec3 normal;
-	int textureFace;
-} Face;
+#include "Shader.h"
 
 
 class ChunkMesh
 {
 private:
-	unsigned int VAO, constDataVBO;
-	GLMap<long long, Face>* map = new GLMap<long long, Face>();
+	unsigned int VAO, constVBO;
+	GLMap<long long, Face>* VBO = new GLMap<long long, Face>();
 
 	void initVAO();
 
 public:
 	ChunkMesh(std::vector<Face>& faces);
 	ChunkMesh(const ChunkMesh&) = delete;
+
 	~ChunkMesh();
 	
 	ChunkMesh& operator = (const ChunkMesh&) = delete;
+
+	void draw(
+		Shader& shader,
+		const glm::mat4& projection,
+		const glm::mat4& view
+	);
 
 	void add(std::vector<Face>& faces);
 	void remove(std::vector<long long>& ids);
