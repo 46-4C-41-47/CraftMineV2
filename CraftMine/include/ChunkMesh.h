@@ -9,11 +9,14 @@
 #include "Face.h"
 #include "GLMap.h"
 #include "Shader.h"
+#include "parameters.h"
+#include "TextureAtlas.h"
 
 
 class ChunkMesh
 {
 private:
+	static TextureAtlas* atlas;
 	unsigned int VAO, constVBO;
 	GLMap<long long, Face>* VBO = new GLMap<long long, Face>();
 
@@ -29,8 +32,8 @@ public:
 
 	void draw(
 		Shader& shader,
-		const glm::mat4& projection,
-		const glm::mat4& view
+		glm::mat4& projection,
+		glm::mat4& view
 	);
 
 	void add(std::vector<Face>& faces);

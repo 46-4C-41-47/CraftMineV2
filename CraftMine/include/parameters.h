@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "TextureAtlas.h"
 
@@ -46,12 +47,15 @@ namespace params
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
 		static const int CHUNK_RADIUS = 10;
+
+		static const std::string CHUNK_VERTEX_SHADER_PATH = "./res/shaders/block_vertex.glsl";
+		static const std::string CHUNK_FRAGMENT_SHADER_PATH = "./res/shaders/block_fragment.glsl";
 	}
 
 	namespace controls
 	{
 		static const float HORIZONTAL_SENSITIVITY = 0.002f, VERTICAL_SENSITIVITY = 0.0016f;
-		static const float CAM_SPEED = 0.00003f;
+		static const float CAM_SPEED = 0.000005f;
 	}
 
 	namespace world

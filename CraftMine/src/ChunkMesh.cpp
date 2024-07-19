@@ -1,8 +1,15 @@
 #include "../include/ChunkMesh.h"
 
 
+TextureAtlas* ChunkMesh::atlas = nullptr;
+
+
 ChunkMesh::ChunkMesh(std::vector<Face>& faces) {
-	VBO->add({ 0 }, faces);
+	if (atlas == nullptr)
+		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
+
+	VBO->add({ 0, 1, 2, 3, 4, 5 }, faces);
+	initVAO();
 }
 
 
@@ -13,9 +20,6 @@ ChunkMesh::~ChunkMesh() {
 
 
 void ChunkMesh::initVAO() {
-	const size_t constVboSize = 3 * sizeof(int) + 3 * sizeof(float);
-	const size_t vboSize = 4 * sizeof(int);
-
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &constVBO);
 
@@ -25,15 +29,15 @@ void ChunkMesh::initVAO() {
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, constVBO);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_INT, GL_FALSE, constVboSize, (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)0);
 	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, constVboSize, (void*)(3 * sizeof(int)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Point), (void*)(3 * sizeof(float)));
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO->id());
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_INT, GL_FALSE, vboSize, (void*)0);
+	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Face), (void*)0);
 	glEnableVertexAttribArray(3);
-	glVertexAttribPointer(3, 1, GL_INT, GL_FALSE, vboSize, (void*)(3 * sizeof(int)));
+	glVertexAttribIPointer(3, 1, GL_INT, sizeof(Face), (void*)(3 * sizeof(float)));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -44,15 +48,25 @@ void ChunkMesh::initVAO() {
 }
 
 
+
 void ChunkMesh::draw(
 	Shader& shader,
-	const glm::mat4& projection,
-	const glm::mat4& view
+	glm::mat4& projection,
+	glm::mat4& view
 ) {
 	shader.use();
 
+	shader.sendMat4("rotations", faceRotation);
 	shader.sendMat4("projection", projection);
 	shader.sendMat4("view", view);
+
+	shader.sendVec2("atlasSizes", glm::vec2((float)atlas->width, (float)atlas->height));
+
+	shader.sendFloat("atlasHeight", (float)atlas->height);
+	shader.sendFloat("atlasWidth", (float)atlas->width);
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
 
 	glBindVertexArray(VAO);
 	glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, constFace.size(), VBO->size());

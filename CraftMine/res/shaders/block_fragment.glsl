@@ -1,9 +1,14 @@
 #version 460 core
 
+in vec2 UV;
+in vec3 normal;
+
 out vec4 FragColor;
+
+uniform sampler2D textureAtlas;
 
 
 void main()
 {
-    FragColor = vec4(1.0);
+    FragColor = texture(textureAtlas, UV);
 }

@@ -101,7 +101,7 @@ void CMWindow::init(int width, int height, int x, int y)
     initWindow(width, height, x, y);
     rebuildProjectionMatrix(getWidth(), getHeight());
 
-    objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
+    objectShader = new Shader(params::graphical::CHUNK_VERTEX_SHADER_PATH, params::graphical::CHUNK_FRAGMENT_SHADER_PATH);
 
     renderer = ChunkRenderer::getInstance();
 }
@@ -141,7 +141,7 @@ void CMWindow::initWindow(int width, int height, int x, int y)
     glfwSetFramebufferSizeCallback(window, resizeCallback);
 
     glEnable(GL_DEPTH_TEST);
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 }
 
