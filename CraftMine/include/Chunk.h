@@ -7,6 +7,8 @@
 
 #include <glm/glm.hpp>
 
+#include "Face.h"
+#include "ChunkMesh.h"
 #include "parameters.h"
 
 
@@ -17,8 +19,10 @@ private:
 
 	int getBlockIndex(int x, int y, int z);
 	void init();
+	void computeFaces(std::vector<Face>& faces);
 
 public:
+	ChunkMesh* mesh;
 	const int x, y;
 
 	Chunk(int x, int y);

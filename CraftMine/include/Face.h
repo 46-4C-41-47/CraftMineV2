@@ -8,7 +8,7 @@
 
 
 typedef struct {
-	glm::vec3 offset;
+	glm::ivec3 offset;
 	int textureAndFace;
 } Face;
 

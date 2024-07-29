@@ -16,7 +16,9 @@ ChunkRenderer -> prend un chunkCluster et un joueur et dessine les chunks Ã  l'Ã
 		 Cette classe doit determiner dans la liste de cubes des chunks quelles faces de quelles cubes
 		 sont visibles 
 
-VBO -> postion(vec3), normal(vec3), offset(vec3), texture(16 derniers bits) face(16 premiers bits)(int) = 44 octets par face
+VBO -> postion(vec3), normal(vec3), offset(vec3), texture(24 derniers bits) face(8 premiers bits)(int) = 44 octets par face
+
+GLMap key = 20bit x, 20bit y, 20bit z, 4bit texture index
 
 ------------------------------------------------------------------------------------------------------
 

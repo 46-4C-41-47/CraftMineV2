@@ -8,7 +8,7 @@ ChunkMesh::ChunkMesh(std::vector<Face>& faces) {
 	if (atlas == nullptr)
 		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
 
-	VBO->add({ 0, 1, 2, 3, 4, 5 }, faces);
+	add(faces);
 	initVAO();
 }
 
@@ -35,9 +35,9 @@ void ChunkMesh::initVAO() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO->id());
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Face), (void*)0);
+	glVertexAttribIPointer(2, 3, GL_INT, sizeof(Face), (void*)0);
 	glEnableVertexAttribArray(3);
-	glVertexAttribIPointer(3, 1, GL_INT, sizeof(Face), (void*)(3 * sizeof(float)));
+	glVertexAttribIPointer(3, 1, GL_INT, sizeof(Face), (void*)(3 * sizeof(int)));
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 
@@ -46,7 +46,6 @@ void ChunkMesh::initVAO() {
 
 	glBindVertexArray(0);
 }
-
 
 
 void ChunkMesh::draw(
@@ -73,4 +72,23 @@ void ChunkMesh::draw(
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);
+}
+
+
+void ChunkMesh::add(std::vector<Face>& faces) 
+{
+	std::vector<long long> keys;
+	int key, x, y, z, faceIndex;
+
+	for (Face& face : faces)
+	{
+		x = (long long)(face.offset.x & 0x000FFFFF) << 44;
+		y = (long long)(face.offset.y & 0x000FFFFF) << 24;
+		z = (long long)(face.offset.z & 0x000FFFFF) << 4;
+		faceIndex = face.textureAndFace & 0x00000007;
+		key = x | y | z | faceIndex;
+		keys.push_back(face.textureAndFace & 0x000000FF);
+	}
+
+	VBO->add(keys, faces);
 }

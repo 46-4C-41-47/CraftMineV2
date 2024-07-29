@@ -15,6 +15,8 @@ Player* CMWindow::player = new Player(glm::vec3(0.5f, 0.5f, -1.0f));
 
 ChunkRenderer* CMWindow::renderer = nullptr;
 
+ChunkCluster* CMWindow::cluster = new ChunkCluster();
+
 
 CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
 {
@@ -185,7 +187,7 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = player->getCam().getViewMatrix();
-    renderer->draw(*objectShader, projection, view, nullptr);
+    renderer->draw(*objectShader, projection, view, *cluster);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

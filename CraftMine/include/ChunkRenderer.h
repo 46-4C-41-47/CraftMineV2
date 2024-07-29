@@ -33,6 +33,6 @@ public:
 		Shader& shader, 
 		glm::mat4& projectionMatrix, 
 		glm::mat4& viewMatrix, 
-		const ChunkCluster* cluster
+		ChunkCluster& cluster
 	);
 };

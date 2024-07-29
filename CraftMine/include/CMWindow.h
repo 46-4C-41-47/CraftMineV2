@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "parameters.h"
 #include "TextureAtlas.h"
+#include "ChunkCluster.h"
 #include "ChunkRenderer.h"
 
 
@@ -29,6 +30,7 @@ private:
 	static GLFWwindow* window;
 	static GLFWvidmode monitor;
 	static Player* player;
+	static ChunkCluster* cluster;
 	static ChunkRenderer* renderer;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
