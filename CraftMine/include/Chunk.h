@@ -18,7 +18,7 @@ private:
 	constants::block* blocks;
 
 	int getBlockIndex(int x, int y, int z);
-	void init();
+	void init(std::vector<Face>& faces);
 	void computeFaces(std::vector<Face>& faces);
 
 public:

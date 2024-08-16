@@ -15,7 +15,7 @@ Player* CMWindow::player = new Player(glm::vec3(0.5f, 0.5f, -1.0f));
 
 ChunkRenderer* CMWindow::renderer = nullptr;
 
-ChunkCluster* CMWindow::cluster = new ChunkCluster();
+ChunkCluster* CMWindow::cluster = nullptr;
 
 
 CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
@@ -105,6 +105,7 @@ void CMWindow::init(int width, int height, int x, int y)
 
     objectShader = new Shader(params::graphical::CHUNK_VERTEX_SHADER_PATH, params::graphical::CHUNK_FRAGMENT_SHADER_PATH);
 
+    cluster = new ChunkCluster();
     renderer = ChunkRenderer::getInstance();
 }
 

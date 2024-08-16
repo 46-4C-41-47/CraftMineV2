@@ -4,7 +4,10 @@
 TextureAtlas* ChunkMesh::atlas = nullptr;
 
 
-ChunkMesh::ChunkMesh(std::vector<Face>& faces) {
+ChunkMesh::ChunkMesh(std::vector<Face>& faces) 
+{
+	VBO = new GLMap<long long, Face>();
+
 	if (atlas == nullptr)
 		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
 
@@ -13,13 +16,15 @@ ChunkMesh::ChunkMesh(std::vector<Face>& faces) {
 }
 
 
-ChunkMesh::~ChunkMesh() {
+ChunkMesh::~ChunkMesh() 
+{
 	glDeleteVertexArrays(1, &VAO);
 	delete VBO;
 }
 
 
-void ChunkMesh::initVAO() {
+void ChunkMesh::initVAO() 
+{
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &constVBO);
 
@@ -48,11 +53,8 @@ void ChunkMesh::initVAO() {
 }
 
 
-void ChunkMesh::draw(
-	Shader& shader,
-	glm::mat4& projection,
-	glm::mat4& view
-) {
+void ChunkMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view) 
+{
 	shader.use();
 
 	shader.sendMat4("rotations", faceRotation);
@@ -78,7 +80,7 @@ void ChunkMesh::draw(
 void ChunkMesh::add(std::vector<Face>& faces) 
 {
 	std::vector<long long> keys;
-	int key, x, y, z, faceIndex;
+	long long key, x, y, z, faceIndex;
 
 	for (Face& face : faces)
 	{
@@ -87,7 +89,7 @@ void ChunkMesh::add(std::vector<Face>& faces)
 		z = (long long)(face.offset.z & 0x000FFFFF) << 4;
 		faceIndex = face.textureAndFace & 0x00000007;
 		key = x | y | z | faceIndex;
-		keys.push_back(face.textureAndFace & 0x000000FF);
+		keys.push_back(key);
 	}
 
 	VBO->add(keys, faces);
