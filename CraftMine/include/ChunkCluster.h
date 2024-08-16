@@ -1,11 +1,27 @@
 #pragma once
 
+#include <map>
 
-class ChunkCluster 
+#include "Chunk.h"
+#include "parameters.h"
+
+
+class ChunkCluster
 {
+private:
+	std::map<long long, Chunk*> chunks = {};
+
+	void init();
+
 public:
-	static void initCluster(unsigned int width);
-	static void destroyCluster();
-	static void updateCluster();
-	static void updateCluster(Player& player);
+	ChunkCluster() { init(); };
+	ChunkCluster(const ChunkCluster&) = delete;
+
+	~ChunkCluster();
+
+	ChunkCluster& operator = (const ChunkCluster&) = delete;
+
+	long long getKey(int x, int y);
+
+	const std::map<long long, Chunk*>& getChunks() { return chunks; };
 };

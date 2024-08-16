@@ -38,6 +38,7 @@ public:
     void sendVec2(const std::string& name, const glm::vec2& value);
     void sendVec3(const std::string& name, const glm::vec3& value);
     void sendMat4(const std::string& name, const glm::mat4& value);
+    void sendMat4(const std::string& name, const std::vector<glm::mat4>& value);
     void sendFloat(const std::string& name, float value);
     void sendInt(const std::string& name, int value);
 };

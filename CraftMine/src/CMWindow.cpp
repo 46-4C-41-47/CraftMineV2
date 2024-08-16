@@ -11,13 +11,17 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-Player* CMWindow::player = new Player(glm::vec3(-1.0f, 70.0f, -1.0f));
+Player* CMWindow::player = new Player(glm::vec3(0.5f, 0.5f, -1.0f));
+
+ChunkRenderer* CMWindow::renderer = nullptr;
+
+ChunkCluster* CMWindow::cluster = nullptr;
 
 
-CMWindow::CMWindow(std::string title, int width, int height) : title{ title }
+CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
 {
     fullscreen = false;
-    init(width, height);
+    init(width, height, x, y);
 }
 
 
@@ -31,7 +35,6 @@ CMWindow::CMWindow(std::string title, bool isFullscreen) : title{ title }
 CMWindow::~CMWindow()
 {
     delete objectShader;
-    Chunk::destroyCluster();
     glfwTerminate();
     instanceCount -= 1;
 }
@@ -90,23 +93,24 @@ void CMWindow::toggleFullscreenMode()
 }
 
 
-void CMWindow::init(int width, int height)
+void CMWindow::init(int width, int height, int x, int y)
 {
     if (0 < instanceCount)
         throw std::runtime_error("CMWindow class can only have one instance at a time");
 
     instanceCount += 1;
 
-    initWindow(width, height);
+    initWindow(width, height, x, y);
     rebuildProjectionMatrix(getWidth(), getHeight());
 
-    objectShader = new Shader("./res/shaders/block_vertex.glsl", "./res/shaders/block_fragment.glsl");
+    objectShader = new Shader(params::graphical::CHUNK_VERTEX_SHADER_PATH, params::graphical::CHUNK_FRAGMENT_SHADER_PATH);
 
-    Chunk::initCluster(params::graphical::CHUNK_RADIUS);
+    cluster = new ChunkCluster();
+    renderer = ChunkRenderer::getInstance();
 }
 
 
-void CMWindow::initWindow(int width, int height)
+void CMWindow::initWindow(int width, int height, int x, int y)
 {
     if (!glfwInit())
         throw std::runtime_error("Initialization of GLFW failed\n");
@@ -122,8 +126,8 @@ void CMWindow::initWindow(int width, int height)
     else
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
-    glfwSetWindowPos(window, 100, 100);
-    glfwSetWindowPos(window, 2625, 200);
+    if (!fullscreen)
+        glfwSetWindowPos(window, x, y);
 
     if (window == NULL)
         throw std::runtime_error("GLFW window creation failed\n");
@@ -180,13 +184,11 @@ void CMWindow::run()
 {
     processInput();
 
-    Chunk::updateCluster(*player);
-
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = player->getCam().getViewMatrix();
-    Chunk::draw(*objectShader, projection, view);
+    renderer->draw(*objectShader, projection, view, *cluster);
 
     glfwSwapBuffers(window);
     glfwPollEvents();

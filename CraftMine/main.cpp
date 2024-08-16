@@ -26,20 +26,3 @@ int main()
 
 	return 0;
 }
-
-
-/*
-À FAIRE : 
-	Classe Chunk -> multithreading
-	Classe Player
-	Skybox
-	Bloques destructibles
-	Rendre la classe InstancedMesh plus générique
-
-À TESTER :
-	GLVector::remove
-
-BUG :
-	La limite de framerate dans la fonction run de CMWindow marche pas 
-	Impossible d'utiliser la bibliothèque FastNoise avec plusieurs instances de Chunk
-*/

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include "TextureAtlas.h"
 
@@ -16,9 +17,9 @@ namespace constants
 
 	enum block
 	{
-		          // (top << 16) | (bottom << 8) | side;
+		        // (bottom << 16) | (top << 8) | side;
 		      EMPTY = -1,
-		      GRASS = (  0 << 16) | (  2 << 8) |   3,
+		      GRASS = (  2 << 16) | (  0 << 8) |   3,
 		COBBLESTONE = ( 16 << 16) | ( 16 << 8) |  16,
 		    LIBRARY = (  4 << 16) | (  4 << 8) |  35,
 	};
@@ -32,108 +33,6 @@ namespace constants
 		BOTTOM = 4,
 		   TOP = 5,
 	};
-
-	namespace cube
-	{
-		const std::vector<float> FRONT = {
-//          vertex coordinates     normal vector          texture coordinates
-			0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-			1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
-			1.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
-			1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
-			0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-			0.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 0.0f,
-		};
-
-		const std::vector<float> BACK = {
-			0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-			1.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f,
-			0.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 0.0f,
-			0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-		};
-		
-		const std::vector<float> LEFT = {
-			0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-			0.0f,  1.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-			0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-			0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-		};
-		
-		const std::vector<float> RIGHT = {
-			1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  1.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-			1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  0.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-		};
-		
-		const std::vector<float> BOTTOM = {
-			0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    1.0f, 1.0f,
-			1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-			0.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    0.0f, 0.0f,
-			0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f,
-		};
-		
-		const std::vector<float> TOP = {
-			0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    1.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-			0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f,
-			0.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    0.0f, 0.0f,
-		};
-
-		const std::vector<float> CUBE = {
-			0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f, // front
-			1.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 0.0f,
-			1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-			1.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    1.0f, 1.0f,
-			0.0f,  1.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  0.0f,    0.0f,  0.0f, -1.0f,    0.0f, 0.0f,
-
-			0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f, // back
-			1.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 0.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    1.0f, 1.0f,
-			0.0f,  1.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  1.0f,    0.0f,  0.0f,  1.0f,    0.0f, 0.0f,
-
-			0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // left
-			0.0f,  1.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-			0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  0.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			0.0f,  0.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-			0.0f,  1.0f,  1.0f,   -1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-
-			1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f, // right
-			1.0f,  1.0f,  0.0f,    1.0f,  0.0f,  0.0f,    1.0f, 1.0f,
-			1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  0.0f,  0.0f,    1.0f,  0.0f,  0.0f,    0.0f, 1.0f,
-			1.0f,  0.0f,  1.0f,    1.0f,  0.0f,  0.0f,    0.0f, 0.0f,
-			1.0f,  1.0f,  1.0f,    1.0f,  0.0f,  0.0f,    1.0f, 0.0f,
-
-			0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f, // bottom
-			1.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    1.0f, 1.0f,
-			1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    1.0f, 0.0f,
-			0.0f,  0.0f,  1.0f,    0.0f, -1.0f,  0.0f,    0.0f, 0.0f,
-			0.0f,  0.0f,  0.0f,    0.0f, -1.0f,  0.0f,    0.0f, 1.0f,
-
-			0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f, // top
-			1.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    1.0f, 1.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-			1.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    1.0f, 0.0f,
-			0.0f,  1.0f,  1.0f,    0.0f,  1.0f,  0.0f,    0.0f, 0.0f,
-			0.0f,  1.0f,  0.0f,    0.0f,  1.0f,  0.0f,    0.0f, 1.0f
-		};
-	}
 }
 
 
@@ -148,12 +47,15 @@ namespace params
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
 		static const int CHUNK_RADIUS = 10;
+
+		static const std::string CHUNK_VERTEX_SHADER_PATH = "./res/shaders/block_vertex.glsl";
+		static const std::string CHUNK_FRAGMENT_SHADER_PATH = "./res/shaders/block_fragment.glsl";
 	}
 
 	namespace controls
 	{
 		static const float HORIZONTAL_SENSITIVITY = 0.002f, VERTICAL_SENSITIVITY = 0.0016f;
-		static const float CAM_SPEED = 0.00003f;
+		static const float CAM_SPEED = 0.000005f;
 	}
 
 	namespace world

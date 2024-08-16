@@ -144,6 +144,12 @@ void Shader::sendMat4(const std::string& name, const glm::mat4& value)
 }
 
 
+void Shader::sendMat4(const std::string& name, const std::vector<glm::mat4>& value)
+{
+    glUniformMatrix4fv(glGetUniformLocation(finalShader, name.c_str()), value.size(), GL_FALSE, (GLfloat*)value.data());
+}
+
+
 void Shader::sendFloat(const std::string& name, float value) 
 {
     glUniform1f(glGetUniformLocation(finalShader, name.c_str()), value);

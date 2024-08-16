@@ -1,5 +1,13 @@
 #include "../include/Player.h"
 
+
+Player::Player(glm::vec3 playerPosition) : position{ playerPosition }, previousChunkPos{ glm::vec2(0.0f) }
+{
+	camera.move(playerPosition);
+	updateChunkPos();
+}
+
+
 void Player::updateChunkPos()
 {
 	previousChunkPos = chunkPos;
