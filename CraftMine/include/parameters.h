@@ -24,14 +24,14 @@ namespace constants
 		    LIBRARY = (  4 << 16) | (  4 << 8) |  35,
 	};
 
-	enum blockFace
+	enum blockFaceIndex
 	{
 		 FRONT = 0,
 		  BACK = 1,
-		  LEFT = 2,
-		 RIGHT = 3,
-		BOTTOM = 4,
-		   TOP = 5,
+		 RIGHT = 2,
+		  LEFT = 3,
+		   TOP = 4,
+		BOTTOM = 5,
 	};
 }
 
