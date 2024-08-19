@@ -10,7 +10,7 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 	init();
 	computeFaces(faces);
 
-	mesh = new ChunkMesh(faces);
+	mesh = new ChunkMesh(x, y, faces);
 }
 
 
@@ -36,10 +36,13 @@ void Chunk::init()
 		{
 			for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 			{
-				if (std::rand() % 2 == 0)
+				blocks[getBlockIndex(x, y, z)] = constants::GRASS;
+				
+				/*if (std::rand() % 2 == 0)
 					blocks[getBlockIndex(x, y, z)] = constants::COBBLESTONE;
 				else 
 					blocks[getBlockIndex(x, y, z)] = constants::EMPTY;
+					*/
 			}
 		}
 	}

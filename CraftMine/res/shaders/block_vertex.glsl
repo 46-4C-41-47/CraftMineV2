@@ -11,6 +11,7 @@ out vec3 normal;
 uniform mat4 rotations[6];
 uniform mat4 projection;
 uniform mat4 view;
+uniform mat4 model;
 
 uniform vec2 atlasSizes;
 
@@ -36,7 +37,7 @@ void main()
 {
     int faceIndex = aTextureAndFace & 0x00000007;
     vec4 position = rotations[faceIndex] * vec4(aPos, 1.0);
-    gl_Position = projection * view * (position + vec4(aOffset, 1.0));
+    gl_Position = projection * view * model * (position + vec4(aOffset, 1.0));
     
     int maskOffset = (8 * clamp(faceIndex - 3, 0, 2));
     int mask = 0x000000FF << maskOffset;

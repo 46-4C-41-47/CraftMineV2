@@ -18,12 +18,13 @@ class ChunkMesh
 private:
 	static TextureAtlas* atlas;
 	unsigned int VAO, constVBO;
+	glm::vec3 position;
 	GLMap<long long, Face>* VBO;
 
 	void initVAO();
 
 public:
-	ChunkMesh(std::vector<Face>& faces);
+	ChunkMesh(int x, int y, std::vector<Face>& faces);
 	ChunkMesh(const ChunkMesh&) = delete;
 
 	~ChunkMesh(); 

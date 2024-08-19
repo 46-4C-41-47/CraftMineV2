@@ -4,9 +4,10 @@
 TextureAtlas* ChunkMesh::atlas = nullptr;
 
 
-ChunkMesh::ChunkMesh(std::vector<Face>& faces) 
+ChunkMesh::ChunkMesh(int x, int y, std::vector<Face>& faces)
 {
 	VBO = new GLMap<long long, Face>();
+	position = glm::vec3(x * params::world::CHUNK_WIDTH * 0.5, 0, y * params::world::CHUNK_WIDTH * 0.5);
 
 	if (atlas == nullptr)
 		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
@@ -55,11 +56,14 @@ void ChunkMesh::initVAO()
 
 void ChunkMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view) 
 {
+	glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
+
 	shader.use();
 
 	shader.sendMat4("rotations", faceRotation);
 	shader.sendMat4("projection", projection);
 	shader.sendMat4("view", view);
+	shader.sendMat4("model", model);
 
 	shader.sendVec2("atlasSizes", glm::vec2((float)atlas->width, (float)atlas->height));
 
