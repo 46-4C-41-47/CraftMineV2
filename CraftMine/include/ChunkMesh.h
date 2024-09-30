@@ -35,7 +35,7 @@ public:
 		Shader& shader,
 		glm::mat4& projection,
 		glm::mat4& view
-	);
+	) const;
 
 	void add(std::vector<Face>& faces);
 	void remove(std::vector<long long>& ids);

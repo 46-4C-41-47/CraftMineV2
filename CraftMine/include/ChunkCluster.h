@@ -10,6 +10,7 @@ class ChunkCluster
 {
 private:
 	std::map<long long, Chunk*> chunks = {};
+	std::map<long long, Chunk*> loadedChunks = {};
 
 	void init();
 
@@ -20,6 +21,8 @@ public:
 	~ChunkCluster();
 
 	ChunkCluster& operator = (const ChunkCluster&) = delete;
+
+	void draw(Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix) const;
 
 	long long getKey(int x, int y);
 

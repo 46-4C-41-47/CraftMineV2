@@ -1,7 +1,9 @@
 #pragma once
 
 #include <map>
+#include <array>
 #include <ctime>
+#include <memory>
 #include <vector>
 #include <cstdlib>
 
@@ -16,13 +18,14 @@ class Chunk
 {
 private:
 	constants::block* blocks;
+	Chunk* neighbors[4];
+	std::shared_ptr<ChunkMesh> mesh;
 
-	int getBlockIndex(int x, int y, int z);
+	int getBlockIndex(int x, int y, int z) const;
 	void init();
 	void computeFaces(std::vector<Face>& faces);
 
 public:
-	ChunkMesh* mesh;
 	const int x, y;
 
 	Chunk(int x, int y);
@@ -31,4 +34,8 @@ public:
 	~Chunk();
 
 	Chunk& operator = (const Chunk&) = delete;
+
+	bool isThereABlock(int x, int y, int z) const;
+
+	std::weak_ptr<const ChunkMesh> getMesh();
 };

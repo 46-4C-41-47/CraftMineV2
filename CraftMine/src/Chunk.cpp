@@ -10,17 +10,17 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 	init();
 	computeFaces(faces);
 
-	mesh = new ChunkMesh(x, y, faces);
+	mesh = std::make_shared<ChunkMesh>(x, y, faces);
 }
 
 
 Chunk::~Chunk() 
 {
-	delete blocks;
+	delete[] blocks;
 }
 
 
-inline int Chunk::getBlockIndex(int x, int y, int z)
+inline int Chunk::getBlockIndex(int x, int y, int z) const
 {
 	return x + (y * params::world::CHUNK_WIDTH) + (z * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT);
 }
@@ -84,3 +84,17 @@ void Chunk::computeFaces(std::vector<Face>& faces)
 		}
 	}
 }
+
+
+bool Chunk::isThereABlock(int x, int y, int z) const
+{
+	if (x < 0 || params::world::CHUNK_WIDTH <= x ||
+		y < 0 || params::world::CHUNK_HEIGHT <= y ||
+		z < 0 || params::world::CHUNK_WIDTH <= z)
+		return false;
+
+	return blocks[getBlockIndex(x, y, z)] != constants::EMPTY;
+}
+
+
+std::weak_ptr<const ChunkMesh> Chunk::getMesh() { return std::weak_ptr<ChunkMesh>(mesh); }

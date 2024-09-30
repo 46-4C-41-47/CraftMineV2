@@ -17,7 +17,6 @@
 #include "parameters.h"
 #include "TextureAtlas.h"
 #include "ChunkCluster.h"
-#include "ChunkRenderer.h"
 
 
 class CMWindow
@@ -31,7 +30,6 @@ private:
 	static GLFWvidmode monitor;
 	static Player* player;
 	static ChunkCluster* cluster;
-	static ChunkRenderer* renderer;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
 	Shader* objectShader;
@@ -60,7 +58,6 @@ public:
 	CMWindow& operator = (const CMWindow&) = delete;
 
 	void start();
-	void start(int frameRate);
 
 	static int getWidth();
 	static int getHeight();

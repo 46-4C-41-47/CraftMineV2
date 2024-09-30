@@ -48,9 +48,6 @@
     <ClCompile Include="src\ChunkCluster.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
-    <ClCompile Include="src\ChunkRenderer.cpp">
-      <Filter>Fichiers sources</Filter>
-    </ClCompile>
     <ClCompile Include="src\ChunkMesh.cpp">
       <Filter>Fichiers sources</Filter>
     </ClCompile>
@@ -89,23 +86,12 @@
     <ClInclude Include="include\ChunkCluster.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="include\ChunkRenderer.h">
-      <Filter>Fichiers d%27en-tête</Filter>
-    </ClInclude>
     <ClInclude Include="include\ChunkMesh.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
     <ClInclude Include="include\Face.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="res\shaders\block_fragment.glsl">
-      <Filter>Fichiers de ressources\shaders</Filter>
-    </None>
-    <None Include="res\shaders\block_vertex.glsl">
-      <Filter>Fichiers de ressources\shaders</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="libs\FastNoise2\bin\FastNoise.dll">

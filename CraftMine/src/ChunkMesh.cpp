@@ -54,7 +54,7 @@ void ChunkMesh::initVAO()
 }
 
 
-void ChunkMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view) 
+void ChunkMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view) const
 {
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
 

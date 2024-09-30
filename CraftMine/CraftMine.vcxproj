@@ -141,7 +141,6 @@
     <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\ChunkCluster.cpp" />
     <ClCompile Include="src\ChunkMesh.cpp" />
-    <ClCompile Include="src\ChunkRenderer.cpp" />
     <ClCompile Include="src\CMWindow.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Shader.cpp" />
@@ -153,7 +152,6 @@
     <ClInclude Include="include\Chunk.h" />
     <ClInclude Include="include\ChunkCluster.h" />
     <ClInclude Include="include\ChunkMesh.h" />
-    <ClInclude Include="include\ChunkRenderer.h" />
     <ClInclude Include="include\CMWindow.h" />
     <ClInclude Include="include\Face.h" />
     <ClInclude Include="include\GLMap.h" />
@@ -171,12 +169,6 @@
     <CopyFileToFolders Include="libs\FastNoise2\bin\FastNoiseD.dll">
       <FileType>Document</FileType>
     </CopyFileToFolders>
-    <None Include="res\shaders\block_fragment.glsl">
-      <FileType>Document</FileType>
-    </None>
-    <None Include="res\shaders\block_vertex.glsl">
-      <FileType>Document</FileType>
-    </None>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

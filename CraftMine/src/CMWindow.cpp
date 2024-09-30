@@ -13,8 +13,6 @@ GLFWvidmode CMWindow::monitor = {};
 
 Player* CMWindow::player = new Player(glm::vec3(0.5f, 0.5f, -1.0f));
 
-ChunkRenderer* CMWindow::renderer = nullptr;
-
 ChunkCluster* CMWindow::cluster = nullptr;
 
 
@@ -103,10 +101,12 @@ void CMWindow::init(int width, int height, int x, int y)
     initWindow(width, height, x, y);
     rebuildProjectionMatrix(getWidth(), getHeight());
 
-    objectShader = new Shader(params::graphical::CHUNK_VERTEX_SHADER_PATH, params::graphical::CHUNK_FRAGMENT_SHADER_PATH);
+    objectShader = new Shader(
+        params::graphical::CHUNK_VERTEX_SHADER_PATH, 
+        params::graphical::CHUNK_FRAGMENT_SHADER_PATH
+    );
 
     cluster = new ChunkCluster();
-    renderer = ChunkRenderer::getInstance();
 }
 
 
@@ -115,8 +115,8 @@ void CMWindow::initWindow(int width, int height, int x, int y)
     if (!glfwInit())
         throw std::runtime_error("Initialization of GLFW failed\n");
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, params::graphical::OPENGL_MAJOR_VERSION);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, params::graphical::OPENGL_MINOR_VERSION);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     monitor = *glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -126,11 +126,11 @@ void CMWindow::initWindow(int width, int height, int x, int y)
     else
         window = glfwCreateWindow(width, height, title.c_str(), NULL, NULL);
 
-    if (!fullscreen)
-        glfwSetWindowPos(window, x, y);
-
     if (window == NULL)
         throw std::runtime_error("GLFW window creation failed\n");
+
+    if (!fullscreen)
+        glfwSetWindowPos(window, x, y);
 
     glfwMakeContextCurrent(window);
 
@@ -188,7 +188,7 @@ void CMWindow::run()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glm::mat4 view = player->getCam().getViewMatrix();
-    renderer->draw(*objectShader, projection, view, *cluster);
+    cluster->draw(*objectShader, projection, view);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
