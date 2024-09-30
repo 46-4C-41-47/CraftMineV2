@@ -17,8 +17,11 @@
 class Chunk
 {
 private:
-	constants::block* blocks;
-	Chunk* neighbors[4];
+	std::array<
+		constants::block, 
+		params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT
+	> blocks;
+	//Chunk* neighbors[4];
 	std::shared_ptr<ChunkMesh> mesh;
 
 	int getBlockIndex(int x, int y, int z) const;

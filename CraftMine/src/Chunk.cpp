@@ -3,9 +3,6 @@
 
 Chunk::Chunk(int x, int y) : x{ x }, y{ y } 
 {
-	int blocks_size = params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT;
-	blocks = new constants::block[blocks_size];
-
 	std::vector<Face> faces;
 	init();
 	computeFaces(faces);
@@ -15,9 +12,7 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 
 
 Chunk::~Chunk() 
-{
-	delete[] blocks;
-}
+{ }
 
 
 inline int Chunk::getBlockIndex(int x, int y, int z) const
@@ -47,7 +42,6 @@ void Chunk::init()
 		}
 	}
 }
-
 
 
 void Chunk::computeFaces(std::vector<Face>& faces)

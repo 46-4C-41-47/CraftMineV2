@@ -25,6 +25,4 @@ public:
 	void draw(Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix) const;
 
 	long long getKey(int x, int y);
-
-	const std::map<long long, Chunk*>& getChunks() { return chunks; };
 };

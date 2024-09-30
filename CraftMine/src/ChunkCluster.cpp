@@ -14,9 +14,6 @@ void ChunkCluster::init() {
 }
 
 
-long long ChunkCluster::getKey(int x, int y) { return (long long)x << sizeof(int) | y; }
-
-
 void ChunkCluster::draw(Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix) const {
 	for (auto it = chunks.begin(); it != chunks.end(); it++)
 	{
@@ -26,3 +23,6 @@ void ChunkCluster::draw(Shader& shader, glm::mat4& projectionMatrix, glm::mat4& 
 			temp->draw(shader, projectionMatrix, viewMatrix);
 	}
 }
+
+
+long long ChunkCluster::getKey(int x, int y) { return (long long)x << sizeof(int) | y; }
