@@ -10,11 +10,10 @@ TextureAtlas::TextureAtlas(TextureAtlasConfig config) : width{ config.width }, h
 TextureAtlas::~TextureAtlas()
 {
     glDeleteTextures(1, &texture->id);
-    delete texture;
 }
 
 
-Texture* TextureAtlas::loadTexture(std::string path)
+std::unique_ptr<Texture> TextureAtlas::loadTexture(std::string path)
 {
     unsigned int address;
     int width, height, nrChannels;
@@ -42,7 +41,7 @@ Texture* TextureAtlas::loadTexture(std::string path)
     stbi_image_free(data);
 
     glBindTexture(GL_TEXTURE_2D, 0);
-    return new Texture{ address, width, height };
+    return std::unique_ptr<Texture>(new Texture{ address, width, height });
 }
 
 

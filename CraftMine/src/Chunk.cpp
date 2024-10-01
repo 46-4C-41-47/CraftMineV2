@@ -1,9 +1,11 @@
 #include "../include/Chunk.h"
+#include "../include/ChunkCluster.h"
 
 
-Chunk::Chunk(int x, int y) : x{ x }, y{ y } 
+Chunk::Chunk(int x, int y, const ChunkCluster& c) : cluster{ c }, coor{ glm::ivec2(x, y)}
 {
 	std::vector<Face> faces;
+	init();
 	init();
 	computeFaces(faces);
 
@@ -11,11 +13,10 @@ Chunk::Chunk(int x, int y) : x{ x }, y{ y }
 }
 
 
-Chunk::~Chunk() 
-{ }
+Chunk::~Chunk() { }
 
 
-inline int Chunk::getBlockIndex(int x, int y, int z) const
+inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 {
 	return x + (y * params::world::CHUNK_WIDTH) + (z * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT);
 }
@@ -57,19 +58,31 @@ void Chunk::computeFaces(std::vector<Face>& faces)
 
 				int texture = blocks[getBlockIndex(x, y, z)] << 3;
 
-				if (z == 0 || blocks[getBlockIndex(x, y, z - 1)] == constants::EMPTY)
+				if ((0 < z && blocks[getBlockIndex(x, y, z - 1)] == constants::EMPTY)
+					|| (z == 0 && !cluster.checkForBlock(constants::SOUTH, coor, x, y, params::world::CHUNK_WIDTH - 1))
+					) {
 					faces.push_back({ glm::ivec3(x, y, z), texture | constants::FRONT });
+				}
 				
-				if (z == params::world::CHUNK_WIDTH - 1 || blocks[getBlockIndex(x, y, z + 1)] == constants::EMPTY)
+				if ((z < params::world::CHUNK_WIDTH - 1 && blocks[getBlockIndex(x, y, z + 1)] == constants::EMPTY)
+					|| (z == params::world::CHUNK_WIDTH - 1 && !cluster.checkForBlock(constants::NORTH, coor, x, y, 0))
+					) {
 					faces.push_back({ glm::ivec3(x, y, z), texture | constants::BACK });
+				}
 
-				if (x == 0 || blocks[getBlockIndex(x - 1, y, z)] == constants::EMPTY)
+				if ((0 < x && blocks[getBlockIndex(x - 1, y, z)] == constants::EMPTY)
+					|| (x == 0 && !cluster.checkForBlock(constants::EAST, coor, params::world::CHUNK_WIDTH - 1, y, z))
+					) {
 					faces.push_back({ glm::ivec3(x, y, z), texture | constants::RIGHT });
+				}
 
-				if (x == params::world::CHUNK_WIDTH - 1 || blocks[getBlockIndex(x + 1, y, z)] == constants::EMPTY)
+				if ((x < params::world::CHUNK_WIDTH - 1 && blocks[getBlockIndex(x + 1, y, z)] == constants::EMPTY)
+					|| (x == params::world::CHUNK_WIDTH - 1 && !cluster.checkForBlock(constants::WEST, coor, 0, y, z))
+					) {
 					faces.push_back({ glm::ivec3(x, y, z), texture | constants::LEFT });
+				}
 
-				if (y == 0 || blocks[getBlockIndex(x, y - 1, z)] == constants::EMPTY)
+				if (y != 0 && blocks[getBlockIndex(x, y - 1, z)] == constants::EMPTY)
 					faces.push_back({ glm::ivec3(x, y, z), texture | constants::BOTTOM });
 
 				if (y == params::world::CHUNK_HEIGHT - 1 || blocks[getBlockIndex(x, y + 1, z)] == constants::EMPTY)
@@ -91,4 +104,4 @@ bool Chunk::isThereABlock(int x, int y, int z) const
 }
 
 
-std::weak_ptr<const ChunkMesh> Chunk::getMesh() { return std::weak_ptr<ChunkMesh>(mesh); }
+std::weak_ptr<const ChunkMesh> Chunk::getMesh() const { return std::weak_ptr<ChunkMesh>(mesh); }

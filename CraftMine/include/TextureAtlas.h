@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <string>
 #include <stdexcept>
 
@@ -28,9 +29,9 @@ struct Texture
 class TextureAtlas
 {
 private:
-	Texture* texture;
+	std::unique_ptr<Texture> texture;
 
-	Texture* loadTexture(std::string path);
+	std::unique_ptr<Texture> loadTexture(std::string path);
 
 public:
 	const int width, height;

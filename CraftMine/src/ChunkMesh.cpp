@@ -1,16 +1,16 @@
 #include "../include/ChunkMesh.h"
 
 
-TextureAtlas* ChunkMesh::atlas = nullptr;
+std::unique_ptr<TextureAtlas> ChunkMesh::atlas = nullptr;
 
 
 ChunkMesh::ChunkMesh(int x, int y, std::vector<Face>& faces)
 {
-	VBO = new GLMap<long long, Face>();
+	VBO = std::make_unique<GLMap<long long, Face>>();
 	position = glm::vec3(x * params::world::CHUNK_WIDTH * 0.5, 0, y * params::world::CHUNK_WIDTH * 0.5);
 
 	if (atlas == nullptr)
-		atlas = new TextureAtlas(params::graphical::ATLAS_CONFIG);
+		atlas = std::make_unique<TextureAtlas>(params::graphical::ATLAS_CONFIG);
 
 	add(faces);
 	initVAO();
@@ -20,7 +20,6 @@ ChunkMesh::ChunkMesh(int x, int y, std::vector<Face>& faces)
 ChunkMesh::~ChunkMesh() 
 {
 	glDeleteVertexArrays(1, &VAO);
-	delete VBO;
 }
 
 
@@ -54,7 +53,7 @@ void ChunkMesh::initVAO()
 }
 
 
-void ChunkMesh::draw(Shader& shader, glm::mat4& projection, glm::mat4& view) const
+void ChunkMesh::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view) const
 {
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
 

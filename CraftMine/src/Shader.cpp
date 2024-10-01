@@ -126,40 +126,40 @@ std::string Shader::getShaderCode(const std::string& shaderPath)
 }
 
 
-void Shader::sendVec2(const std::string& name, const glm::vec2& value)
+void Shader::sendVec2(const std::string& name, const glm::vec2& value) const
 {
     glUniform3fv(glGetUniformLocation(finalShader, name.c_str()), 1, glm::value_ptr(value));
 }
 
 
-void Shader::sendVec3(const std::string& name, const glm::vec3& value)
+void Shader::sendVec3(const std::string& name, const glm::vec3& value) const
 {
     glUniform3fv(glGetUniformLocation(finalShader, name.c_str()), 1, glm::value_ptr(value));
 }
 
 
-void Shader::sendMat4(const std::string& name, const glm::mat4& value) 
+void Shader::sendMat4(const std::string& name, const glm::mat4& value) const
 {
     glUniformMatrix4fv(glGetUniformLocation(finalShader, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
 }
 
 
-void Shader::sendMat4(const std::string& name, const std::vector<glm::mat4>& value)
+void Shader::sendMat4(const std::string& name, const std::vector<glm::mat4>& value) const
 {
     glUniformMatrix4fv(glGetUniformLocation(finalShader, name.c_str()), value.size(), GL_FALSE, (GLfloat*)value.data());
 }
 
 
-void Shader::sendFloat(const std::string& name, float value) 
+void Shader::sendFloat(const std::string& name, float value) const
 {
     glUniform1f(glGetUniformLocation(finalShader, name.c_str()), value);
 }
 
 
-void Shader::sendInt(const std::string& name, int value) 
+void Shader::sendInt(const std::string& name, int value) const
 {
     glUniform1i(glGetUniformLocation(finalShader, name.c_str()), value);
 }
 
 
-void Shader::use() { glUseProgram(finalShader); }
+void Shader::use() const { glUseProgram(finalShader); }

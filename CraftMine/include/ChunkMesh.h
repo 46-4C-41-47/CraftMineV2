@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include <vector>
 
 #include <glm/glm.hpp>
@@ -16,10 +17,10 @@
 class ChunkMesh
 {
 private:
-	static TextureAtlas* atlas;
+	static std::unique_ptr<TextureAtlas> atlas;
 	unsigned int VAO, constVBO;
 	glm::vec3 position;
-	GLMap<long long, Face>* VBO;
+	std::unique_ptr<GLMap<long long, Face>> VBO;
 
 	void initVAO();
 
@@ -31,11 +32,7 @@ public:
 	
 	ChunkMesh& operator = (const ChunkMesh&) = delete;
 
-	void draw(
-		Shader& shader,
-		glm::mat4& projection,
-		glm::mat4& view
-	) const;
+	void draw(const Shader& shader, glm::mat4& projection, glm::mat4& view) const;
 
 	void add(std::vector<Face>& faces);
 	void remove(std::vector<long long>& ids);

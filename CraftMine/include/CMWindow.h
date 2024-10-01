@@ -1,7 +1,8 @@
 #pragma once
 
-#include <string>
 #include <chrono>
+#include <memory>
+#include <string>
 #include <thread>
 #include <vector>
 #include <iostream>
@@ -11,12 +12,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "Shader.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Shader.h"
 #include "parameters.h"
-#include "TextureAtlas.h"
 #include "ChunkCluster.h"
+#include "TextureAtlas.h"
+
+
+typedef struct GLFWwindow GLFWwindow;
 
 
 class CMWindow
@@ -26,13 +30,13 @@ private:
 	static int instanceCount;
 	static bool fullscreen;
 	static glm::mat4 projection;
-	static GLFWwindow* window;
 	static GLFWvidmode monitor;
-	static Player* player;
-	static ChunkCluster* cluster;
+	static std::unique_ptr<GLFWwindow> window;
+	static std::unique_ptr<Player> player;
+	static std::unique_ptr<ChunkCluster> cluster;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
-	Shader* objectShader;
+	std::unique_ptr<Shader> objectShader;
 
 	static void rebuildProjectionMatrix(int width, int height);
 	static void resizeCallback(GLFWwindow* window, int width, int height);

@@ -1,7 +1,8 @@
 #pragma once
 
-#include <vector>
+#include <format>
 #include <string>
+#include <vector>
 
 #include "TextureAtlas.h"
 
@@ -36,13 +37,21 @@ namespace constants
 }
 
 
+
+
+
 namespace params
 {
-	namespace graphical
+	namespace developement
 	{
 		static const int OPENGL_MAJOR_VERSION = 4;
 		static const int OPENGL_MINOR_VERSION = 5;
 
+		static const bool ENABLE_FACE_CULLING = true;
+	}
+
+	namespace graphical
+	{
 		static const float VIEW_ANGLE = 100.0f;
 		static const float NEAR_PLANE = 0.1f;
 		static const float FAR_PLANE  = 250.0f;
@@ -53,13 +62,13 @@ namespace params
 
 		static const std::string CHUNK_VERTEX_SHADER_PATH = std::format(
 			"./res/shaders/GL{}{}0/block_vertex.glsl", 
-			OPENGL_MAJOR_VERSION, 
-			OPENGL_MINOR_VERSION
+			developement::OPENGL_MAJOR_VERSION, 
+			developement::OPENGL_MINOR_VERSION
 		);
 		static const std::string CHUNK_FRAGMENT_SHADER_PATH = std::format(
 			"./res/shaders/GL{}{}0/block_fragment.glsl", 
-			OPENGL_MAJOR_VERSION, 
-			OPENGL_MINOR_VERSION
+			developement::OPENGL_MAJOR_VERSION,
+			developement::OPENGL_MINOR_VERSION
 		);
 	}
 
@@ -73,5 +82,7 @@ namespace params
 	{
 		static const int CHUNK_HEIGHT = 128, CHUNK_WIDTH = 16;
 		static const float NOISE_SEED = 0.0f, NOISE_FREQUENCY = 0.002f;
+
+		static const glm::vec3 DEFAULT_PLAYER_LOCATION = glm::vec3(0.0f, 64.0f, 0.0f);
 	}
 }

@@ -14,24 +14,27 @@
 #include "parameters.h"
 
 
+class ChunkCluster;
+
+
 class Chunk
 {
 private:
+	const ChunkCluster& cluster;
+	std::shared_ptr<ChunkMesh> mesh;
 	std::array<
 		constants::block, 
 		params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT
 	> blocks;
-	//Chunk* neighbors[4];
-	std::shared_ptr<ChunkMesh> mesh;
 
-	int getBlockIndex(int x, int y, int z) const;
+	unsigned short getBlockIndex(int x, int y, int z) const;
 	void init();
 	void computeFaces(std::vector<Face>& faces);
 
 public:
-	const int x, y;
+	const glm::ivec2 coor;
 
-	Chunk(int x, int y);
+	Chunk(int x, int y, const ChunkCluster& c);
 	Chunk(const Chunk&) = delete;
 
 	~Chunk();
@@ -40,5 +43,5 @@ public:
 
 	bool isThereABlock(int x, int y, int z) const;
 
-	std::weak_ptr<const ChunkMesh> getMesh();
+	std::weak_ptr<const ChunkMesh> getMesh() const;
 };
