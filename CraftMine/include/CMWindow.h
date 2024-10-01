@@ -31,7 +31,7 @@ private:
 	static bool fullscreen;
 	static glm::mat4 projection;
 	static GLFWvidmode monitor;
-	static std::unique_ptr<GLFWwindow> window;
+	static GLFWwindow* window;
 	static std::unique_ptr<Player> player;
 	static std::unique_ptr<ChunkCluster> cluster;
 	int previousFrameDuration = SECOND; // microseconds
