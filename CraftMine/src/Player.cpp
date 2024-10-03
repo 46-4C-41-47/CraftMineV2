@@ -15,4 +15,6 @@ void Player::updateChunkPos()
 		floor(camera.position.x / params::world::CHUNK_WIDTH), 
 		floor(camera.position.z / params::world::CHUNK_WIDTH)
 	);
+
+	changedChunk = !(chunkPos == previousChunkPos);
 }

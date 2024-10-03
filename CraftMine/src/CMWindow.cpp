@@ -11,7 +11,7 @@ GLFWwindow* CMWindow::window = nullptr;
 
 GLFWvidmode CMWindow::monitor = {};
 
-std::unique_ptr<Player> CMWindow::player = std::make_unique<Player>(params::world::DEFAULT_PLAYER_LOCATION);
+std::shared_ptr<Player> CMWindow::player = std::make_shared<Player>(params::world::DEFAULT_PLAYER_LOCATION);
 
 std::unique_ptr<ChunkCluster> CMWindow::cluster = nullptr;
 
@@ -105,7 +105,7 @@ void CMWindow::init(int width, int height, int x, int y)
         params::graphical::CHUNK_FRAGMENT_SHADER_PATH
     );
 
-    cluster = std::make_unique<ChunkCluster>();
+    cluster = std::make_unique<ChunkCluster>(player);
 }
 
 

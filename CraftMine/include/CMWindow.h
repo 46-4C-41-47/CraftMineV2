@@ -32,7 +32,7 @@ private:
 	static glm::mat4 projection;
 	static GLFWvidmode monitor;
 	static GLFWwindow* window;
-	static std::unique_ptr<Player> player;
+	static std::shared_ptr<Player> player;
 	static std::unique_ptr<ChunkCluster> cluster;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;

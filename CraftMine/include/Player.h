@@ -5,16 +5,15 @@
 #include <glm/glm.hpp>
 
 #include "Camera.h"
-#include "ChunkCluster.h"
 
 
 class Player
 {
 private:
+	bool changedChunk = false;
 	glm::vec3 position;
 	glm::vec2 previousChunkPos, chunkPos;
 	Camera camera;
-	//ChunkCluster* cluster = new ChunkCluster();
 
 public:
 	const unsigned int HEIGTH = 2;
@@ -34,5 +33,5 @@ public:
 
 	Camera& getCam() { return camera; }
 
-	//ChunkCluster* getCluster() { return cluster; }
+	bool playerChangedChunk() { return changedChunk; }
 };

@@ -1,6 +1,13 @@
 #include "../include/ChunkCluster.h"
 
 
+ChunkCluster::ChunkCluster(std::shared_ptr<Player> p) : player{ p }
+{
+	//init();
+	updateChunkList();
+}
+
+
 ChunkCluster::~ChunkCluster() { }
 
 
@@ -12,8 +19,61 @@ void ChunkCluster::init()
 }
 
 
-void ChunkCluster::draw(const Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix) const 
+void ChunkCluster::updateChunkList() 
 {
+	glm::vec2 pos = player->getChunkPos();
+	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
+	int yMin = pos.y - params::graphical::CHUNK_RADIUS, yMax = pos.y + params::graphical::CHUNK_RADIUS;
+
+	std::set<long long> newIds;
+	std::map<long long, std::pair<int, int>> doublons;
+
+	int i = 0;
+	long long a = getKey(-9, -10), b = getKey(-10, -10);
+
+	std::cout << std::bitset<64>((long long)-10) << "\n";
+	std::cout << std::bitset<64>((long long)-10 << INT_BIT_SIZE) << "\n";
+	
+	std::cout << std::bitset<64>(a) << "\n";
+	std::cout << std::bitset<64>(b) << "\n";
+
+	for (int x = xMin; x <= xMax; x++)
+	{
+		for (int y = yMin; y <= yMax; y++)
+		{
+			long long key = getKey(x, y);
+
+			doublons[key] = std::pair<int, int>(x, y);
+
+			if (newIds.contains(key))
+				i += 1;
+			
+			newIds.insert(key);
+		}
+	}
+
+	for (const auto& [id, chunkPointer] : chunks)
+		if (!newIds.contains(id))
+			chunks.erase(id);
+
+	for (const long long id : newIds)
+	{
+		if (chunks.find(id) == chunks.end())
+		{
+			glm::ivec2 coor = getCoorFromKey(id);
+			chunks[id] = std::make_unique<Chunk>(coor.x, coor.y, *this);
+		}
+	}
+}
+
+
+void ChunkCluster::draw(const Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix) 
+{
+	player->updateChunkPos();
+
+	if (player->playerChangedChunk())
+		updateChunkList();
+
 	for (auto it = chunks.begin(); it != chunks.end(); it++)
 	{
 		std::weak_ptr<const ChunkMesh> mesh = it->second->getMesh();
@@ -51,14 +111,15 @@ bool ChunkCluster::checkForBlock(
 	auto neighbor = chunks.find(neighborKey);
 
 	if (neighbor == chunks.end())
-		return true; //neighbor = loadedChunks.find(neighborKey);
-
-	/*if (neighbor == loadedChunks.end())
-		return true;*/
+		return true;
 
 	return neighbor->second->isThereABlock(x, y, z);
 }
 
 
 long long ChunkCluster::getKey(int x, int y) const 
-{ return (long long)x << sizeof(int) | y; }
+{ return (long long)x << INT_BIT_SIZE | y; }
+
+
+glm::ivec2 ChunkCluster::getCoorFromKey(long long key) const
+{ return glm::ivec2(key >> INT_BIT_SIZE, key & 0xFFFFFFFF); }
