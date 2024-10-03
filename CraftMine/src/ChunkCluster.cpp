@@ -3,7 +3,6 @@
 
 ChunkCluster::ChunkCluster(std::shared_ptr<Player> p) : player{ p }
 {
-	//init();
 	updateChunkList();
 }
 
@@ -22,39 +21,28 @@ void ChunkCluster::init()
 void ChunkCluster::updateChunkList() 
 {
 	glm::vec2 pos = player->getChunkPos();
+
+	glm::vec3 realPos = player->getCam().position;
+
+	std::cout << "\tposition, \tx : " << realPos.x << ",  \ty : " << realPos.z << "\n";
+	std::cout << "position in chunk, \tx : " << pos.x << ",  \ty : " << pos.y << "\n\n";
+	
 	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
 	int yMin = pos.y - params::graphical::CHUNK_RADIUS, yMax = pos.y + params::graphical::CHUNK_RADIUS;
 
 	std::set<long long> newIds;
-	std::map<long long, std::pair<int, int>> doublons;
+	std::vector<long long> existingIds;
 
-	int i = 0;
-	long long a = getKey(-9, -10), b = getKey(-10, -10);
-
-	std::cout << std::bitset<64>((long long)-10) << "\n";
-	std::cout << std::bitset<64>((long long)-10 << INT_BIT_SIZE) << "\n";
-	
-	std::cout << std::bitset<64>(a) << "\n";
-	std::cout << std::bitset<64>(b) << "\n";
-
-	for (int x = xMin; x <= xMax; x++)
-	{
+ 	for (int x = xMin; x <= xMax; x++)
 		for (int y = yMin; y <= yMax; y++)
-		{
-			long long key = getKey(x, y);
+			newIds.insert(getKey(x, y));
 
-			doublons[key] = std::pair<int, int>(x, y);
+	for (const auto& [key, value] : chunks)
+		existingIds.push_back(key);
 
-			if (newIds.contains(key))
-				i += 1;
-			
-			newIds.insert(key);
-		}
-	}
-
-	for (const auto& [id, chunkPointer] : chunks)
-		if (!newIds.contains(id))
-			chunks.erase(id);
+	for (long long key : existingIds)
+		if (!newIds.contains(key))
+			chunks.erase(key);
 
 	for (const long long id : newIds)
 	{
@@ -118,7 +106,7 @@ bool ChunkCluster::checkForBlock(
 
 
 long long ChunkCluster::getKey(int x, int y) const 
-{ return (long long)x << INT_BIT_SIZE | y; }
+{ return (long long)x << INT_BIT_SIZE | (long long)y & 0xFFFFFFFF; }
 
 
 glm::ivec2 ChunkCluster::getCoorFromKey(long long key) const

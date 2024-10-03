@@ -11,8 +11,7 @@ class Player
 {
 private:
 	bool changedChunk = false;
-	glm::vec3 position;
-	glm::vec2 previousChunkPos, chunkPos;
+	glm::ivec2 previousChunkPos, chunkPos;
 	Camera camera;
 
 public:
@@ -27,9 +26,9 @@ public:
 
 	void updateChunkPos();
 
-	glm::vec2 getChunkPos() { return chunkPos; }
+	glm::ivec2 getChunkPos() { return chunkPos; }
 	
-	glm::vec2 getPreviousChunkPos() { return previousChunkPos; }
+	glm::ivec2 getPreviousChunkPos() { return previousChunkPos; }
 
 	Camera& getCam() { return camera; }
 

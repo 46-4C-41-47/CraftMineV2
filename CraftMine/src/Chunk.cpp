@@ -6,7 +6,6 @@ Chunk::Chunk(int x, int y, const ChunkCluster& c) : cluster{ c }, coor{ glm::ive
 {
 	std::vector<Face> faces;
 	init();
-	init();
 	computeFaces(faces);
 
 	mesh = std::make_shared<ChunkMesh>(x, y, faces);
@@ -24,21 +23,16 @@ inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 
 void Chunk::init() 
 {
-	std::srand(std::time(nullptr));
+	int Height = params::world::CHUNK_HEIGHT - (std::rand() % 16);
+	std::cout << Height << "\n";
 
 	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 	{
-		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
+		for (int y = 0; y < Height; y++)
 		{
 			for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 			{
 				blocks[getBlockIndex(x, y, z)] = constants::GRASS;
-				
-				/*if (std::rand() % 2 == 0)
-					blocks[getBlockIndex(x, y, z)] = constants::COBBLESTONE;
-				else 
-					blocks[getBlockIndex(x, y, z)] = constants::EMPTY;
-					*/
 			}
 		}
 	}

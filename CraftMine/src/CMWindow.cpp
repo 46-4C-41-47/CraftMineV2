@@ -97,6 +97,8 @@ void CMWindow::init(int width, int height, int x, int y)
 
     instanceCount += 1;
 
+    std::srand(std::time(nullptr));
+
     initWindow(width, height, x, y);
     rebuildProjectionMatrix(getWidth(), getHeight());
 
@@ -192,6 +194,9 @@ void CMWindow::run()
     glm::mat4 view = player->getCam().getViewMatrix();
     cluster->draw(*objectShader, projection, view);
 
+    //glm::vec3 pos = player->getCam().position;
+    //std::cout << "x : " << (int)pos.x << ", y : " << (int)pos.y << ", z : " << (int)pos.z << "\n";
+
     glfwSwapBuffers(window);
     glfwPollEvents();
 }
@@ -201,29 +206,38 @@ void CMWindow::processInput()
 {
     float camSpeed = params::controls::CAM_SPEED * previousFrameDuration;
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::SPRINT) == GLFW_PRESS)
         camSpeed *= 2;
 
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::MOVE_FORWARD) == GLFW_PRESS)
         player->getCam().moveForward(camSpeed);
 
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::MOVE_LEFT) == GLFW_PRESS)
         player->getCam().moveSideWays(-camSpeed);
 
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::MOVE_BACKWARD) == GLFW_PRESS)
         player->getCam().moveForward(-camSpeed);
 
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::MOVE_RIGHT) == GLFW_PRESS)
         player->getCam().moveSideWays(camSpeed);
 
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::JUMP) == GLFW_PRESS)
         player->getCam().moveUpward(camSpeed);
 
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (glfwGetKey(window, params::bindings::CROUCH) == GLFW_PRESS)
         player->getCam().moveUpward(-camSpeed);
+
+    /* DEV BINDING */
+
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+        std::cout << "\nPlayer position" 
+                  << "\n\tx : " << (int)player->getCam().position.x 
+                  << "\n\ty : " << (int)player->getCam().position.y
+                  << "\n\ty : " << (int)player->getCam().position.z
+                  << "\n";
 }
 
 

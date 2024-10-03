@@ -58,7 +58,7 @@ namespace params
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
-		static const int CHUNK_RADIUS = 10;
+		static const int CHUNK_RADIUS = 1;
 
 		static const std::string CHUNK_VERTEX_SHADER_PATH = std::format(
 			"./res/shaders/GL{}{}0/block_vertex.glsl", 
@@ -84,5 +84,16 @@ namespace params
 		static const float NOISE_SEED = 0.0f, NOISE_FREQUENCY = 0.002f;
 
 		static const glm::vec3 DEFAULT_PLAYER_LOCATION = glm::vec3(0.0f, 64.0f, 0.0f);
+	}
+
+	namespace bindings
+	{
+		static const int MOVE_FORWARD = GLFW_KEY_W;
+		static const int MOVE_LEFT = GLFW_KEY_A;
+		static const int MOVE_BACKWARD = GLFW_KEY_S;
+		static const int MOVE_RIGHT = GLFW_KEY_D;
+		static const int JUMP = GLFW_KEY_SPACE;
+		static const int CROUCH = GLFW_KEY_LEFT_SHIFT;
+		static const int SPRINT = GLFW_KEY_LEFT_CONTROL;
 	}
 }
