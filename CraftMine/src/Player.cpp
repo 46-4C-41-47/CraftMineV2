@@ -12,8 +12,8 @@ void Player::updateChunkPos()
 {
 	previousChunkPos = chunkPos;
 	chunkPos = glm::ivec2(
-		(int)(camera.position.x / params::world::CHUNK_WIDTH),
-		(int)(camera.position.z / params::world::CHUNK_WIDTH)
+		floor((camera.position.x * 2) / params::world::CHUNK_WIDTH),
+		floor((camera.position.z * 2) / params::world::CHUNK_WIDTH)
 	);
 
 	changedChunk = !(chunkPos.x == previousChunkPos.x && chunkPos.y == previousChunkPos.y);

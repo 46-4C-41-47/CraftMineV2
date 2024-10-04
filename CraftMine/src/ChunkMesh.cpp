@@ -29,7 +29,12 @@ void ChunkMesh::initVAO()
 	glGenBuffers(1, &constVBO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, constVBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(Point) * constFace.size(), constFace.data(), GL_STATIC_DRAW);
+	glBufferData(
+		GL_ARRAY_BUFFER, 
+		sizeof(Point) * constants::constFace.size(), 
+		constants::constFace.data(), 
+		GL_STATIC_DRAW
+	);
 
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, constVBO);
@@ -59,7 +64,7 @@ void ChunkMesh::draw(const Shader& shader, glm::mat4& projection, glm::mat4& vie
 
 	shader.use();
 
-	shader.sendMat4("rotations", faceRotation);
+	shader.sendMat4("rotations", constants::faceRotation);
 	shader.sendMat4("projection", projection);
 	shader.sendMat4("view", view);
 	shader.sendMat4("model", model);
@@ -73,7 +78,7 @@ void ChunkMesh::draw(const Shader& shader, glm::mat4& projection, glm::mat4& vie
 	glBindTexture(GL_TEXTURE_2D, atlas->getTextureId());
 
 	glBindVertexArray(VAO);
-	glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, constFace.size(), VBO->size());
+	glDrawArraysInstanced(GL_TRIANGLE_FAN, 0, constants::constFace.size(), VBO->size());
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	glBindVertexArray(0);

@@ -21,6 +21,7 @@ class Chunk
 {
 private:
 	const ChunkCluster& cluster;
+	bool isMeshDirty = true;
 	std::shared_ptr<ChunkMesh> mesh;
 	std::array<
 		constants::block, 
@@ -43,5 +44,5 @@ public:
 
 	bool isThereABlock(int x, int y, int z) const;
 
-	std::weak_ptr<const ChunkMesh> getMesh() const;
+	std::weak_ptr<const ChunkMesh> getMesh();
 };

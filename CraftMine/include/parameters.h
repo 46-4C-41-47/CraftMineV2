@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 
+#include "Face.h"
 #include "TextureAtlas.h"
 
 
@@ -17,8 +18,7 @@ namespace constants
 	};
 
 	enum block
-	{
-		        // (bottom << 16) | (top << 8) | side;
+	{			// (bottom << 16) | (top << 8) | side;
 		      EMPTY = -1,
 		      GRASS = (  2 << 16) | (  0 << 8) |   3,
 		COBBLESTONE = ( 16 << 16) | ( 16 << 8) |  16,
@@ -34,9 +34,23 @@ namespace constants
 		   TOP = 4,
 		BOTTOM = 5,
 	};
+
+	const std::vector<Point> constFace = {
+		{ glm::vec3(-0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f) }, // bottom left
+		{ glm::vec3(-0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f) }, // top left
+		{ glm::vec3( 0.5f,  0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f) }, // top right
+		{ glm::vec3( 0.5f, -0.5f, -0.5f), glm::vec3(0.0f, 0.0f, -1.0f) }, // bottom right
+	};
+
+	const std::vector<glm::mat4> faceRotation = {
+		glm::rotate(glm::mat4(1.0f), glm::radians(  0.0f), glm::vec3(1.0f, 0.0f, 0.0f)), // front
+		glm::rotate(glm::mat4(1.0f), glm::radians(180.0f), glm::vec3(0.0f, 1.0f, 0.0f)), // back
+		glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(0.0f, 1.0f, 0.0f)), // right
+		glm::rotate(glm::mat4(1.0f), glm::radians( 90.0f), glm::vec3(0.0f, 1.0f, 0.0f)), // left
+		glm::rotate(glm::mat4(1.0f), glm::radians( 90.0f), glm::vec3(1.0f, 0.0f, 0.0f)), // top
+		glm::rotate(glm::mat4(1.0f), glm::radians(270.0f), glm::vec3(1.0f, 0.0f, 0.0f)), // bottom
+	};
 }
-
-
 
 
 
@@ -47,7 +61,7 @@ namespace params
 		static const int OPENGL_MAJOR_VERSION = 4;
 		static const int OPENGL_MINOR_VERSION = 5;
 
-		static const bool ENABLE_FACE_CULLING = true;
+		static const bool ENABLE_FACE_CULLING = false;
 	}
 
 	namespace graphical
@@ -88,12 +102,12 @@ namespace params
 
 	namespace bindings
 	{
-		static const int MOVE_FORWARD = GLFW_KEY_W;
-		static const int MOVE_LEFT = GLFW_KEY_A;
+		static const int  MOVE_FORWARD = GLFW_KEY_W;
+		static const int     MOVE_LEFT = GLFW_KEY_A;
 		static const int MOVE_BACKWARD = GLFW_KEY_S;
-		static const int MOVE_RIGHT = GLFW_KEY_D;
-		static const int JUMP = GLFW_KEY_SPACE;
-		static const int CROUCH = GLFW_KEY_LEFT_SHIFT;
-		static const int SPRINT = GLFW_KEY_LEFT_CONTROL;
+		static const int    MOVE_RIGHT = GLFW_KEY_D;
+		static const int        CROUCH = GLFW_KEY_LEFT_SHIFT;
+		static const int        SPRINT = GLFW_KEY_LEFT_CONTROL;
+		static const int          JUMP = GLFW_KEY_SPACE;
 	}
 }
