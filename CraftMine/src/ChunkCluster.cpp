@@ -21,11 +21,7 @@ void ChunkCluster::init()
 void ChunkCluster::updateChunkList() 
 {
 	glm::vec2 pos = player->getChunkPos();
-
 	glm::vec3 realPos = player->getCam().position;
-
-	std::cout << "\tposition, \tx : " << realPos.x << ",  \ty : " << realPos.z << "\n";
-	std::cout << "position in chunk, \tx : " << pos.x << ",  \ty : " << pos.y << "\n\n";
 	
 	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
 	int yMin = pos.y - params::graphical::CHUNK_RADIUS, yMax = pos.y + params::graphical::CHUNK_RADIUS;
@@ -63,12 +59,7 @@ void ChunkCluster::draw(const Shader& shader, glm::mat4& projectionMatrix, glm::
 		updateChunkList();
 
 	for (auto it = chunks.begin(); it != chunks.end(); it++)
-	{
-		std::weak_ptr<const ChunkMesh> mesh = it->second->getMesh();
-
-		if (std::shared_ptr<const ChunkMesh> temp = mesh.lock())
-			temp->draw(shader, projectionMatrix, viewMatrix);
-	}
+		it->second->draw(shader, projectionMatrix, viewMatrix);
 }
 
 
@@ -96,12 +87,15 @@ bool ChunkCluster::checkForBlock(
 		break;
 	}
 
-	auto neighbor = chunks.find(neighborKey);
+	std::map<long long, std::unique_ptr<Chunk>>::const_iterator neighbor = chunks.find(neighborKey);
 
 	if (neighbor == chunks.end())
 		return true;
 
-	return neighbor->second->isThereABlock(x, y, z);
+	if (neighbor->second->areBlocksAvailable())
+		return neighbor->second->isThereABlock(x, y, z);
+
+	return true;
 }
 
 

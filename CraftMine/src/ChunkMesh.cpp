@@ -27,6 +27,7 @@ void ChunkMesh::initVAO()
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &constVBO);
+	unsigned a = VBO->size();
 
 	glBindBuffer(GL_ARRAY_BUFFER, constVBO);
 	glBufferData(

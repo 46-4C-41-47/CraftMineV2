@@ -72,7 +72,7 @@ namespace params
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
-		static const int CHUNK_RADIUS = 1;
+		static const int CHUNK_RADIUS = 4;
 
 		static const std::string CHUNK_VERTEX_SHADER_PATH = std::format(
 			"./res/shaders/GL{}{}0/block_vertex.glsl", 

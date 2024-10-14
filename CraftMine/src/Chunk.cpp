@@ -4,7 +4,8 @@
 
 Chunk::Chunk(int x, int y, const ChunkCluster& c) : cluster{ c }, coor{ glm::ivec2(x, y)}
 {
-	init();
+	asyncFaces = std::async(std::launch::async, [this]() { return init(); });
+	//faces = init();
 }
 
 
@@ -17,7 +18,18 @@ inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 }
 
 
-void Chunk::init() 
+std::vector<Face>* Chunk::init()
+{
+	initBlocks();
+	status = BLOCKS_PLACED;
+	std::vector<Face>* faces = new std::vector<Face>();
+	computeFaces(*faces);
+	status = FACES_COMPUTED;
+	return faces;
+}
+
+
+void Chunk::initBlocks() 
 {
 	int Height = params::world::CHUNK_HEIGHT - (std::rand() % 16);
 	
@@ -97,15 +109,21 @@ bool Chunk::isThereABlock(int x, int y, int z) const
 }
 
 
-std::weak_ptr<const ChunkMesh> Chunk::getMesh() 
-{ 
-	if (isMeshDirty)
+bool Chunk::areBlocksAvailable() const { return BLOCKS_PLACED < status; }
+
+
+void Chunk::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view)
+{
+	if (status < FACES_COMPUTED)
+		return;
+	
+	if (status == FACES_COMPUTED)
 	{
-		std::vector<Face> faces;
-		computeFaces(faces);
-		mesh = std::make_shared<ChunkMesh>(coor.x, coor.y, faces);
-		isMeshDirty = false;
+		std::vector<Face>* faces = asyncFaces.get();
+		mesh = std::make_unique<ChunkMesh>(coor.x, coor.y, *faces);
+		delete faces;
+		status = FULLY_CREATED;
 	}
 
-	return std::weak_ptr<ChunkMesh>(mesh); 
+	mesh->draw(shader, projection, view);
 }
