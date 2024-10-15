@@ -10,11 +10,18 @@ ChunkCluster::ChunkCluster(std::shared_ptr<Player> p) : player{ p }
 ChunkCluster::~ChunkCluster() { }
 
 
-void ChunkCluster::init() 
+std::set<long long> ChunkCluster::getChunkAround(glm::ivec2 pos)
 {
-	for (int x = 0; x < params::graphical::CHUNK_RADIUS; x++)
-		for (int y = 0; y < params::graphical::CHUNK_RADIUS; y++)
-			chunks.emplace(getKey(x, y), std::make_unique<Chunk>(x, y, *this));
+	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
+	int yMin = pos.y - params::graphical::CHUNK_RADIUS, yMax = pos.y + params::graphical::CHUNK_RADIUS;
+
+	std::set<long long> ids;
+
+	for (int x = xMin; x <= xMax; x++)
+		for (int y = yMin; y <= yMax; y++)
+			ids.insert(getKey(x, y));
+
+	return ids;
 }
 
 
@@ -23,31 +30,16 @@ void ChunkCluster::updateChunkList()
 	glm::vec2 pos = player->getChunkPos();
 	glm::vec3 realPos = player->getCam().position;
 	
-	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
-	int yMin = pos.y - params::graphical::CHUNK_RADIUS, yMax = pos.y + params::graphical::CHUNK_RADIUS;
+	std::set<long long>      newIds = getChunkAround(pos);
+	std::set<long long> existingIds = AppSql::getKeys<long long, std::unique_ptr<Chunk>>(chunks);
+	std::set<long long>    idsToAdd = AppSql::EXCEPT<long long>(newIds, existingIds);
+	std::set<long long> idsToDelete = AppSql::EXCEPT<long long>(existingIds, newIds);
 
-	std::set<long long> newIds;
-	std::vector<long long> existingIds;
+	for (long long idToDelete : idsToDelete)
+		chunks.erase(idToDelete);
 
- 	for (int x = xMin; x <= xMax; x++)
-		for (int y = yMin; y <= yMax; y++)
-			newIds.insert(getKey(x, y));
-
-	for (const auto& [key, value] : chunks)
-		existingIds.push_back(key);
-
-	for (long long key : existingIds)
-		if (!newIds.contains(key))
-			chunks.erase(key);
-
-	for (const long long id : newIds)
-	{
-		if (chunks.find(id) == chunks.end())
-		{
-			glm::ivec2 coor = getCoorFromKey(id);
-			chunks[id] = std::make_unique<Chunk>(coor.x, coor.y, *this);
-		}
-	}
+	for (long long idToAdd : idsToAdd)
+		chunks.emplace(idToAdd, std::make_unique<Chunk>(getCoorFromKey(idToAdd), *this));
 }
 
 

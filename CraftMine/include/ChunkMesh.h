@@ -23,6 +23,7 @@ private:
 	std::unique_ptr<GLMap<long long, Face>> VBO;
 
 	void initVAO();
+	long long getFaceKey(const Face& face) const;
 
 public:
 	ChunkMesh(int x, int y, std::vector<Face>& faces);

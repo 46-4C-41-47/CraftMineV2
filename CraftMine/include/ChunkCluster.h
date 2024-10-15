@@ -1,19 +1,18 @@
 #pragma once
 
 #include <map>
-#include <set>
 #include <memory>
+#include <set>
 #include <utility>
-
-#include <bitset>
 
 #include <glm/glm.hpp>
 
+#include "APeuPreSQL.h"
 #include "Chunk.h"
-#include "Player.h"
-#include "Shader.h"
 #include "ChunkMesh.h"
 #include "parameters.h"
+#include "Player.h"
+#include "Shader.h"
 
 
 
@@ -26,8 +25,8 @@ private:
 	std::map<long long, std::unique_ptr<Chunk>> chunks = {};
 	//std::map<long long, std::unique_ptr<Chunk>> loadedChunks = {};
 
-	void init();
 	void updateChunkList(); 
+	std::set<long long> getChunkAround(glm::ivec2 pos);
 
 public:
 	ChunkCluster(std::shared_ptr<Player> p);

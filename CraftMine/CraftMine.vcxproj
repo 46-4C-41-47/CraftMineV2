@@ -154,6 +154,7 @@
     <ClCompile Include="src\TextureAtlas.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\APeuPreSQL.h" />
     <ClInclude Include="include\Camera.h" />
     <ClInclude Include="include\Chunk.h" />
     <ClInclude Include="include\ChunkCluster.h" />

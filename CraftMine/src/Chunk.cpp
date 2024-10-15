@@ -2,10 +2,9 @@
 #include "../include/ChunkCluster.h"
 
 
-Chunk::Chunk(int x, int y, const ChunkCluster& c) : cluster{ c }, coor{ glm::ivec2(x, y)}
+Chunk::Chunk(glm::ivec2 coordinates, const ChunkCluster& clstr) : cluster{ clstr }, coor{ coordinates }
 {
 	asyncFaces = std::async(std::launch::async, [this]() { return init(); });
-	//faces = init();
 }
 
 
@@ -14,18 +13,17 @@ Chunk::~Chunk() { }
 
 inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 {
-	return x + (y * params::world::CHUNK_WIDTH) + (z * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT);
+	return 
+		x 
+		+ (y * params::world::CHUNK_WIDTH) 
+		+ (z * params::world::CHUNK_WIDTH * params::world::CHUNK_HEIGHT);
 }
 
 
-std::vector<Face>* Chunk::init()
+std::vector<Face> Chunk::init()
 {
 	initBlocks();
-	status = BLOCKS_PLACED;
-	std::vector<Face>* faces = new std::vector<Face>();
-	computeFaces(*faces);
-	status = FACES_COMPUTED;
-	return faces;
+	return computeFaces();
 }
 
 
@@ -46,11 +44,15 @@ void Chunk::initBlocks()
 			}
 		}
 	}
+
+	status = BLOCKS_PLACED;
 }
 
 
-void Chunk::computeFaces(std::vector<Face>& faces)
+std::vector<Face> Chunk::computeFaces()
 {
+	std::vector<Face> faces;
+
 	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 	{
 		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
@@ -64,25 +66,33 @@ void Chunk::computeFaces(std::vector<Face>& faces)
 				glm::ivec3 facePos = glm::ivec3(x, y, z);
 
 				if ((0 < z && blocks[getBlockIndex(x, y, z - 1)] == constants::EMPTY)
-					|| (z == 0 && !cluster.checkForBlock(constants::SOUTH, coor, x, y, params::world::CHUNK_WIDTH - 1))
+					|| (z == 0 
+						&& !cluster.checkForBlock(constants::SOUTH, coor, x, y, params::world::CHUNK_WIDTH - 1)
+						)
 					) {
 					faces.push_back({ facePos, texture | constants::FRONT });
 				}
 				
 				if ((z < params::world::CHUNK_WIDTH - 1 && blocks[getBlockIndex(x, y, z + 1)] == constants::EMPTY)
-					|| (z == params::world::CHUNK_WIDTH - 1 && !cluster.checkForBlock(constants::NORTH, coor, x, y, 0))
+					|| (z == params::world::CHUNK_WIDTH - 1 
+						&& !cluster.checkForBlock(constants::NORTH, coor, x, y, 0)
+						)
 					) {
 					faces.push_back({ facePos, texture | constants::BACK });
 				}
 
 				if ((x < params::world::CHUNK_WIDTH - 1 && blocks[getBlockIndex(x + 1, y, z)] == constants::EMPTY)
-					|| (x == params::world::CHUNK_WIDTH - 1 && !cluster.checkForBlock(constants::EAST, coor, 0, y, z))
+					|| (x == params::world::CHUNK_WIDTH - 1 
+						&& !cluster.checkForBlock(constants::EAST, coor, 0, y, z)
+						)
 					) {
 					faces.push_back({ facePos, texture | constants::RIGHT });
 				}
 
 				if ((x < 0 && blocks[getBlockIndex(x - 1, y, z)] == constants::EMPTY)
-					|| (x == 0 && !cluster.checkForBlock(constants::WEST, coor, params::world::CHUNK_WIDTH - 1, y, z))
+					|| (x == 0 
+						&& !cluster.checkForBlock(constants::WEST, coor, params::world::CHUNK_WIDTH - 1, y, z)
+						)
 					) {
 					faces.push_back({ facePos, texture | constants::LEFT });
 				}
@@ -90,11 +100,16 @@ void Chunk::computeFaces(std::vector<Face>& faces)
 				if (y != 0 && blocks[getBlockIndex(x, y - 1, z)] == constants::EMPTY)
 					faces.push_back({ facePos, texture | constants::BOTTOM });
 
-				if (y == params::world::CHUNK_HEIGHT - 1 || blocks[getBlockIndex(x, y + 1, z)] == constants::EMPTY)
+				if (y == params::world::CHUNK_HEIGHT - 1 
+					|| blocks[getBlockIndex(x, y + 1, z)] == constants::EMPTY)
 					faces.push_back({ facePos, texture | constants::TOP });
 			}
 		}
 	}
+
+	status = FACES_COMPUTED;
+
+	return faces;
 }
 
 
@@ -112,6 +127,70 @@ bool Chunk::isThereABlock(int x, int y, int z) const
 bool Chunk::areBlocksAvailable() const { return BLOCKS_PLACED < status; }
 
 
+void Chunk::updateSide(constants::cardinal side)
+{
+	int x = 0, z = 0, neighborBound;
+	int* w,* neighborX,* neighborZ;
+	constants::blockFaceIndex faceIndex;
+	std::vector<Face> faces;
+
+	switch (side) {
+	case constants::NORTH:
+		w = &x;
+		z = params::world::CHUNK_WIDTH - 1;
+		neighborX = &x;
+		neighborZ = &neighborBound;
+		neighborBound = 0;
+		faceIndex = constants::BACK;
+		break;
+
+	case constants::SOUTH:
+		w = &x;
+		z = 0;
+		neighborX = &x;
+		neighborZ = &neighborBound;
+		neighborBound = params::world::CHUNK_WIDTH - 1;
+		faceIndex = constants::FRONT;
+		break;
+
+	case constants::EAST:
+		w = &z;
+		x = params::world::CHUNK_WIDTH - 1;
+		neighborX = &neighborBound;
+		neighborZ = &z;
+		neighborBound = 0;
+		faceIndex = constants::RIGHT;
+		break;
+
+	case constants::WEST:
+		w = &z;
+		x = 0;
+		neighborX = &neighborBound;
+		neighborZ = &z;
+		neighborBound = params::world::CHUNK_WIDTH - 1;
+		faceIndex = constants::LEFT;
+		break;
+	}
+
+	for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
+	{
+		for (*w = 0; *w < params::world::CHUNK_WIDTH; (*w)++)
+		{
+			if (blocks[getBlockIndex(x, y, z)] == constants::EMPTY)
+				continue;
+
+			int texture = blocks[getBlockIndex(x, y, z)] << 3;
+			glm::ivec3 facePos = glm::ivec3(x, y, z);
+
+			if (!cluster.checkForBlock(constants::NORTH, coor, *neighborX, y, *neighborZ))
+				faces.push_back({ facePos, texture | faceIndex });
+		}
+	}
+
+	mesh->add(faces);
+}
+
+
 void Chunk::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view)
 {
 	if (status < FACES_COMPUTED)
@@ -119,9 +198,8 @@ void Chunk::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view)
 	
 	if (status == FACES_COMPUTED)
 	{
-		std::vector<Face>* faces = asyncFaces.get();
-		mesh = std::make_unique<ChunkMesh>(coor.x, coor.y, *faces);
-		delete faces;
+		std::vector<Face> faces = asyncFaces.get();
+		mesh = std::make_unique<ChunkMesh>(coor.x, coor.y, faces);
 		status = FULLY_CREATED;
 	}
 

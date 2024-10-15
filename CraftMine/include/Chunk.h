@@ -31,7 +31,7 @@ class Chunk
 private:
 	const ChunkCluster& cluster;
 	ChunkLoadingStatus status = NOT_CREATED;
-	std::future<std::vector<Face>*> asyncFaces;
+	std::future<std::vector<Face>> asyncFaces;
 	std::unique_ptr<ChunkMesh> mesh;
 	std::array<
 		constants::block, 
@@ -39,14 +39,14 @@ private:
 	> blocks;
 
 	unsigned short getBlockIndex(int x, int y, int z) const;
-	std::vector<Face>* init();
 	void initBlocks();
-	void computeFaces(std::vector<Face>& faces);
+	std::vector<Face> init();
+	std::vector<Face> computeFaces();
 
 public:
 	const glm::ivec2 coor;
 
-	Chunk(int x, int y, const ChunkCluster& c);
+	Chunk(glm::ivec2 coordinates, const ChunkCluster& clstr);
 	Chunk(const Chunk&) = delete;
 
 	~Chunk();
@@ -54,8 +54,8 @@ public:
 	Chunk& operator = (const Chunk&) = delete;
 
 	bool isThereABlock(int x, int y, int z) const;
-
 	bool areBlocksAvailable() const;
 
+	void updateSide(constants::cardinal);
 	void draw(const Shader& shader, glm::mat4& projection, glm::mat4& view);
 };

@@ -59,6 +59,19 @@ void ChunkMesh::initVAO()
 }
 
 
+long long ChunkMesh::getFaceKey(const Face& face) const
+{
+	long long x, y, z, faceIndex;
+
+	x = (long long)(face.offset.x & 0x000FFFFF) << 44;
+	y = (long long)(face.offset.y & 0x000FFFFF) << 24;
+	z = (long long)(face.offset.z & 0x000FFFFF) << 4;
+	faceIndex = face.textureAndFace & 0x00000007;
+
+	return x | y | z | faceIndex;
+}
+
+
 void ChunkMesh::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view) const
 {
 	glm::mat4 model = glm::translate(glm::mat4(1.0f), position);
@@ -89,17 +102,9 @@ void ChunkMesh::draw(const Shader& shader, glm::mat4& projection, glm::mat4& vie
 void ChunkMesh::add(std::vector<Face>& faces) 
 {
 	std::vector<long long> keys;
-	long long key, x, y, z, faceIndex;
 
 	for (Face& face : faces)
-	{
-		x = (long long)(face.offset.x & 0x000FFFFF) << 44;
-		y = (long long)(face.offset.y & 0x000FFFFF) << 24;
-		z = (long long)(face.offset.z & 0x000FFFFF) << 4;
-		faceIndex = face.textureAndFace & 0x00000007;
-		key = x | y | z | faceIndex;
-		keys.push_back(key);
-	}
+		keys.push_back(getFaceKey(face));
 
 	VBO->add(keys, faces);
 }
