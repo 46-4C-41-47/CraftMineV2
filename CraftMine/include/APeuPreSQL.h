@@ -1,6 +1,7 @@
 #pragma once
 
 #include <algorithm>
+#include <functional>
 #include <map>
 #include <set>
 #include <vector>
@@ -53,7 +54,7 @@ public:
 	template<typename T>
 	static std::set<T> OUTER(std::set<T> A, std::set<T> B)
 	{
-		std::vector<T> result;
+		std::set<T> result;
 
 		for (const T& element : A)
 			if (!B.contains(element))
@@ -68,7 +69,23 @@ public:
 
 
 	template<typename T>
-	static std::set<T> toSet(std::vector<T> vector)
+	static std::set<T> WHERE(
+		std::set<T> A, std::set<T> B, 
+		std::function<bool(T elementA, T elementB)> condition
+	) {
+		std::set<T> result;
+
+		for (const T& elementA : A)
+			for (const T& elementB : B)
+				if (condition(elementA, elementB))
+					result.insert(elementA);
+
+		return result;
+	}
+
+
+	template<typename T>
+	static std::set<T> toSet(const std::vector<T>& vector)
 	{
 		std::set<T> set;
 
@@ -80,7 +97,7 @@ public:
 
 
 	template<typename K, typename V>
-	static std::set<K> getKeys(std::map<K, V> map)
+	static std::set<K> getKeys(const std::map<K, V>& map)
 	{
 		std::set<K> keys;
 

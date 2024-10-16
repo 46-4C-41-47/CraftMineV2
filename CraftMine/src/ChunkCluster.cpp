@@ -25,6 +25,16 @@ std::set<long long> ChunkCluster::getChunkAround(glm::ivec2 pos)
 }
 
 
+bool ChunkCluster::areNeighbors(long long chunkA, long long chunkB)
+{
+	glm::ivec2 a = getCoorFromKey(chunkA);
+	glm::ivec2 b = getCoorFromKey(chunkB);
+
+	return (a.x == b.x && (b.y == a.y - 1 || b.y == a.y + 1))
+		|| (a.y == b.y && (b.x == a.x - 1 || b.x == a.x + 1));
+}
+
+
 void ChunkCluster::updateChunkList() 
 {
 	glm::vec2 pos = player->getChunkPos();
@@ -34,6 +44,7 @@ void ChunkCluster::updateChunkList()
 	std::set<long long> existingIds = AppSql::getKeys<long long, std::unique_ptr<Chunk>>(chunks);
 	std::set<long long>    idsToAdd = AppSql::EXCEPT<long long>(newIds, existingIds);
 	std::set<long long> idsToDelete = AppSql::EXCEPT<long long>(existingIds, newIds);
+	std::set<long long> idsToUpdate = AppSql::WHERE<long long>(existingIds, idsToAdd, areNeighbors);
 
 	for (long long idToDelete : idsToDelete)
 		chunks.erase(idToDelete);
@@ -57,25 +68,26 @@ void ChunkCluster::draw(const Shader& shader, glm::mat4& projectionMatrix, glm::
 
 bool ChunkCluster::checkForBlock(
 	constants::cardinal neighborCardinal, 
-	glm::ivec2 chunkCoor, int x, int y, int z
+	const Chunk& callingChunk, 
+	glm::ivec3 coor
 ) const {
 	long long neighborKey;
 
 	switch (neighborCardinal) {
 	case constants::NORTH:
-		neighborKey = getKey(chunkCoor.x, chunkCoor.y + 1);
+		neighborKey = getKey(callingChunk.coor.x    , callingChunk.coor.y + 1);
 		break;
 	
 	case constants::SOUTH:
-		neighborKey = getKey(chunkCoor.x, chunkCoor.y - 1);
+		neighborKey = getKey(callingChunk.coor.x    , callingChunk.coor.y - 1);
 		break;
 	
 	case constants::EAST:
-		neighborKey = getKey(chunkCoor.x + 1, chunkCoor.y);
+		neighborKey = getKey(callingChunk.coor.x + 1, callingChunk.coor.y    );
 		break;
 	
 	case constants::WEST:
-		neighborKey = getKey(chunkCoor.x - 1, chunkCoor.y);
+		neighborKey = getKey(callingChunk.coor.x - 1, callingChunk.coor.y    );
 		break;
 	}
 
@@ -85,15 +97,50 @@ bool ChunkCluster::checkForBlock(
 		return true;
 
 	if (neighbor->second->areBlocksAvailable())
-		return neighbor->second->isThereABlock(x, y, z);
+		return neighbor->second->isThereABlock(coor.x, coor.y, coor.z);
 
 	return true;
 }
 
 
-long long ChunkCluster::getKey(int x, int y) const 
+bool ChunkCluster::isNeighborAvailable(constants::cardinal neighbor, const Chunk& callingChunk) const
+{
+	long long neighborId;
+
+	switch (neighbor)
+	{
+	case constants::NORTH:
+		neighborId = getKey(callingChunk.coor.x    , callingChunk.coor.y + 1);
+		break;
+
+	case constants::SOUTH:
+		neighborId = getKey(callingChunk.coor.x    , callingChunk.coor.y - 1);
+		break;
+
+	case constants::EAST:
+		neighborId = getKey(callingChunk.coor.x + 1, callingChunk.coor.y    );
+		break;
+
+	case constants::WEST:
+		neighborId = getKey(callingChunk.coor.x - 1, callingChunk.coor.y    );
+		break;
+	}
+
+	std::map<long long, std::unique_ptr<Chunk>>::const_iterator it = chunks.find(neighborId);
+
+	if (it == chunks.end())
+		return false;
+
+	if (it->second->getLoadingStatus() == ChunkLoadingStatus::FULLY_CREATED)
+		return true;
+
+	return false;
+}
+
+
+long long ChunkCluster::getKey(int x, int y) 
 { return (long long)x << INT_BIT_SIZE | (long long)y & 0xFFFFFFFF; }
 
 
-glm::ivec2 ChunkCluster::getCoorFromKey(long long key) const
+glm::ivec2 ChunkCluster::getCoorFromKey(long long key)
 { return glm::ivec2(key >> INT_BIT_SIZE, key & 0xFFFFFFFF); }

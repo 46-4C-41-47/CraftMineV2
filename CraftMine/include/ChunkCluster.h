@@ -27,6 +27,7 @@ private:
 
 	void updateChunkList(); 
 	std::set<long long> getChunkAround(glm::ivec2 pos);
+	static bool areNeighbors(long long chunkA, long long chunkB);
 
 public:
 	ChunkCluster(std::shared_ptr<Player> p);
@@ -37,8 +38,9 @@ public:
 	ChunkCluster& operator = (const ChunkCluster&) = delete;
 
 	void draw(const Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix);
-	bool checkForBlock(constants::cardinal neighbor, glm::ivec2 chunkCoor, int x, int y, int z) const;
+	bool checkForBlock(constants::cardinal neighbor, const Chunk& callingChunk, glm::ivec3 coor) const;
+	bool isNeighborAvailable(constants::cardinal neighbor, const Chunk& callingChunk) const;
 
-	long long getKey(int x, int y) const;
-	glm::ivec2 getCoorFromKey(long long key) const;
+	static long long getKey(int x, int y);
+	static glm::ivec2 getCoorFromKey(long long key);
 };
