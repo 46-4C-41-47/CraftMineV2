@@ -178,6 +178,12 @@ bool Chunk::isThereABlock(int x, int y, int z) const
 bool Chunk::areBlocksAvailable() const { return BLOCKS_PLACED < loadingStatus; }
 
 
+void Chunk::updateSides()
+{
+
+}
+
+
 void Chunk::updateSide(constants::cardinal side)
 {
 	int x = 0, z = 0, neighborBound;
@@ -239,6 +245,7 @@ void Chunk::updateSide(constants::cardinal side)
 	}
 
 	mesh->add(faces);
+	chunkFacesStatus[side] = FACES_COMPUTED;
 }
 
 
