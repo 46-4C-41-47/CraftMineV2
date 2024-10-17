@@ -57,6 +57,17 @@ void Chunk::initBlocks()
 std::vector<Face> Chunk::computeFaces()
 {
 	std::vector<Face> faces;
+	std::array<long long, 4> neighborStatus = {
+		cluster.isNeighborAvailable(constants::NORTH, *this),
+		cluster.isNeighborAvailable(constants::SOUTH, *this),
+		cluster.isNeighborAvailable(constants::EAST , *this),
+		cluster.isNeighborAvailable(constants::WEST , *this),
+	};
+
+	chunkFacesStatus[constants::NORTH] = neighborStatus[constants::NORTH] ? FACES_COMPUTED : NOT_CREATED;
+	chunkFacesStatus[constants::SOUTH] = neighborStatus[constants::SOUTH] ? FACES_COMPUTED : NOT_CREATED;
+	chunkFacesStatus[constants::EAST ] = neighborStatus[constants::EAST ] ? FACES_COMPUTED : NOT_CREATED;
+	chunkFacesStatus[constants::WEST ] = neighborStatus[constants::WEST ] ? FACES_COMPUTED : NOT_CREATED;
 
 	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 	{
@@ -71,16 +82,16 @@ std::vector<Face> Chunk::computeFaces()
 				glm::ivec3 facePos = glm::ivec3(x, y, z);
 
 
-				if (shouldAddFace(x, y, z, constants::FRONT)) 
+				if (shouldAddFace(x, y, z, constants::FRONT, neighborStatus))
 					faces.push_back({ facePos, texture | constants::FRONT });
 				
-				if (shouldAddFace(x, y, z, constants::BACK)) 
+				if (shouldAddFace(x, y, z, constants::BACK , neighborStatus))
 					faces.push_back({ facePos, texture | constants::BACK });
 
-				if (shouldAddFace(x, y, z, constants::RIGHT)) 
+				if (shouldAddFace(x, y, z, constants::RIGHT, neighborStatus))
 					faces.push_back({ facePos, texture | constants::RIGHT });
 
-				if (shouldAddFace(x, y, z, constants::LEFT)) 
+				if (shouldAddFace(x, y, z, constants::LEFT , neighborStatus))
 					faces.push_back({ facePos, texture | constants::LEFT });
 
 
@@ -100,8 +111,11 @@ std::vector<Face> Chunk::computeFaces()
 }
 
 
-bool Chunk::shouldAddFace(int x, int y, int z, constants::blockFaceIndex face) const
-{
+bool Chunk::shouldAddFace(
+	int x, int y, int z, 
+	constants::blockFaceIndex face, 
+	const std::array<long long, 4>& neighborStatus
+) const {
 	bool isOnBound;
 	constants::cardinal cardinal;
 	glm::ivec3 chunkCoor;
@@ -142,7 +156,11 @@ bool Chunk::shouldAddFace(int x, int y, int z, constants::blockFaceIndex face) c
 	}
 
 	return (!isOnBound && blocks[getBlockIndex(chunkCoor.x, chunkCoor.y, chunkCoor.z)] == constants::EMPTY)
-		|| (isOnBound && !cluster.checkForBlock(cardinal, *this, neighborCoor));
+		|| (
+			isOnBound 
+			&& neighborStatus[cardinal]
+			&& !cluster.checkForBlock(cardinal, *this, neighborCoor)
+		);
 }
 
 

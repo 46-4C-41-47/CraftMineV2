@@ -49,7 +49,11 @@ private:
 	void initBlocks();
 	std::vector<Face> init();
 	std::vector<Face> computeFaces();
-	bool shouldAddFace(int x, int y, int z, constants::blockFaceIndex face) const;
+	bool shouldAddFace(
+		int x, int y, int z, 
+		constants::blockFaceIndex face, 
+		const std::array<long long, 4>& neighborStatus
+	) const;
 
 public:
 	const glm::ivec2 coor;
