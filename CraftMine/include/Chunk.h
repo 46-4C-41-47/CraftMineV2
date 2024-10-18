@@ -49,6 +49,7 @@ private:
 	void initBlocks();
 	std::vector<Face> init();
 	std::vector<Face> computeFaces();
+	void updateSide(constants::cardinal, std::vector<Face>& faces);
 	bool shouldAddFace(
 		int x, int y, int z, 
 		constants::blockFaceIndex face, 
@@ -68,7 +69,7 @@ public:
 	bool isThereABlock(int x, int y, int z) const;
 	bool areBlocksAvailable() const;
 
-	void updateSide(constants::cardinal);
+	void updateSides();
 	void draw(const Shader& shader, glm::mat4& projection, glm::mat4& view);
 
 	ChunkLoadingStatus getLoadingStatus() const;

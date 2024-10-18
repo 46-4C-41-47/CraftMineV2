@@ -148,6 +148,7 @@
     <ClCompile Include="src\ChunkCluster.cpp" />
     <ClCompile Include="src\ChunkMesh.cpp" />
     <ClCompile Include="src\CMWindow.cpp" />
+    <ClCompile Include="src\Compass.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="include\ChunkCluster.h" />
     <ClInclude Include="include\ChunkMesh.h" />
     <ClInclude Include="include\CMWindow.h" />
+    <ClInclude Include="include\Compass.h" />
     <ClInclude Include="include\Face.h" />
     <ClInclude Include="include\GLMap.h" />
     <ClInclude Include="include\GLVector.h" />

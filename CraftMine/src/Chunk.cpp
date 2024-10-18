@@ -180,16 +180,22 @@ bool Chunk::areBlocksAvailable() const { return BLOCKS_PLACED < loadingStatus; }
 
 void Chunk::updateSides()
 {
+	std::vector<Face> faces;
 
+	for (int side = 0; side < 4; side++)
+		if (chunkFacesStatus[side] != FACES_COMPUTED)
+			updateSide((constants::cardinal)side, faces);
+
+	if (0 < faces.size())
+		mesh->add(faces);
 }
 
 
-void Chunk::updateSide(constants::cardinal side)
+void Chunk::updateSide(constants::cardinal side, std::vector<Face>& faces)
 {
 	int x = 0, z = 0, neighborBound;
 	int* w,* neighborX,* neighborZ;
 	constants::blockFaceIndex faceIndex;
-	std::vector<Face> faces;
 
 	switch (side) {
 	case constants::NORTH:
@@ -210,7 +216,7 @@ void Chunk::updateSide(constants::cardinal side)
 		faceIndex = constants::FRONT;
 		break;
 
-	case constants::EAST:
+	/*case constants::EAST:
 		w = &z;
 		x = params::world::CHUNK_WIDTH - 1;
 		neighborX = &neighborBound;
@@ -226,7 +232,10 @@ void Chunk::updateSide(constants::cardinal side)
 		neighborZ = &z;
 		neighborBound = params::world::CHUNK_WIDTH - 1;
 		faceIndex = constants::LEFT;
-		break;
+		break;*/
+
+	default:
+		return;
 	}
 
 	for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
@@ -244,7 +253,6 @@ void Chunk::updateSide(constants::cardinal side)
 		}
 	}
 
-	mesh->add(faces);
 	chunkFacesStatus[side] = FACES_COMPUTED;
 }
 
@@ -260,6 +268,9 @@ void Chunk::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view)
 		mesh = std::make_unique<ChunkMesh>(coor.x, coor.y, faces);
 		loadingStatus = FULLY_CREATED;
 	}
+
+	if (loadingStatus == FULLY_CREATED)
+		updateSides();
 
 	mesh->draw(shader, projection, view);
 }

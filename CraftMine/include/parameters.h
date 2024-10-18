@@ -62,6 +62,7 @@ namespace params
 		static const int OPENGL_MINOR_VERSION = 5;
 
 		static const bool ENABLE_FACE_CULLING = false;
+		static const bool DISPLAY_DEBUG_TOOLS = true;
 	}
 
 	namespace graphical
@@ -75,12 +76,12 @@ namespace params
 		static const int CHUNK_RADIUS = 4;
 
 		static const std::string CHUNK_VERTEX_SHADER_PATH = std::format(
-			"./res/shaders/GL{}{}0/block_vertex.glsl", 
+			"./res/shaders/GL{}{}0/Chunk/chunk_vertex.glsl", 
 			developement::OPENGL_MAJOR_VERSION, 
 			developement::OPENGL_MINOR_VERSION
 		);
 		static const std::string CHUNK_FRAGMENT_SHADER_PATH = std::format(
-			"./res/shaders/GL{}{}0/block_fragment.glsl", 
+			"./res/shaders/GL{}{}0/Chunk/chunk_fragment.glsl", 
 			developement::OPENGL_MAJOR_VERSION,
 			developement::OPENGL_MINOR_VERSION
 		);
