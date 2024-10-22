@@ -58,6 +58,10 @@ public:
 	void pitch(float angleInRadians);
 	void roll(float angleInRadians); // à finir
 
+	double getYaw();
+	double getPitch();
+	double getRoll();
+
 	void proccessMouse(int x, int y);
 
 	glm::mat4 getViewMatrix() { return viewMatrix; }

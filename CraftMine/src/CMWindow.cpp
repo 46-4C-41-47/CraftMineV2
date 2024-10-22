@@ -15,6 +15,8 @@ std::shared_ptr<Player> CMWindow::player = std::make_shared<Player>(params::worl
 
 std::unique_ptr<ChunkCluster> CMWindow::cluster = nullptr;
 
+std::unique_ptr<Compass> CMWindow::compass = nullptr;
+
 
 CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
 {
@@ -106,8 +108,13 @@ void CMWindow::init(int width, int height, int x, int y)
         params::graphical::CHUNK_VERTEX_SHADER_PATH, 
         params::graphical::CHUNK_FRAGMENT_SHADER_PATH
     );
+    compassShader = std::make_unique<Shader>(
+        params::graphical::COMPASS_VERTEX_SHADER_PATH,
+        params::graphical::COMPASS_FRAGMENT_SHADER_PATH
+    );
 
     cluster = std::make_unique<ChunkCluster>(player);
+    compass = std::make_unique<Compass>();
 }
 
 
@@ -193,6 +200,7 @@ void CMWindow::run()
 
     glm::mat4 view = player->getCam().getViewMatrix();
     cluster->draw(*objectShader, projection, view);
+    //compass->draw(*compassShader, projection, view);
 
     //glm::vec3 pos = player->getCam().position;
     //std::cout << "x : " << (int)pos.x << ", y : " << (int)pos.y << ", z : " << (int)pos.z << "\n";

@@ -75,16 +75,17 @@ namespace params
 
 		static const int CHUNK_RADIUS = 4;
 
-		static const std::string CHUNK_VERTEX_SHADER_PATH = std::format(
-			"./res/shaders/GL{}{}0/Chunk/chunk_vertex.glsl", 
-			developement::OPENGL_MAJOR_VERSION, 
-			developement::OPENGL_MINOR_VERSION
-		);
-		static const std::string CHUNK_FRAGMENT_SHADER_PATH = std::format(
-			"./res/shaders/GL{}{}0/Chunk/chunk_fragment.glsl", 
+		static const std::string SHADER_REPOSITORY = std::format(
+			"./res/shaders/GL{}{}0/",
 			developement::OPENGL_MAJOR_VERSION,
 			developement::OPENGL_MINOR_VERSION
 		);
+
+		static const std::string CHUNK_VERTEX_SHADER_PATH = SHADER_REPOSITORY + "Chunk/chunk_vertex.glsl";
+		static const std::string CHUNK_FRAGMENT_SHADER_PATH = SHADER_REPOSITORY + "Chunk/chunk_fragment.glsl";
+
+		static const std::string COMPASS_VERTEX_SHADER_PATH = SHADER_REPOSITORY + "Compass/compass_vertex.glsl";
+		static const std::string COMPASS_FRAGMENT_SHADER_PATH = SHADER_REPOSITORY + "Compass/compass_fragment.glsl";
 	}
 
 	namespace controls

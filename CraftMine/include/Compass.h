@@ -9,10 +9,12 @@
 
 class Compass {
 private:
-	const std::array<float, 4> vertices = {
-
+	const std::array<float, 18> vertices = {
+		1.0, 0.0, 0.0,  0.0, 0.0, 0.0,  
+		0.0, 1.0, 0.0,  0.0, 0.0, 0.0,
+		0.0, 0.0, 1.0,  0.0, 0.0, 0.0,
 	};
-	unsigned int VAO;
+	unsigned int VAO, VBO;
 
 	void initVAO();
 

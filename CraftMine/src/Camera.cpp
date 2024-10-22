@@ -124,6 +124,15 @@ void Camera::roll(float angleInRadians)
 }
 
 
+double Camera::getYaw() { return yawValue; }
+
+
+double Camera::getPitch() { return pitchValue; }
+
+
+double Camera::getRoll() { return rollValue; }
+
+
 void Camera::proccessMouse(int x, int y) 
 {
 	if (lastX == -1 || lastY == -1) {

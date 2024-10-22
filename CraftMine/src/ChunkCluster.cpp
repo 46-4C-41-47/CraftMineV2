@@ -42,9 +42,8 @@ void ChunkCluster::updateChunkList()
 	
 	std::set<long long>      newIds = getChunkAround(pos);
 	std::set<long long> existingIds = AppSql::getKeys<long long, std::unique_ptr<Chunk>>(chunks);
-	std::set<long long>    idsToAdd = AppSql::EXCEPT<long long>(newIds, existingIds);
-	std::set<long long> idsToDelete = AppSql::EXCEPT<long long>(existingIds, newIds);
-	std::set<long long> idsToUpdate = AppSql::WHERE<long long>(existingIds, idsToAdd, areNeighbors);
+	std::set<long long>    idsToAdd = AppSql::EXCEPT <long long>(newIds, existingIds);
+	std::set<long long> idsToDelete = AppSql::EXCEPT <long long>(existingIds, newIds);
 
 	for (long long idToDelete : idsToDelete)
 		chunks.erase(idToDelete);

@@ -1,23 +1,24 @@
 #pragma once
 
-#include <ctime>
+#include <algorithm>
 #include <chrono>
+#include <ctime>
+#include <iostream>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <vector>
-#include <iostream>
-#include <algorithm>
-#include <stdexcept>
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include "Camera.h"
+#include "ChunkCluster.h"
+#include "Compass.h"
+#include "parameters.h"
 #include "Player.h"
 #include "Shader.h"
-#include "parameters.h"
-#include "ChunkCluster.h"
 #include "TextureAtlas.h"
 
 
@@ -35,9 +36,11 @@ private:
 	static GLFWwindow* window;
 	static std::shared_ptr<Player> player;
 	static std::unique_ptr<ChunkCluster> cluster;
+	static std::unique_ptr<Compass> compass;
 	int previousFrameDuration = SECOND; // microseconds
 	int frameRateUpdateLimit = 0;
 	std::unique_ptr<Shader> objectShader;
+	std::unique_ptr<Shader> compassShader;
 
 	static void rebuildProjectionMatrix(int width, int height);
 	static void resizeCallback(GLFWwindow* window, int width, int height);
