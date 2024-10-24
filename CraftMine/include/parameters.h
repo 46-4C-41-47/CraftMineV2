@@ -62,7 +62,7 @@ namespace params
 		static const int OPENGL_MINOR_VERSION = 5;
 
 		static const bool ENABLE_FACE_CULLING = false;
-		static const bool DISPLAY_DEBUG_TOOLS = true;
+		static const bool DEBUG_MODE = true;
 	}
 
 	namespace graphical

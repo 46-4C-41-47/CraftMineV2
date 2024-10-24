@@ -4,15 +4,36 @@
 
 #include <glm/glm.hpp>
 
+#include "Camera.h"
 #include "Shader.h"
+
+
+typedef struct {
+	glm::vec3 location;
+	glm::vec3 color;
+} CompassPoint;
 
 
 class Compass {
 private:
-	const std::array<float, 18> vertices = {
-		1.0, 0.0, 0.0,  0.0, 0.0, 0.0,  
-		0.0, 1.0, 0.0,  0.0, 0.0, 0.0,
-		0.0, 0.0, 1.0,  0.0, 0.0, 0.0,
+	const std::array<CompassPoint, 6> vertices = {
+		glm::vec3(0.1, 0.0, 0.0),
+		glm::vec3(0.0, 0.0, 0.0),
+
+		glm::vec3(0.0, 0.1, 0.0),
+		glm::vec3(0.0, 0.0, 0.0),
+		
+		glm::vec3(0.0, 0.0, 0.1),
+		glm::vec3(0.0, 0.0, 0.0),
+
+		/*CompassPoint{ glm::vec3(1.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 0.0) }, 
+		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0) }, 
+
+		CompassPoint{glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 1.0, 0.0)},
+		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0) },
+
+		CompassPoint{ glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 1.0) },
+		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0) },*/
 	};
 	unsigned int VAO, VBO;
 
@@ -26,5 +47,5 @@ public:
 
 	Compass& operator = (const Compass&) = delete;
 
-	void draw(const Shader& shader, glm::mat4& projection, glm::mat4& view) const;
+	void draw(const Shader& shader, glm::mat4& projection, const Camera& cam) const;
 };

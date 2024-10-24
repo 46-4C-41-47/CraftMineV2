@@ -3,22 +3,22 @@
 
 Camera::Camera() 
 {
-	position = vec3(0.0f, 0.0f, 0.0f);
+	position = glm::vec3(0.0f, 0.0f, 0.0f);
 	computeVectors();
 
-	viewMatrix = mat4(1.0f);
+	viewMatrix = glm::mat4(1.0f);
 	rebuildViewMatrix();
 	proccessMouse(0, 0);
 }
 
 
-Camera::Camera(vec3 pos, vec3 pointToLook) 
+Camera::Camera(glm::vec3 pos, glm::vec3 pointToLook)
 {
 	position = pos;
-	direction = normalize(pos - pointToLook);
+	vectors.direction = glm::normalize(pos - pointToLook);
 	computeVectors();
 	
-	viewMatrix = mat4(1.0f);
+	viewMatrix = glm::mat4(1.0f);
 	rebuildViewMatrix();
 	proccessMouse(0, 0);
 }
@@ -29,38 +29,29 @@ Camera::~Camera() {}
 
 void Camera::computeVectors() 
 {
-	up = vec3(0.0f, 1.0f, 0.0f);
-	right = normalize(glm::cross(up, direction));
-	up = glm::cross(direction, right);
+	vectors.up = glm::vec3(0.0f, 1.0f, 0.0f);
+	vectors.right = glm::normalize(glm::cross(vectors.up, vectors.direction));
+	vectors.up = glm::cross(vectors.direction, vectors.right);
 }
 
 void Camera::rebuildViewMatrix() 
 {
-	viewMatrix = glm::lookAt(position, position + (-direction), up);
+	viewMatrix = glm::lookAt(position, position + (-vectors.direction), vectors.up);
 }
 
 
-void Camera::move(vec3 newLocation) 
+void Camera::move(glm::vec3 newLocation) 
 {
 	position = newLocation;
 	rebuildViewMatrix();
 }
 
 
-void Camera::lookAt(vec3 pointToLookAt) 
-{
-	// TO DO 
-	// direction = normalize(position - pointToLookAt);
-	computeVectors();
-	rebuildViewMatrix();
-}
-
-
 void Camera::computeDirection() 
 {
-	direction.x = glm::cos(yawValue) * glm::cos(pitchValue);
-	direction.y = glm::sin(pitchValue);
-	direction.z = glm::sin(yawValue) * glm::cos(pitchValue);
+	vectors.direction.x = glm::cos(yawValue) * glm::cos(pitchValue);
+	vectors.direction.y = glm::sin(pitchValue);
+	vectors.direction.z = glm::sin(yawValue) * glm::cos(pitchValue);
 
 	computeVectors();
 	rebuildViewMatrix();
@@ -69,25 +60,29 @@ void Camera::computeDirection()
 
 void Camera::moveUpward(float offset) 
 {
-	position = position + vec3(0.0f, offset, 0.0f);
+	position = position + glm::vec3(0.0f, offset, 0.0f);
 	rebuildViewMatrix();
 }
 
 void Camera::moveSideWays(float offset) 
 {
-	position = position + vec3(
-		right.x * offset, 
-		right.y * offset, 
-		right.z * offset
+	position = position + glm::vec3(
+		vectors.right.x * offset,
+		vectors.right.y * offset,
+		vectors.right.z * offset
 	);
 	rebuildViewMatrix();
 }
 
 void Camera::moveForward(float offset) 
 {
-	vec3 normalizedDirection = normalize(vec3(direction.x, 0, direction.z));
+	glm::vec3 normalizedDirection = glm::normalize(glm::vec3(
+		vectors.direction.x, 
+		0, 
+		vectors.direction.z
+	));
 
-	position = position - vec3(
+	position = position - glm::vec3(
 		normalizedDirection.x * offset,
 		0, 
 		normalizedDirection.z * offset
@@ -117,21 +112,6 @@ void Camera::pitch(float angleInRadians)
 	computeDirection();
 }
 
-void Camera::roll(float angleInRadians) 
-{ 
-	rollValue += angleInRadians; 
-	computeDirection();
-}
-
-
-double Camera::getYaw() { return yawValue; }
-
-
-double Camera::getPitch() { return pitchValue; }
-
-
-double Camera::getRoll() { return rollValue; }
-
 
 void Camera::proccessMouse(int x, int y) 
 {
@@ -146,3 +126,21 @@ void Camera::proccessMouse(int x, int y)
 	lastX = x;
 	lastY = y;
 }
+
+
+float Camera::getYaw() const { return yawValue; }
+
+
+float Camera::getPitch() const { return pitchValue; }
+
+
+float Camera::getRoll() const { return rollValue; }
+
+
+CameraVectors Camera::getVectors() const { return vectors; }
+
+
+glm::mat4 Camera::getViewMatrix() const { return viewMatrix; }
+
+
+glm::vec3 Camera::getPosition() const { return position; }

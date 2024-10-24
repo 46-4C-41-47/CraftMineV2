@@ -38,7 +38,7 @@ bool ChunkCluster::areNeighbors(long long chunkA, long long chunkB)
 void ChunkCluster::updateChunkList() 
 {
 	glm::vec2 pos = player->getChunkPos();
-	glm::vec3 realPos = player->getCam().position;
+	glm::vec3 realPos = player->getCam().getPosition();
 	
 	std::set<long long>      newIds = getChunkAround(pos);
 	std::set<long long> existingIds = AppSql::getKeys<long long, std::unique_ptr<Chunk>>(chunks);

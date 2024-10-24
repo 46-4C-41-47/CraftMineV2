@@ -15,10 +15,14 @@
 
 #define PI 3.141592653589793238462643383279502884L 
 
-using glm::vec3;
-using glm::mat4;
-using glm::cross;
-using glm::normalize;
+
+
+typedef struct {
+	glm::vec3 direction;
+	glm::vec3 up;
+	glm::vec3 right;
+} CameraVectors;
+
 
 
 class Camera
@@ -26,26 +30,28 @@ class Camera
 private:
 	double yawValue = 0.0f, pitchValue = 0.0f, rollValue = 0.0f;
 	int lastX = -1, lastY = -1, xOffset, yOffset;
+	glm::vec3 position;
 	
-	vec3 direction;
-	vec3 up;
-	vec3 right;
+	CameraVectors vectors{
+		glm::vec3(1.0, 0.0, 0.0),
+		glm::vec3(0.0, 1.0, 0.0),
+		glm::vec3(0.0, 0.0, 1.0),
+	};
 
-	mat4 viewMatrix;
+	glm::mat4 viewMatrix;
 
 	void computeVectors();
 	void rebuildViewMatrix();
 	void computeDirection();
 
 public:
-	vec3 position;
 
 	Camera();
-	Camera(vec3 position, vec3 pointToLook);
+	Camera(glm::vec3 position, glm::vec3 pointToLook);
 	~Camera();
 
-	void move(vec3 newLocation);
-	void lookAt(vec3 pointToLookAt); // à finir
+	void move(glm::vec3 newLocation);
+	void lookAt(glm::vec3 pointToLookAt);
 
 	// les valeurs positives bougent la camera vers le haut et les négatives vers le bas
 	void moveUpward(float offset);
@@ -56,13 +62,14 @@ public:
 
 	void yaw(float angleInRadians);
 	void pitch(float angleInRadians);
-	void roll(float angleInRadians); // à finir
-
-	double getYaw();
-	double getPitch();
-	double getRoll();
+	void roll(float angleInRadians);
 
 	void proccessMouse(int x, int y);
 
-	glm::mat4 getViewMatrix() { return viewMatrix; }
+	float getYaw() const;
+	float getPitch() const;
+	float getRoll() const;
+	CameraVectors getVectors() const;
+	glm::mat4 getViewMatrix() const;
+	glm::vec3 getPosition() const;
 };

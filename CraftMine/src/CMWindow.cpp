@@ -18,6 +18,7 @@ std::unique_ptr<ChunkCluster> CMWindow::cluster = nullptr;
 std::unique_ptr<Compass> CMWindow::compass = nullptr;
 
 
+
 CMWindow::CMWindow(std::string title, int width, int height, int x, int y) : title{ title }
 {
     fullscreen = false;
@@ -200,7 +201,9 @@ void CMWindow::run()
 
     glm::mat4 view = player->getCam().getViewMatrix();
     cluster->draw(*objectShader, projection, view);
-    //compass->draw(*compassShader, projection, view);
+
+    if (params::developement::DEBUG_MODE)
+        compass->draw(*compassShader, projection, player->getCam());
 
     //glm::vec3 pos = player->getCam().position;
     //std::cout << "x : " << (int)pos.x << ", y : " << (int)pos.y << ", z : " << (int)pos.z << "\n";
@@ -240,11 +243,11 @@ void CMWindow::processInput()
 
     /* DEV BINDING */
 
-    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && params::developement::DEBUG_MODE)
         std::cout << "\nPlayer position" 
-                  << "\n\tx : " << (int)player->getCam().position.x 
-                  << "\n\ty : " << (int)player->getCam().position.y
-                  << "\n\ty : " << (int)player->getCam().position.z
+                  << "\n\tx : " << (int)player->getCam().getPosition().x
+                  << "\n\ty : " << (int)player->getCam().getPosition().y
+                  << "\n\ty : " << (int)player->getCam().getPosition().z
                   << "\n";
 }
 
