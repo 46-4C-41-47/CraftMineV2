@@ -45,8 +45,10 @@ private:
 		NOT_CREATED, 
 		NOT_CREATED 
 	};
+	FastNoise::SmartNode<FastNoise::FractalFBm> noiseGenerator;
 
 	unsigned short getBlockIndex(int x, int y, int z) const;
+	unsigned short getNoiseIndex(int x, int y) const;
 	void initBlocks();
 	std::vector<Face> init();
 	std::vector<Face> computeFaces();

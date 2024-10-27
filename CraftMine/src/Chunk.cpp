@@ -5,13 +5,14 @@
 Chunk::Chunk(glm::ivec2 coordinates, const ChunkCluster& clstr) : cluster{ clstr }, coor{ coordinates }
 {
 	asyncFaces = std::async(std::launch::async, [this]() { return init(); });
+	//asyncFaces = init();
 }
 
 
 Chunk::~Chunk() { }
 
 
-inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
+unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 {
 	if (x < 0 || params::world::CHUNK_WIDTH <= x
 	 || y < 0 || params::world::CHUNK_HEIGHT <= y
@@ -25,8 +26,20 @@ inline unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 }
 
 
+unsigned short Chunk::getNoiseIndex(int x, int y) const
+{
+	if (x < 0 || params::world::CHUNK_WIDTH <= x || y < 0 || params::world::CHUNK_WIDTH <= y)
+		throw std::out_of_range("Chunk::Asked coordinates are out blocks arrays bounds");
+
+	return x + (y * params::world::CHUNK_WIDTH);
+}
+
+
 std::vector<Face> Chunk::init()
 {
+	noiseGenerator = FastNoise::New<FastNoise::FractalFBm>();
+	noiseGenerator->SetSource(FastNoise::New<FastNoise::Simplex>());
+	noiseGenerator->SetOctaveCount(params::world::NOISE_OCTAVE);
 	initBlocks();
 	return computeFaces();
 }
@@ -34,15 +47,28 @@ std::vector<Face> Chunk::init()
 
 void Chunk::initBlocks() 
 {
-	int Height = params::world::CHUNK_HEIGHT - (std::rand() % 16);
-	
+	float halfHeight = (float)params::world::CHUNK_HEIGHT / 2.0f;
+	std::vector<float> heightMap(params::world::CHUNK_WIDTH * params::world::CHUNK_WIDTH);
+	noiseGenerator->GenUniformGrid2D(
+		heightMap.data(),
+		coor.x * params::world::CHUNK_WIDTH,
+		coor.y * params::world::CHUNK_WIDTH,
+		params::world::CHUNK_WIDTH,
+		params::world::CHUNK_WIDTH,
+		params::world::NOISE_FREQUENCY,
+		params::world::NOISE_SEED
+	);
+
 	for (int x = 0; x < params::world::CHUNK_WIDTH; x++)
 	{
 		for (int y = 0; y < params::world::CHUNK_HEIGHT; y++)
 		{
 			for (int z = 0; z < params::world::CHUNK_WIDTH; z++)
 			{
-				if (y < Height)
+				float normalizedValue = (heightMap[getNoiseIndex(x, z)] + 1) * 0.5;
+				float finalValue = normalizedValue * halfHeight + halfHeight;
+				
+				if (y < finalValue)
 					blocks[getBlockIndex(x, y, z)] = constants::GRASS;
 				else
 					blocks[getBlockIndex(x, y, z)] = constants::EMPTY;

@@ -62,7 +62,7 @@ namespace params
 		static const int OPENGL_MINOR_VERSION = 5;
 
 		static const bool ENABLE_FACE_CULLING = false;
-		static const bool DEBUG_MODE = true;
+		static const bool DEBUG_MODE = false;
 	}
 
 	namespace graphical
@@ -73,7 +73,7 @@ namespace params
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
-		static const int CHUNK_RADIUS = 4;
+		static const unsigned CHUNK_RADIUS = 25;
 
 		static const std::string SHADER_REPOSITORY = std::format(
 			"./res/shaders/GL{}{}0/",
@@ -91,13 +91,15 @@ namespace params
 	namespace controls
 	{
 		static const float HORIZONTAL_SENSITIVITY = 0.002f, VERTICAL_SENSITIVITY = 0.0016f;
-		static const float CAM_SPEED = 0.000005f;
+		static const float CAM_SPEED = 0.000015f;
 	}
 
 	namespace world
 	{
 		static const int CHUNK_HEIGHT = 128, CHUNK_WIDTH = 16;
-		static const float NOISE_SEED = 0.0f, NOISE_FREQUENCY = 0.002f;
+
+		static const float NOISE_SEED = 21516, NOISE_FREQUENCY = 0.004f;
+		static const unsigned NOISE_OCTAVE = 3;
 
 		static const glm::vec3 DEFAULT_PLAYER_LOCATION = glm::vec3(0.0f, 64.0f, 0.0f);
 	}
