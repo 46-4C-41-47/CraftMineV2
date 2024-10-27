@@ -9,6 +9,7 @@
 #include <stdexcept>
 #include <vector>
 
+#include <FastNoise/FastNoise.h>
 #include <glm/glm.hpp>
 
 #include "ChunkMesh.h"

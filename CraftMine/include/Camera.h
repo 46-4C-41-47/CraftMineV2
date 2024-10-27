@@ -45,10 +45,13 @@ private:
 	void computeDirection();
 
 public:
-
 	Camera();
 	Camera(glm::vec3 position, glm::vec3 pointToLook);
+	Camera(const Camera&) = delete;
+
 	~Camera();
+
+	Camera& operator = (const Camera&) = delete;
 
 	void move(glm::vec3 newLocation);
 	void lookAt(glm::vec3 pointToLookAt);

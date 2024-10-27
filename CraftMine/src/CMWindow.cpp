@@ -249,6 +249,20 @@ void CMWindow::processInput()
                   << "\n\ty : " << (int)player->getCam().getPosition().y
                   << "\n\ty : " << (int)player->getCam().getPosition().z
                   << "\n";
+
+    if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && params::developement::DEBUG_MODE) 
+    {
+        glm::vec3 direction = player->getCam().getVectors().direction;
+        glm::vec3 up = player->getCam().getVectors().up;
+        glm::vec3 right = player->getCam().getVectors().right;
+
+        std::cout << "\nCamera vectors : {"
+                  << "\n\tdirection (" << direction.x << ", " << direction.y << ", " << direction.z << ")"
+                  << "\n\tup (" << up.x << ", " << up.y << ", " << up.z << ")"
+                  << "\n\tright (" << right.x << ", " << right.y << ", " << right.z << ")"
+                  << "\n}"
+                  << "\n";
+    }
 }
 
 

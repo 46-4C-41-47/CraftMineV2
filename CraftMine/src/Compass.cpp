@@ -43,10 +43,12 @@ void Compass::draw(const Shader& shader, glm::mat4& projection, const Camera& ca
 	shader.use();
 
 	glm::vec3 yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 rightCamera = cam.getVectors().right;
+	glm::vec3 randomAxis = glm::vec3(1.0f, 0.0f, 0.0f);
+	glm::mat4 camVectorRotation = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), yAxis);
+	glm::vec3 pitchVector = camVectorRotation * glm::vec4(cam.getVectors().right, 1.0f);
 
 	glm::mat4 rotationYaw = glm::rotate(glm::mat4(1.0f), cam.getYaw(), yAxis);
-	glm::mat4 rotationPitch = glm::rotate(glm::mat4(1.0f), cam.getPitch(), rightCamera);
+	glm::mat4 rotationPitch = glm::rotate(glm::mat4(1.0f), cam.getPitch(), pitchVector);
 	
 	glm::mat4 translation = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 0.0f, -0.5f));
 	
