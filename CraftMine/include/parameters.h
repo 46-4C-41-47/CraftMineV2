@@ -62,7 +62,7 @@ namespace params
 		static const int OPENGL_MINOR_VERSION = 5;
 
 		static const bool ENABLE_FACE_CULLING = false;
-		static const bool DEBUG_MODE = false;
+		static const bool DEBUG_MODE = true;
 	}
 
 	namespace graphical
@@ -73,7 +73,7 @@ namespace params
 
 		static const TextureAtlasConfig ATLAS_CONFIG = { "res/textures/blocksNew.png", 16, 16 };
 
-		static const unsigned CHUNK_RADIUS = 25;
+		static const unsigned CHUNK_RADIUS = 8;
 
 		static const std::string SHADER_REPOSITORY = std::format(
 			"./res/shaders/GL{}{}0/",

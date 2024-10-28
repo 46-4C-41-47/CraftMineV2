@@ -25,13 +25,15 @@ void Compass::initVAO()
 		GL_STATIC_DRAW
 	);
 
+	unsigned indexSize = 2 * sizeof(glm::vec3);
+
 	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, indexSize, (void*)0);
 	glEnableVertexAttribArray(0);
 
-	/*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)(sizeof(glm::vec3)));
-	glEnableVertexAttribArray(1);*/
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, indexSize, (void*)(sizeof(glm::vec3)));
+	glEnableVertexAttribArray(1);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
@@ -42,22 +44,28 @@ void Compass::draw(const Shader& shader, glm::mat4& projection, const Camera& ca
 {
 	shader.use();
 
-	glm::vec3 yAxis = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 randomAxis = glm::vec3(1.0f, 0.0f, 0.0f);
-	glm::mat4 camVectorRotation = glm::rotate(glm::mat4(1.0f), glm::radians(-90.0f), yAxis);
-	glm::vec3 pitchVector = camVectorRotation * glm::vec4(cam.getVectors().right, 1.0f);
-
-	glm::mat4 rotationYaw = glm::rotate(glm::mat4(1.0f), cam.getYaw(), yAxis);
-	glm::mat4 rotationPitch = glm::rotate(glm::mat4(1.0f), cam.getPitch(), pitchVector);
+	glm::mat4 translation = glm::translate(
+		glm::mat4(1.0), 
+		glm::vec3(
+			-cam.getVectors().direction.x * 0.5f,
+			-cam.getVectors().direction.y * 0.5f,
+			-cam.getVectors().direction.z * 0.5f
+		)
+	);
 	
-	glm::mat4 translation = glm::translate(glm::mat4(1.0), glm::vec3(0.0f, 0.0f, -0.5f));
-	
-	glm::mat4 view = translation * rotationPitch;
+	glm::mat4 view = glm::lookAt(
+		glm::vec3(0.0f), 
+		-cam.getVectors().direction, 
+		cam.getVectors().up
+	);
 
 	shader.sendMat4("projection", projection);
 	shader.sendMat4("view", view);
+	shader.sendMat4("model", translation);
 
 	glBindVertexArray(VAO);
+	glLineWidth(2.0f);
 	glDrawArrays(GL_LINES, 0, 6);
+	glLineWidth(1.0f);
 	glBindVertexArray(0);
 }

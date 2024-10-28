@@ -16,15 +16,15 @@ typedef struct {
 
 class Compass {
 private:
-	const std::array<CompassPoint, 6> vertices = {
-		glm::vec3(0.1, 0.0, 0.0),
-		glm::vec3(0.0, 0.0, 0.0),
+	const std::array<glm::vec3, 12> vertices = {
+		glm::vec3(0.1, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0),
+		glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0),
 
-		glm::vec3(0.0, 0.1, 0.0),
-		glm::vec3(0.0, 0.0, 0.0),
+		glm::vec3(0.0, 0.1, 0.0), glm::vec3(0.0, 1.0, 0.0),
+		glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),
 		
-		glm::vec3(0.0, 0.0, 0.1),
-		glm::vec3(0.0, 0.0, 0.0),
+		glm::vec3(0.0, 0.0, 0.1), glm::vec3(0.0, 0.0, 1.0),
+		glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0),
 
 		/*CompassPoint{ glm::vec3(1.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 0.0) }, 
 		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0) }, 
