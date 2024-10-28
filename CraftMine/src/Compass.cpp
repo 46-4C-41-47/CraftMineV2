@@ -65,7 +65,8 @@ void Compass::draw(const Shader& shader, glm::mat4& projection, const Camera& ca
 
 	glBindVertexArray(VAO);
 	glLineWidth(2.0f);
-	glDrawArrays(GL_LINES, 0, 6);
+	glDrawArrays(GL_LINES, 0, vertices.size() * 0.5f);
 	glLineWidth(1.0f);
 	glBindVertexArray(0);
+	
 }

@@ -8,12 +8,6 @@
 #include "Shader.h"
 
 
-typedef struct {
-	glm::vec3 location;
-	glm::vec3 color;
-} CompassPoint;
-
-
 class Compass {
 private:
 	const std::array<glm::vec3, 12> vertices = {
@@ -25,15 +19,6 @@ private:
 		
 		glm::vec3(0.0, 0.0, 0.1), glm::vec3(0.0, 0.0, 1.0),
 		glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0),
-
-		/*CompassPoint{ glm::vec3(1.0, 0.0, 0.0), glm::vec3(1.0, 1.0, 0.0) }, 
-		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0) }, 
-
-		CompassPoint{glm::vec3(0.0, 1.0, 0.0), glm::vec3(0.0, 1.0, 0.0)},
-		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0) },
-
-		CompassPoint{ glm::vec3(0.0, 0.0, 1.0), glm::vec3(0.0, 0.0, 1.0) },
-		CompassPoint{ glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0) },*/
 	};
 	unsigned int VAO, VBO;
 
