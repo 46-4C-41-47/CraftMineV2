@@ -17,7 +17,7 @@ unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 	if (x < 0 || params::world::CHUNK_WIDTH <= x
 	 || y < 0 || params::world::CHUNK_HEIGHT <= y
 	 || z < 0 || params::world::CHUNK_WIDTH <= z)
-		throw std::out_of_range("Chunk::Asked coordinates are out blocks arrays bounds");
+		throw std::out_of_range("Chunk::Asked coordinates are out of blocks array bounds");
 
 	return 
 		x 
@@ -29,7 +29,7 @@ unsigned short Chunk::getBlockIndex(int x, int y, int z) const
 unsigned short Chunk::getNoiseIndex(int x, int y) const
 {
 	if (x < 0 || params::world::CHUNK_WIDTH <= x || y < 0 || params::world::CHUNK_WIDTH <= y)
-		throw std::out_of_range("Chunk::Asked coordinates are out blocks arrays bounds");
+		throw std::out_of_range("Chunk::Asked coordinates are out of noise array bounds");
 
 	return x + (y * params::world::CHUNK_WIDTH);
 }
@@ -68,7 +68,7 @@ void Chunk::initBlocks()
 				float normalizedValue = (heightMap[getNoiseIndex(x, z)] + 1) * 0.5;
 				float finalValue = normalizedValue * halfHeight + halfHeight;
 				
-				if (y < finalValue)
+				if (y < ((heightMap[0] + 1) * 0.5) * params::world::CHUNK_HEIGHT)//finalValue)
 					blocks[getBlockIndex(x, y, z)] = constants::GRASS;
 				else
 					blocks[getBlockIndex(x, y, z)] = constants::EMPTY;
@@ -111,7 +111,7 @@ std::vector<Face> Chunk::computeFaces()
 				if (shouldAddFace(x, y, z, constants::FRONT, neighborStatus))
 					faces.push_back({ facePos, texture | constants::FRONT });
 				
-				if (shouldAddFace(x, y, z, constants::BACK , neighborStatus))
+				if (shouldAddFace(x, y, z, constants::BACK, neighborStatus))
 					faces.push_back({ facePos, texture | constants::BACK });
 
 				if (shouldAddFace(x, y, z, constants::RIGHT, neighborStatus))
@@ -242,7 +242,7 @@ void Chunk::updateSide(constants::cardinal side, std::vector<Face>& faces)
 		faceIndex = constants::FRONT;
 		break;
 
-	/*case constants::EAST:
+	case constants::EAST:
 		w = &z;
 		x = params::world::CHUNK_WIDTH - 1;
 		neighborX = &neighborBound;
@@ -258,7 +258,7 @@ void Chunk::updateSide(constants::cardinal side, std::vector<Face>& faces)
 		neighborZ = &z;
 		neighborBound = params::world::CHUNK_WIDTH - 1;
 		faceIndex = constants::LEFT;
-		break;*/
+		break;
 
 	default:
 		return;
@@ -274,7 +274,7 @@ void Chunk::updateSide(constants::cardinal side, std::vector<Face>& faces)
 			int texture = blocks[getBlockIndex(x, y, z)] << 3;
 			glm::ivec3 facePos = glm::ivec3(x, y, z);
 
-			if (!cluster.checkForBlock(constants::NORTH, *this, glm::ivec3(*neighborX, y, *neighborZ)))
+			if (!cluster.checkForBlock(side, *this, glm::ivec3(*neighborX, y, *neighborZ)))
 				faces.push_back({ facePos, texture | faceIndex });
 		}
 	}

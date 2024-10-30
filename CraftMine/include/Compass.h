@@ -11,13 +11,13 @@
 class Compass {
 private:
 	const std::array<glm::vec3, 12> vertices = {
-		glm::vec3(0.1, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0),
+		glm::vec3(0.1, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0), // EAST
 		glm::vec3(0.0, 0.0, 0.0), glm::vec3(1.0, 0.0, 0.0),
 
-		glm::vec3(0.0, 0.1, 0.0), glm::vec3(0.0, 1.0, 0.0),
+		glm::vec3(0.0, 0.1, 0.0), glm::vec3(0.0, 1.0, 0.0), // UP
 		glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),
 		
-		glm::vec3(0.0, 0.0, 0.1), glm::vec3(0.0, 0.0, 1.0),
+		glm::vec3(0.0, 0.0, 0.1), glm::vec3(0.0, 0.0, 1.0), // NORTH
 		glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 0.0, 1.0),
 	};
 	unsigned int VAO, VBO;

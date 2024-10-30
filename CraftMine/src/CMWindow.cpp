@@ -244,11 +244,18 @@ void CMWindow::processInput()
     /* DEV BINDING */
 
     if (glfwGetKey(window, GLFW_KEY_P) == GLFW_PRESS && params::developement::DEBUG_MODE)
-        std::cout << "\nPlayer position" 
-                  << "\n\tx : " << (int)player->getCam().getPosition().x
-                  << "\n\ty : " << (int)player->getCam().getPosition().y
-                  << "\n\ty : " << (int)player->getCam().getPosition().z
-                  << "\n";
+    {
+        std::cout << "\nPlayer position ("
+            <<   "x : " << (int)player->getCam().getPosition().x
+            << ", y : " << (int)player->getCam().getPosition().y
+            << ", z : " << (int)player->getCam().getPosition().z
+            << ")\n";
+
+        std::cout << "\nPlayer chunk position ("
+            <<   "x : " << (int)player->getChunkPos().x
+            << ", y : " << (int)player->getChunkPos().y
+            << ")\n";
+    }
 
     if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && params::developement::DEBUG_MODE) 
     {
