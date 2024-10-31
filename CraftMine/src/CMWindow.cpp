@@ -249,26 +249,23 @@ void CMWindow::processInput()
             <<   "x : " << (int)player->getCam().getPosition().x
             << ", y : " << (int)player->getCam().getPosition().y
             << ", z : " << (int)player->getCam().getPosition().z
-            << ")\n";
+            << ")";
 
         std::cout << "\nPlayer chunk position ("
             <<   "x : " << (int)player->getChunkPos().x
             << ", y : " << (int)player->getChunkPos().y
-            << ")\n";
-    }
+            << ")";
 
-    if (glfwGetKey(window, GLFW_KEY_V) == GLFW_PRESS && params::developement::DEBUG_MODE) 
-    {
-        glm::vec3 direction = player->getCam().getVectors().direction;
-        glm::vec3 up = player->getCam().getVectors().up;
-        glm::vec3 right = player->getCam().getVectors().right;
-
-        std::cout << "\nCamera vectors : {"
-                  << "\n\tdirection (" << direction.x << ", " << direction.y << ", " << direction.z << ")"
-                  << "\n\tup (" << up.x << ", " << up.y << ", " << up.z << ")"
-                  << "\n\tright (" << right.x << ", " << right.y << ", " << right.z << ")"
-                  << "\n}"
-                  << "\n";
+        /*const Chunk& c = (*cluster)[ChunkCluster::getKey(
+            (int)player->getChunkPos().x,
+            (int)player->getChunkPos().y
+        )];
+        std::cout << "\nChunk faces status ("
+            <<   "NORTH : " << c.getFacesStatus()[constants::NORTH]
+            << ", SOUTH : " << c.getFacesStatus()[constants::SOUTH]
+            <<  ", EAST : " << c.getFacesStatus()[constants::EAST]
+            <<  ", WEST : " << c.getFacesStatus()[constants::WEST]
+            << ")";*/
     }
 }
 

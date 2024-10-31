@@ -10,6 +10,17 @@ ChunkCluster::ChunkCluster(std::shared_ptr<Player> p) : player{ p }
 ChunkCluster::~ChunkCluster() { }
 
 
+//const Chunk& ChunkCluster::operator[](long long key) // Uniquement à des fins de debug
+//{
+//	std::map<long long, std::unique_ptr<Chunk>>::const_iterator it = chunks.find(key);
+//	
+//	if (it == chunks.end())
+//		throw std::out_of_range("ChunkCluster::The specified key doesn't have an existing value asociated");
+//
+//	return *(it->second);
+//}
+
+
 std::set<long long> ChunkCluster::getChunkAround(glm::ivec2 pos)
 {
 	int xMin = pos.x - params::graphical::CHUNK_RADIUS, xMax = pos.x + params::graphical::CHUNK_RADIUS;
@@ -95,7 +106,7 @@ bool ChunkCluster::checkForBlock(
 	if (neighbor == chunks.end())
 		return true;
 
-	if (neighbor->second->areBlocksAvailable())
+	if (neighbor->second != nullptr &&neighbor->second->areBlocksAvailable())
 		return neighbor->second->isThereABlock(coor.x, coor.y, coor.z);
 
 	return true;

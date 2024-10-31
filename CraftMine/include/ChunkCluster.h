@@ -3,6 +3,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <stdexcept>
 #include <utility>
 
 #include <glm/glm.hpp>
@@ -35,7 +36,8 @@ public:
 
 	~ChunkCluster();
 
-	ChunkCluster& operator = (const ChunkCluster&) = delete;
+	//const Chunk& operator[](long long key);
+	ChunkCluster& operator=(const ChunkCluster&) = delete;
 
 	void draw(const Shader& shader, glm::mat4& projectionMatrix, glm::mat4& viewMatrix);
 	bool checkForBlock(constants::cardinal neighbor, const Chunk& callingChunk, glm::ivec3 coor) const;

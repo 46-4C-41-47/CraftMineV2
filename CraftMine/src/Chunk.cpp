@@ -68,7 +68,7 @@ void Chunk::initBlocks()
 				float normalizedValue = (heightMap[getNoiseIndex(x, z)] + 1) * 0.5;
 				float finalValue = normalizedValue * halfHeight + halfHeight;
 				
-				if (y < ((heightMap[0] + 1) * 0.5) * params::world::CHUNK_HEIGHT)//finalValue)
+				if (y < finalValue)
 					blocks[getBlockIndex(x, y, z)] = constants::GRASS;
 				else
 					blocks[getBlockIndex(x, y, z)] = constants::EMPTY;
@@ -209,7 +209,8 @@ void Chunk::updateSides()
 	std::vector<Face> faces;
 
 	for (int side = 0; side < 4; side++)
-		if (chunkFacesStatus[side] != FACES_COMPUTED)
+		if (chunkFacesStatus[side] != FACES_COMPUTED 
+			&& cluster.isNeighborAvailable((constants::cardinal)side, *this))
 			updateSide((constants::cardinal)side, faces);
 
 	if (0 < faces.size())
@@ -303,3 +304,6 @@ void Chunk::draw(const Shader& shader, glm::mat4& projection, glm::mat4& view)
 
 
 ChunkLoadingStatus Chunk::getLoadingStatus() const { return loadingStatus; }
+
+
+std::array<ChunkLoadingStatus, 4> Chunk::getFacesStatus() const { return chunkFacesStatus; }

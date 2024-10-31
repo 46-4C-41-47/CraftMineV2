@@ -76,4 +76,5 @@ public:
 	void draw(const Shader& shader, glm::mat4& projection, glm::mat4& view);
 
 	ChunkLoadingStatus getLoadingStatus() const;
+	std::array<ChunkLoadingStatus, 4> getFacesStatus() const;
 };
